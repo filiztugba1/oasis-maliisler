@@ -1,0 +1,31 @@
+.bg-coffe {
+    background-color: #EDE4E0;
+}
+table {
+    font-size: 10px;
+    vertical-align: middle;
+}
+.css-1howxi1-MuiTableCell-root {
+    font-size: 10px;
+}
+.table > :not(:first-child) {
+     border-color: #EDE4E0 !important;
+    /* border-width: 0; */
+    /* border-style: none; */
+}
+tbody{
+    border-bottom: 1px solid #EDE4E0 !important;
+}
+td{
+    padding:0.5rem 0.5rem !important;
+}
+
+.table tr, .table th, .table td {
+    border-color: inherit;
+    border-width: 1px;
+    font-size: 12px;
+}
+.table tr{
+    border-color: #f1f1f1 !important;
+    border-width: 1px !important;
+}

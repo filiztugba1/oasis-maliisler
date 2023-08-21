@@ -1,0 +1,22 @@
+.danismanTabs{
+    padding: 3px 6px !important
+}
+.table.table-column-dashed tr {
+    border-bottom-width: 1px !important;
+    border-bottom-style: solid !important;
+    border-bottom-color: var(--kt-border-color) !important;
+    border-left-width: 1px !important;
+    border-left-style: solid !important;
+    border-left-color: var(--kt-border-color)!important;
+}
+.table.table-column-dashed>tr>td{
+    padding: 10px !important;
+}
+.table{
+    border-top-width: 1px !important;
+    border-top-style: solid !important;
+    border-top-color: var(--kt-border-color)!important;
+    border-right-width: 1px !important;
+    border-right-style: solid !important;
+    border-right-color: var(--kt-border-color)!important;
+}
