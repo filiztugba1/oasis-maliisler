@@ -6,6 +6,7 @@ export function Logout() {
   const {logout} = useAuth()
   useEffect(() => {
     logout()
+    localStorage.clear();
     document.location.reload()
   }, [logout])
 
