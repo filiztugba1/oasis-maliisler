@@ -53,13 +53,46 @@ const Installment: React.FC = () => {
       }
     );
   };
+  const handleOranGir=(e:any,row:any,column:string)=>{
+    e.preventDefault();
+    // console.log(e);
+    const list=definitiverecordlist;
+    const kolonBul=list.findIndex(x=>x.id===row.id && x.taksit_no===row.taksit_no);
+    if(column=='faiz')
+    list[kolonBul].faiz=e.target.value;
+    if(column=='min_payment')
+    list[kolonBul].min_payment=e.target.value;
+    if(column=='taksit_sayisi')
+    list[kolonBul].taksit_sayisi=e.target.value;
+    if(column=='plus_sayisi')
+    list[kolonBul].plus_sayisi=e.target.value;
+
+    axios.post<InstallmentListsResponse>('http://api-oasis.localhost/maliisler/maliisler/installment-update',{
+        id:row.id,
+        taksit_no:row.taksit_no,
+        column:column,
+        value:e.target.value
+        }).then((res)=>{
+            // setLoading(false);
+            if(res.status===200)
+            {
+                handleSubmit(e);
+                setIsApi(false);
+            }
+          console.log();
+        }).catch(err=>{
+          setIsApi(false);
+        })
+        
+      
+  }
 
   const columns: TableColumn<typeof definitiverecordlist[0]>[] = [
     { name: 'Taksit #', selector: (row) => +row.taksit_no==0?'Tek Çekim':row.taksit_no+' Taksit', sortable: true },
-    { name: 'Faiz Oranı %', selector: (row) => api.paymetFormat(row.faiz)||'' , sortable: true },
-    { name: 'Taban Fiyat', selector: (row) => api.paymetFormat(row.min_payment)||'', sortable: true },
-    { name: 'Taksit Sayısı', selector: (row) => row.taksit_sayisi, sortable: true },
-    { name: 'Bonus Taksit Sayısı', selector: (row) => row.plus_sayisi, sortable: true },
+    { name: 'Faiz Oranı %', selector: (row) => api.paymetFormat(row.faiz)||'' , sortable: true ,cell:(row)=><input name="faiz" onChange={(e)=>handleOranGir(e,row,'faiz')} value={row.faiz}/>},
+    { name: 'Taban Fiyat', selector: (row) => api.paymetFormat(row.min_payment)||'', sortable: true ,cell:(row)=><input name="min_payment" onChange={(e)=>handleOranGir(e,row,'min_payment')} value={row.min_payment} />},
+    { name: 'Taksit Sayısı', selector: (row) => row.taksit_sayisi, sortable: true ,cell:(row)=><input name="taksit_sayisi" onChange={(e)=>handleOranGir(e,row,'taksit_sayisi')} value={row.taksit_sayisi} />},
+    { name: 'Bonus Taksit Sayısı', selector: (row) => row.plus_sayisi, sortable: true ,cell:(row)=><input name="plus_sayisi" onChange={(e)=>handleOranGir(e,row,'plus_sayisi')} value={row.plus_sayisi}/>},
   ];
   const [definitiverecordlist, setDefinitiverecordlist] = useState<Array<InstallmentLists>>([]);
 

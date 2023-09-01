@@ -56,9 +56,9 @@ const scholarshipStatus=async ()=>{
     return res.data.data;
   }
 
- const year=async ()=>{
+ const year=async (x:number=0)=>{
     const url=API_URL+'/maliisler/register-year';
-    const res= await axios.post<YearListResponse>(url);
+    const res= await axios.post<YearListResponse>(url,{isAll:x},headers);
     return res.data.data;
   }
 
@@ -90,7 +90,7 @@ const scholarshipStatus=async ()=>{
     if(+number)
     {
       const formatla=new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(+number);
-      console.log((formatla.split(' €'))[0]);
+      // console.log((formatla.split(' €'))[0]);
       return (formatla.split(' €'))[0];
     }
     if(number!==null && number!=='' && number!==undefined)

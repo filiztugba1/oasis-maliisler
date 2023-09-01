@@ -85,9 +85,12 @@ const StudentPaymentsSnack: React.FC = () => {
           setIsApi(false);
         }
         console.log();
-      }).catch(err => {
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
         setIsApi(false);
-      })
+    }) 
 
       axios.post<PaymentsResponse>('http://api-oasis.localhost/maliisler/maliisler/student-fees', {
         stu_id: localStorage.getItem('search-student-id')
@@ -100,9 +103,12 @@ const StudentPaymentsSnack: React.FC = () => {
           setIsApi(false);
         }
         console.log();
-      }).catch(err => {
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
         setIsApi(false);
-      })
+    }) 
 
       axios.post<CollectionsResponse>('http://api-oasis.localhost/maliisler/maliisler/student-payments', {
         stu_id: localStorage.getItem('search-student-id')
@@ -115,30 +121,58 @@ const StudentPaymentsSnack: React.FC = () => {
           setIsApi(false);
         }
         console.log();
-      }).catch(err => {
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
         setIsApi(false);
-      })
+    }) 
 
 
       api.scholarshipStatus().then((x) => {
         setSssList(x);
         setIsApi(false);
-      })
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
+        setIsApi(false);
+    }) 
       api.year().then((x) => {
         setYear(x);
         setIsApi(false);
-      })
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
+        setIsApi(false);
+    }).catch(err=>{
+      if (err.response && err.response.data && err.response.data.message) {
+           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      setIsApi(false);
+  })  
 
 
       api.feeTypes().then((x) => {
         setFeetypes(x);
         setIsApi(false);
-      })
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
+        setIsApi(false);
+    }) 
 
       api.banks().then((x) => {
         setBanks(x);
         setIsApi(false);
-      })
+      }).catch(err=>{
+        if (err.response && err.response.data && err.response.data.message) {
+             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+        }
+        setIsApi(false);
+    }) 
 
 
     }
@@ -601,9 +635,12 @@ const StudentPaymentsSnack: React.FC = () => {
       {
         enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => {
-      enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-    })
+    }).catch(err=>{
+      if (err.response && err.response.data && err.response.data.message) {
+           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      setIsApi(false);
+  }) 
   };
 
 
@@ -624,9 +661,12 @@ const StudentPaymentsSnack: React.FC = () => {
       {
         enqueueSnackbar(cu+' işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => {
-      enqueueSnackbar(cu+' işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-    })
+    }).catch(err=>{
+      if (err.response && err.response.data && err.response.data.message) {
+           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      setIsApi(false);
+  }) 
   };
 
 
@@ -646,9 +686,12 @@ const StudentPaymentsSnack: React.FC = () => {
       {
         enqueueSnackbar('Silme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => {
-      enqueueSnackbar('Silme işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-    })
+    }).catch(err=>{
+      if (err.response && err.response.data && err.response.data.message) {
+           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      setIsApi(false);
+  }) 
   };
 
   const handleDeletePaymentSubmit = (e: any) => {
@@ -664,9 +707,12 @@ const StudentPaymentsSnack: React.FC = () => {
       {
         enqueueSnackbar('Silme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => {
-      enqueueSnackbar('Silme işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-    })
+    }).catch(err=>{
+      if (err.response && err.response.data && err.response.data.message) {
+           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      setIsApi(false);
+  }) 
   };
   
   const [open, setOpen] = React.useState(false);

@@ -61,6 +61,7 @@ const SidebarMenuMain = () => {
           <SidebarMenuItem to='/all-payables-list' title='Tüm Borçlar Listesi' hasBullet={true} />
           <SidebarMenuItem to='/debt-check-list' title='Borç Kontrol Listesi' hasBullet={true} />
           <SidebarMenuItem to='/installment' title='Taksit' hasBullet={true} />
+        <SidebarMenuItem to={`param-fees`} title='Yeni öğrencilere ait parametre tablosu' hasBullet={true} />
        </SidebarMenuItemWithSub>
 
 

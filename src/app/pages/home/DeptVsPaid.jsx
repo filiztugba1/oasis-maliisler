@@ -22,7 +22,7 @@ class DeptVsPaint extends Component {
 				type: "doughnut",
 				showInLegend: false,
 				indexLabel: "{label}: {y}",
-				yValueFormatString: "#.###' TL'",
+				yValueFormatString: "₺#,##0.##",
 				dataPoints: this.props.deptVsPaidx
 			}]
 		}

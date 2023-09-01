@@ -5,7 +5,9 @@ import { StudentInfoHeader } from '../student-info/StudentInfoHeader'
 import axios from "axios";
 import { StudentDetailModel, StudentDetailResponseData } from '../student-info/models/_studentdetail.model'
 import { RelationMaliDetailRequest, RelationMaliDetailResponse, RelationMaliDetail, } from './models/_relationmali.model'
+import { Switch } from '@mui/material';
 import '../style.css';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -24,8 +26,9 @@ const accountBreadCrumbs: Array<PageLink> = [
 
 
 
-const RelationMali: React.FC = () => {
+const RelationMaliSnack: React.FC = () => {
 
+  const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState<RelationMaliDetailRequest>(
     {
       mali_aciklama:"",
@@ -137,10 +140,15 @@ const RelationMali: React.FC = () => {
               // setLoading(false);
               if(res.status===200)
               {
-                alert("kaydetme başarılı");
+                enqueueSnackbar('Kaydetme işleminiz başarılı bir şekilde gerçekleştirilmiştir.', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
               }
-          }).catch(err=>{
-          })  
+              else
+              {
+                enqueueSnackbar('Kaydetme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+              }
+          }).catch(err => {
+            enqueueSnackbar('Kaydetme işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+          })
   };
 
   return (
@@ -177,41 +185,65 @@ const RelationMali: React.FC = () => {
         <div className='card-body pt-9 pb-0'>
         <form onSubmit={handleSubmit}>
         <div className='row'>
+     
           <div className='col-md-4'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span >DİPLOMA BEDELİ (ANADAL)</span>
-              </label>
-              <div onClick={()=>toggle('mali_diploma')} className={`toggle-switch ${formData.mali_diploma ? 'toggled' : ''}`}>
-                  <div className="knob"></div>
-              </div>
+                    <label className='col-form-label fw-bold fs-6'>
+                      <span >DİPLOMA BEDELİ (ANADAL)</span>
+                    </label>
+                  
+                    <Switch
+                      checked={+formData.mali_diploma===0?false:true}
+                      onChange={()=>toggle('mali_diploma')}
+                      name="mali_diploma"
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+
           </div>
 
           <div className='col-md-4'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span >DİPLOMA BEDELİ (ÇAP/YDP)</span>
-              </label>
-              <div onClick={()=>toggle('mali_diploma_cap')} className={`toggle-switch ${formData.mali_diploma_cap ? 'toggled' : ''}`}>
-                  <div className="knob"></div>
-              </div>
+                    <label className='col-form-label fw-bold fs-6'>
+                      <span >DİPLOMA BEDELİ (ÇAP/YDP)</span>
+                    </label>
+                  
+                    <Switch
+                      checked={+formData.mali_diploma_cap===0?false:true}
+                      onChange={()=>toggle('mali_diploma_cap')}
+                      name="mali_diploma_cap"
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+
           </div>
 
-          <div className='col-md-4'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span >KİMLİK VE TEKNOLOJİ BEDELİ</span>
-              </label>
-              <div onClick={()=>toggle('mali_kimlik')} className={`toggle-switch ${formData.mali_kimlik ? 'toggled' : ''}`}>
-                  <div className="knob"></div>
-              </div>
-          </div>
+
+        <div className='col-md-4'>
+                    <label className='col-form-label fw-bold fs-6'>
+                      <span >ÖĞRETİM ÜCRETİ BORCU</span>
+                    </label>
+                  
+                    <Switch
+                      checked={+formData.mali_kimlik===0?false:true}
+                      onChange={()=>toggle('mali_kimlik')}
+                      name="mali_kimlik"
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+
+                </div>
+          
 
           <div className='col-md-4'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span >ÖĞRETİM ÜCRETİ BORCU</span>
-              </label>
-              <div onClick={()=>toggle('mali_borc')} className={`toggle-switch ${formData.mali_borc ? 'toggled' : ''}`}>
-                  <div className="knob"></div>
-              </div>
-          </div>
+                    <label className='col-form-label fw-bold fs-6'>
+                      <span >ÖĞRETİM ÜCRETİ BORCU</span>
+                    </label>
+                  
+                    <Switch
+                      checked={+formData.mali_borc===0?false:true}
+                      onChange={()=>toggle('mali_borc')}
+                      name="mali_borc"
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+
+                </div>
+                
 
           <div className='col-md-4'>
               <label className='col-form-label fw-bold fs-6'>
@@ -260,6 +292,13 @@ const RelationMali: React.FC = () => {
   )
 }
 
+function RelationMali() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <RelationMaliSnack />
+    </SnackbarProvider>
+  );
+}
 export default RelationMali
 
 
