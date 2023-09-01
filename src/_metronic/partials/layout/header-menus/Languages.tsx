@@ -6,35 +6,40 @@ import {useLang, setLanguage} from '../../../i18n/Metronici18n'
 
 const languages = [
   {
+    lang: 'tr',
+    name: 'Türkçe',
+    flag: toAbsoluteUrl('/media/flags/turkey.svg'),
+  },
+  {
     lang: 'en',
-    name: 'English',
+    name: 'İngilizce',
     flag: toAbsoluteUrl('/media/flags/united-states.svg'),
   },
-  {
-    lang: 'zh',
-    name: 'Mandarin',
-    flag: toAbsoluteUrl('/media/flags/china.svg'),
-  },
-  {
-    lang: 'es',
-    name: 'Spanish',
-    flag: toAbsoluteUrl('/media/flags/spain.svg'),
-  },
-  {
-    lang: 'ja',
-    name: 'Japanese',
-    flag: toAbsoluteUrl('/media/flags/japan.svg'),
-  },
-  {
-    lang: 'de',
-    name: 'German',
-    flag: toAbsoluteUrl('/media/flags/germany.svg'),
-  },
-  {
-    lang: 'fr',
-    name: 'French',
-    flag: toAbsoluteUrl('/media/flags/france.svg'),
-  },
+  // {
+  //   lang: 'zh',
+  //   name: 'Mandarin',
+  //   flag: toAbsoluteUrl('/media/flags/china.svg'),
+  // },
+  // {
+  //   lang: 'es',
+  //   name: 'Spanish',
+  //   flag: toAbsoluteUrl('/media/flags/spain.svg'),
+  // },
+  // {
+  //   lang: 'ja',
+  //   name: 'Japanese',
+  //   flag: toAbsoluteUrl('/media/flags/japan.svg'),
+  // },
+  // {
+  //   lang: 'de',
+  //   name: 'German',
+  //   flag: toAbsoluteUrl('/media/flags/germany.svg'),
+  // },
+  // {
+  //   lang: 'fr',
+  //   name: 'French',
+  //   flag: toAbsoluteUrl('/media/flags/france.svg'),
+  // },
 ]
 
 const Languages: FC = () => {
