@@ -10,26 +10,28 @@ import { writeXLSX, readFile, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
-
-const DebtCheckList: React.FC = () => {
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
+const DebtCheckListSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const [feetypeList, setFeetypeList] = useState<Array<FacultyList>>([]);
+  const [listLoad, setlistLoad] = useState(false);
+  const [tableisActive, settableisActive] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    if(isApi)
-    {
       api.year().then((x)=>{
         setYear(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
 
       api.feeTypes().then((x)=>{
         setFeetypeList(x);
         setIsApi(false);
-      })
-    }
-  }
+      }).catch(err => catchFunc(err))
+    },[]
   );
 
  
@@ -86,16 +88,13 @@ const DebtCheckList: React.FC = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-    console.log(formData);
-      axios.post<DebtCheckListsResponse>('http://api-oasis.localhost/maliisler/maliisler/debt-check-list',formData).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setDefinitiverecordlist(res.data.data);
-                setFilteredData(res.data.data);
-              }
-          }).catch(err=>{
-          })  
+    settableisActive(true);
+    setlistLoad(true);
+    api.debtCheckList(formData).then((x) => {
+      setlistLoad(false);
+      setDefinitiverecordlist(x);
+      setFilteredData(x);
+    }).catch(err => catchFunc(err))
   };
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
@@ -139,7 +138,17 @@ const DebtCheckList: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
   return (
     <>
 
@@ -212,7 +221,8 @@ const DebtCheckList: React.FC = () => {
         </form>
       </div>
 
-      <div className='card mb-5 mb-xl-10'>
+      {tableisActive?<div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Tüm Borçlar Listesi</h4>
         </div>
@@ -235,11 +245,18 @@ const DebtCheckList: React.FC = () => {
             keyField="ogrno"
           />
         </div>
-      </div>
+      </div>:''}
     </>
   )
 }
 
+function DebtCheckList() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <DebtCheckListSnack />
+    </SnackbarProvider>
+  );
+}
 export default DebtCheckList
 
 

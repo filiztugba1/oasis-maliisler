@@ -114,6 +114,7 @@ const studentdetail=(student:any)=>{
   localStorage.setItem('search-student-id', student.id);
   localStorage.setItem('search-name', student.name);
   localStorage.setItem('search-surname', student.surname);
+  localStorage.setItem('menuBaslik',student.name+' '+student.surname+' / '+'Öğrenci Detay Bilgileri');
 }
 
   return (
@@ -172,7 +173,7 @@ const studentdetail=(student:any)=>{
 
             <div ref={suggestionsElement} className='mb-4' data-kt-search-element='main'>
               <div className='d-flex flex-stack fw-bold mb-4'>
-                <span className='text-muted fs-6 me-2'>Öğrencler:</span>
+                <span className='text-muted fs-6 me-2'>Öğrenciler:</span>
               </div>
 
               <div className='scroll-y mh-200px mh-lg-325px'>

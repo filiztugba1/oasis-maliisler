@@ -9,9 +9,12 @@ import { saveAs } from 'file-saver';
 import { writeXLSX, readFile, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const AllPayablesList: React.FC = () => {
+const AllPayablesListSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
@@ -22,33 +25,36 @@ const AllPayablesList: React.FC = () => {
   const [sssList, setSssList] = useState<Array<FacultyList>>([]);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const [feetypeList, setFeetypeList] = useState<Array<FacultyList>>([]);
+  const [listLoad, setlistLoad] = useState(false);
+  const [tableisActive, settableisActive] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if(isApi)
     {
       api.faculty().then((x)=>{
         setFList(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
 
 
       api.registerType().then((x)=>{
         setRtList(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
 
       api.scholarshipStatus().then((x)=>{
         setSssList(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
       api.year().then((x)=>{
         setYear(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
 
       api.feeTypes().then((x)=>{
         setFeetypeList(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
     }
   }
   );
@@ -60,7 +66,7 @@ const AllPayablesList: React.FC = () => {
     /// burası seçildiğinde bölüm bilgisi doldurulacak
     const datam = api.department({f:selected.value}).then((x)=>{
       setDList(x);
-    })
+    }).catch(err => catchFunc(err))
   };
 
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
@@ -69,7 +75,7 @@ const AllPayablesList: React.FC = () => {
     formDoldur("d",selected.value);
     api.option({f:formData.f,d:selected.value}).then((x)=>{
       setOList(x);
-    })
+    }).catch(err => catchFunc(err))
   };
 
   const [selectedOption, setSelectedOption] = React.useState(null);
@@ -142,8 +148,6 @@ const AllPayablesList: React.FC = () => {
     { name: 'GNO', selector: (row) => '', sortable: true },
   ];
 
-
-  
   const [definitiverecordlist, setDefinitiverecordlist] = useState<Array<AllPayablesLists>>([]);
 
   const [formData, setFormData] = useState<AllPayablesListRequest>(
@@ -172,15 +176,13 @@ const AllPayablesList: React.FC = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-      axios.post<AllPayablesListResponse>('http://api-oasis.localhost/maliisler/maliisler/all-payables-list',formData).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setDefinitiverecordlist(res.data.data);
-                setFilteredData(res.data.data);
-              }
-          }).catch(err=>{
-          })  
+    settableisActive(true);
+    setlistLoad(true);
+    api.allPaymentsList2(formData).then((x) => {
+      setlistLoad(false);
+      setDefinitiverecordlist(x);
+      setFilteredData(x);
+    }).catch(err => catchFunc(err))
   };
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
@@ -234,7 +236,17 @@ const AllPayablesList: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
   return (
     <>
 
@@ -475,7 +487,8 @@ const AllPayablesList: React.FC = () => {
         </form>
       </div>
 
-      <div className='card mb-5 mb-xl-10'>
+      {tableisActive?<div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Tüm Borçlar Listesi</h4>
         </div>
@@ -498,11 +511,18 @@ const AllPayablesList: React.FC = () => {
             keyField="ogrno"
           />
         </div>
-      </div>
+        </div>:''}
     </>
   )
 }
 
+function AllPayablesList() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <AllPayablesListSnack />
+    </SnackbarProvider>
+  );
+}
 export default AllPayablesList
 
 

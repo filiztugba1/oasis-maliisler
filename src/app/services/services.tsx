@@ -9,6 +9,14 @@ import { YearListResponse } from './models/_year';
 import { FeeTypesResponse } from './models/_feetypes';
 import { BanksResponse } from './models/_banks';
 import { CreditCardResponse } from './models/_creditCard';
+import { DeptVsPaidResponse, ReportResponse, TotalScholarshipListResponse } from '../pages/home/models/home.model';
+import { DefinitiveRecordRequest, DefinitiveRecordResponse } from '../pages/definitive-records/models/_definitiverecords.model';
+import { StudentListRequest, StudentListResponse } from '../pages/student-list/models/_studentlist.model';
+import { StudentScholarshipNumbersRequest, StudentScholarshipNumbersResponse } from '../pages/number-of-student-scholarships/models/_studentscholarships';
+import { SummerFeeRefundRequestsResponse } from '../pages/summer-fee-refund-requests/models/_summerfeerefund';
+import { FeePaymentListRequest, FeePaymentListResponse } from '../pages/fee-payments-list/models/_feepaymentslist.model';
+import { AllPayablesListRequest, AllPayablesListResponse } from '../pages/all-payables-list/models/_allpayableslist.model';
+import { DebtCheckListsRequest, DebtCheckListsResponse } from '../pages/debt-check-list/models/_debtchecklist.model';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -100,10 +108,69 @@ const scholarshipStatus=async ()=>{
       const sonDegis=virgulDegis.replace('-',',');
       return sonDegis;
     }
-   
+  }
 
-    
+
+  const fallSpringPaymentRaports=async ()=>{
+    const url=API_URL+'/maliisler/fall-spring-payment-raports';
+    const res= await axios.post<ReportResponse>(url);
+    return res.data.data;
+  }
+
+  const totalScholarshipList=async ()=>{
+    const url=API_URL+'/maliisler/total-scholarship-list';
+    const res= await axios.post<TotalScholarshipListResponse>(url);
+    return res.data.data;
   }
   
+  const debtVsPaid=async ()=>{
+    const url=API_URL+'/maliisler/debt-vs-paid';
+    const res= await axios.post<DeptVsPaidResponse>(url);
+    return res.data.data;
+  }
 
-export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus};
+  const definitiveRecords=async (formData:DefinitiveRecordRequest)=>{
+    const url=API_URL+'/maliisler/definitive-records';
+    const res= await axios.post<DefinitiveRecordResponse>(url,formData);
+    return res.data.data;
+  }
+
+  const studentList=async (formData:StudentListRequest)=>{
+    const url=API_URL+'/maliisler/student-list';
+    const res= await axios.post<StudentListResponse>(url);
+    return res.data.data;
+  }
+
+  const studentScholarshipNumbers=async (formData:StudentScholarshipNumbersRequest)=>{
+    const url=API_URL+'/maliisler/student-scholarship-numbers';
+    const res= await axios.post<StudentScholarshipNumbersResponse>(url,formData);
+    return res.data.data;
+  }
+  const summerSchoolFeeRefundRequests=async ()=>{
+    const url=API_URL+'/maliisler/summer-school-fee-refund-requests';
+    const res= await axios.post<SummerFeeRefundRequestsResponse>(url);
+    return res.data.data;
+  }
+
+  const allPaymentsList=async (formData:FeePaymentListRequest)=>{
+    const url=API_URL+'/maliisler/all-payments-list';
+    const res= await axios.post<FeePaymentListResponse>(url,formData);
+    return res.data.data;
+  }
+  const allPaymentsList2=async (formData:AllPayablesListRequest)=>{
+    const url=API_URL+'/maliisler/all-payments-list';
+    const res= await axios.post<AllPayablesListResponse>(url,formData);
+    return res.data.data;
+  }
+
+  const debtCheckList=async (formData:DebtCheckListsRequest)=>{
+    const url=API_URL+'/maliisler/debt-check-list';
+    const res= await axios.post<DebtCheckListsResponse>(url,formData);
+    return res.data.data;
+  }
+
+  
+  
+export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
+  fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
+,debtCheckList};

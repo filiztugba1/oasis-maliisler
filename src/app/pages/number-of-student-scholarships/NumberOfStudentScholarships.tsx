@@ -9,9 +9,12 @@ import { saveAs } from 'file-saver';
 import { writeXLSX, readFile, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const NumberOfStudentScholarships: React.FC = () => {
+const NumberOfStudentScholarshipsSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
@@ -20,30 +23,10 @@ const NumberOfStudentScholarships: React.FC = () => {
   const [rtList, setRtList] = useState<Array<FacultyList>>([]);
   const [sssList, setSssList] = useState<Array<FacultyList>>([]);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
-  useEffect(() => {
-    if(isApi)
-    {
-      api.faculty().then((x)=>{
-        setFList(x);
-        setIsApi(false);
-      })
+  const [listLoad, setlistLoad] = useState(false);
+  const [tableisActive, settableisActive] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
-      api.registerType().then((x)=>{
-        setRtList(x);
-        setIsApi(false);
-      })
-
-      api.scholarshipStatus().then((x)=>{
-        setSssList(x);
-        setIsApi(false);
-      })
-      api.year().then((x)=>{
-        setYear(x);
-        setIsApi(false);
-      })
-    }
-  }
-  );
 
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
@@ -52,7 +35,7 @@ const NumberOfStudentScholarships: React.FC = () => {
     /// burası seçildiğinde bölüm bilgisi doldurulacak
     const datam = api.department({f:selected.value}).then((x)=>{
       setDList(x);
-    })
+    }).catch(err => catchFunc(err))
   };
 
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
@@ -61,7 +44,7 @@ const NumberOfStudentScholarships: React.FC = () => {
     formDoldur("d",selected.value);
     const datam = api.option({f:formData.f,d:selected.value}).then((x)=>{
       setOList(x);
-    })
+    }).catch(err => catchFunc(err))
   };
 
   const [selectedOption, setSelectedOption] = React.useState(null);
@@ -114,12 +97,6 @@ const NumberOfStudentScholarships: React.FC = () => {
     );
   };
 
-
- 
-
-
-
-
   const columns: TableColumn<typeof numberofstudentscholarshiplist[0]>[] = [
     { name: 'Öğrenci No', selector: (row) => row.id, sortable: true },
     { name: 'Adı Soyadı', selector: (row) => row.ad_soyad, sortable: true },
@@ -134,9 +111,7 @@ const NumberOfStudentScholarships: React.FC = () => {
     { name: 'Burs/İndirim Tipi', selector: (row) => row.burs_tipi, sortable: true },
     { name: 'Burs/İndirim Durumu', selector: (row) => row.burs_durumu, sortable: true },
   ];
-
-
-  
+ 
   const [numberofstudentscholarshiplist, setNumberofstudentscholarshiplist] = useState<Array<StudentScholarshipNumbers>>([]);
 
   const [formData, setFormData] = useState<StudentScholarshipNumbersRequest>(
@@ -162,15 +137,13 @@ const NumberOfStudentScholarships: React.FC = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-      axios.post<StudentScholarshipNumbersResponse>('http://api-oasis.localhost/maliisler/maliisler/student-scholarship-numbers',formData).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setNumberofstudentscholarshiplist(res.data.data);
-                setFilteredData(res.data.data);
-              }
-          }).catch(err=>{
-          })  
+    settableisActive(true);
+    setlistLoad(true);
+    api.studentScholarshipNumbers(formData).then((x) => {
+      setlistLoad(false);
+      setNumberofstudentscholarshiplist(x);
+      setFilteredData(x);
+    }).catch(err => catchFunc(err))
   };
 
   const [filteredData, setFilteredData] = useState(numberofstudentscholarshiplist);
@@ -223,7 +196,41 @@ const NumberOfStudentScholarships: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
+  useEffect(() => {
+    if(isApi)
+    {
+      api.faculty().then((x)=>{
+        setFList(x);
+        setIsApi(false);
+      })
 
+      api.registerType().then((x)=>{
+        setRtList(x);
+        setIsApi(false);
+      })
+
+      api.scholarshipStatus().then((x)=>{
+        setSssList(x);
+        setIsApi(false);
+      })
+      api.year().then((x)=>{
+        setYear(x);
+        setIsApi(false);
+      })
+    }
+  }
+  );
   return (
     <>
 
@@ -435,7 +442,8 @@ const NumberOfStudentScholarships: React.FC = () => {
         </form>
       </div>
 
-      <div className='card mb-5 mb-xl-10'>
+      {tableisActive?<div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Öğrenci Burs Listesi</h4>
         </div>
@@ -458,14 +466,20 @@ const NumberOfStudentScholarships: React.FC = () => {
             keyField="ogrno"
           />
         </div>
-      </div>
+      </div>:''}
     </>
   )
 }
 
+
+function NumberOfStudentScholarships() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <NumberOfStudentScholarshipsSnack />
+    </SnackbarProvider>
+  );
+}
 export default NumberOfStudentScholarships
-
-
 
 
 

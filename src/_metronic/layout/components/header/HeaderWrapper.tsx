@@ -74,6 +74,7 @@ export function HeaderWrapper() {
           id='kt_app_header_wrapper'
           className='d-flex align-items-stretch justify-content-between flex-lg-grow-1'
         >
+          <h4 style={{lineHeight: "67px",float: "left",width:"100%"}}>{localStorage.getItem('menuBaslik')}</h4>
           {config.app.header.default?.content === 'menu' &&
             config.app.header.default.menu?.display && (
               <div

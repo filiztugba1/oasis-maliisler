@@ -15,6 +15,7 @@ const Navbar = () => {
   const user = userItem ? JSON.parse(userItem) : null;
   return (
     <div className='app-navbar flex-shrink-0'>
+      
       <div className={clsx('app-navbar-item align-items-stretch', itemClass)}>
        <Search /> 
       </div>

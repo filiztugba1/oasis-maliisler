@@ -10,8 +10,10 @@ import { writeXLSX, readFile, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
-
-const StudentListt: React.FC = () => {
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
+const StudentListtSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
@@ -20,35 +22,9 @@ const StudentListt: React.FC = () => {
   const [rtList, setRtList] = useState<Array<FacultyList>>([]);
   const [sssList, setSssList] = useState<Array<FacultyList>>([]);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
-  useEffect(() => {
-    if(isApi)
-    {
-      api.faculty().then((x)=>{
-        setFList(x);
-        setIsApi(false);
-      })
-
-      api.stuStatus().then((x)=>{
-        setSsList(x);
-        setIsApi(false);
-      })
-
-      api.registerType().then((x)=>{
-        setRtList(x);
-        setIsApi(false);
-      })
-
-      api.scholarshipStatus().then((x)=>{
-        setSssList(x);
-        setIsApi(false);
-      })
-      api.year().then((x)=>{
-        setYear(x);
-        setIsApi(false);
-      })
-    }
-  }
-  );
+  const [listLoad, setlistLoad] = useState(false);
+  const [tableisActive, settableisActive] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
@@ -57,7 +33,7 @@ const StudentListt: React.FC = () => {
     /// burası seçildiğinde bölüm bilgisi doldurulacak
     const datam = api.department({f:selected.value}).then((x)=>{
       setDList(x);
-    })
+    }).catch(err => catchFunc(err))
   };
 
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
@@ -127,12 +103,6 @@ const StudentListt: React.FC = () => {
     );
   };
 
-
- 
-
-
-
-
   const columns: TableColumn<typeof definitiverecordlist[0]>[] = [
     { name: 'Öğrenci No', selector: (row) => row.id, sortable: true , cell: row => <div className="cell" style={{}}>{row.id}</div>},
     { name: 'Adı Soyadı', selector: (row) => row.name+' '+row.surname, sortable: true, cell: row => <div className="cell">{ row.name+' '+row.surname}</div> },
@@ -179,8 +149,6 @@ const StudentListt: React.FC = () => {
     { name: 'Baba Meslek', selector: (row) => row.fathersJob, sortable: true , cell: row => <div className="cell">{row.fathersJob}</div>},
   ];
 
-
-  
   const [definitiverecordlist, setDefinitiverecordlist] = useState<Array<StudentList>>([]);
 
   const [formData, setFormData] = useState<StudentListRequest>(
@@ -212,15 +180,13 @@ const StudentListt: React.FC = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-      axios.post<StudentListResponse>('http://api-oasis.localhost/maliisler/maliisler/student-list',formData).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setDefinitiverecordlist(res.data.data);
-                setFilteredData(res.data.data);
-              }
-          }).catch(err=>{
-          })  
+    settableisActive(true);
+    setlistLoad(true);
+    api.studentList(formData).then((x) => {
+      setlistLoad(false);
+      setDefinitiverecordlist(x);
+      setFilteredData(x);
+    }).catch(err => catchFunc(err))
   };
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
@@ -297,6 +263,48 @@ const StudentListt: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
+
+ 
+  useEffect(() => {
+    if(isApi)
+    {
+      api.faculty().then((x)=>{
+        setFList(x);
+        setIsApi(false);
+      }).catch(err => catchFunc(err))
+
+      api.stuStatus().then((x)=>{
+        setSsList(x);
+        setIsApi(false);
+      }).catch(err => catchFunc(err))
+
+      api.registerType().then((x)=>{
+        setRtList(x);
+        setIsApi(false);
+      }).catch(err => catchFunc(err))
+
+      api.scholarshipStatus().then((x)=>{
+        setSssList(x);
+        setIsApi(false);
+      }).catch(err => catchFunc(err))
+      api.year().then((x)=>{
+        setYear(x);
+        setIsApi(false);
+      }).catch(err => catchFunc(err))
+    }
+  }
+  );
 
   return (
     <>
@@ -605,7 +613,8 @@ const StudentListt: React.FC = () => {
         </form>
       </div>
 
-      <div className='card mb-5 mb-xl-10'>
+      {tableisActive?<div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Öğrenci Listesi</h4>
         </div>
@@ -629,13 +638,19 @@ const StudentListt: React.FC = () => {
             className="dataTableHeader"
           />
         </div>
-      </div>
+      </div>:''}
     </>
   )
 }
 
+function StudentListt() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <StudentListtSnack />
+    </SnackbarProvider>
+  );
+}
 export default StudentListt
-
 
 
 

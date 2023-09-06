@@ -35,10 +35,10 @@ const PrivateRoutes = () => {
     <Routes>
       <Route element={<MasterLayout />}>
         {/* Redirect to Dashboard after success login/registartion */}
-        <Route path='auth/*' element={<Navigate to='/dashboard' />} />
+        <Route path='auth/*' element={<Navigate to='/home' />} />
         {/* Pages */}
         <Route path='home' element={<HomePage />} />
-        <Route path='dashboard' element={<DashboardWrapper />} />
+         <Route path='dashboard' element={<DashboardWrapper />} /> 
         <Route path='builder' element={<BuilderPageWrapper />} />
         <Route path='student-info' element={<StudentDetailPage />} />
         <Route path='student-payments' element={<StudentPayments />} />

@@ -9,9 +9,12 @@ import { saveAs } from 'file-saver';
 import { writeXLSX, readFile, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const FeePaymentsList: React.FC = () => {
+const FeePaymentsListSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
@@ -20,27 +23,30 @@ const FeePaymentsList: React.FC = () => {
   const [banks, setBanks] = useState<Array<FacultyList>>([]);
   const [feetypes, setFeetypes] = useState<Array<FacultyList>>([]);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
+  const [listLoad, setlistLoad] = useState(false);
+  const [tableisActive, settableisActive] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if(isApi)
     {
       api.faculty().then((x)=>{
         setFList(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
 
       api.banks().then((x)=>{
         setBanks(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
 
       api.feeTypes().then((x)=>{
         setFeetypes(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
       api.year().then((x)=>{
         setYear(x);
         setIsApi(false);
-      })
+      }).catch(err => catchFunc(err))
     }
   }
   );
@@ -148,15 +154,13 @@ const FeePaymentsList: React.FC = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-      axios.post<FeePaymentListResponse>('http://api-oasis.localhost/maliisler/maliisler/all-payments-list',formData).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setNumberofstudentscholarshiplist(res.data.data);
-                setFilteredData(res.data.data);
-              }
-          }).catch(err=>{
-          })  
+    settableisActive(true);
+    setlistLoad(true);
+    api.allPaymentsList(formData).then((x) => {
+      setlistLoad(false);
+      setNumberofstudentscholarshiplist(x);
+      setFilteredData(x);
+    }).catch(err => catchFunc(err))
   };
 
   const [filteredData, setFilteredData] = useState(numberofstudentscholarshiplist);
@@ -208,7 +212,17 @@ const FeePaymentsList: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
   return (
     <>
 
@@ -377,7 +391,8 @@ const FeePaymentsList: React.FC = () => {
         </form>
       </div>
 
-      <div className='card mb-5 mb-xl-10'>
+      {tableisActive?<div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Öğrenci Ödeme Listesi</h4>
         </div>
@@ -400,11 +415,18 @@ const FeePaymentsList: React.FC = () => {
             keyField="ogrno"
           />
         </div>
-      </div>
+      </div>:''}
     </>
   )
 }
 
+function FeePaymentsList() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <FeePaymentsListSnack />
+    </SnackbarProvider>
+  );
+}
 export default FeePaymentsList
 
 

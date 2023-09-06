@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import './home.css';
+import '../style.css';
 import axios from 'axios';
 import { DeptVsPaidList, DeptVsPaidResponse, Report, ReportResponse, TotalScholarshipGrafic, TotalScholarshipList, TotalScholarshipListResponse } from './models/home.model';
 import { MixedWidget11 } from '../../../_metronic/partials/widgets';
 import ScolarshipTotalList from './ScolarshipTotalList';
 import DeptVsPaint from './DeptVsPaid';
 import api from '../../services/services';
-const accountBreadCrumbs: Array<PageLink> = [
-  {
-    title: 'Account',
-    path: '/crafted/account/overview',
-    isSeparator: false,
-    isActive: false,
-  },
-  {
-    title: '',
-    path: '',
-    isSeparator: true,
-    isActive: false,
-  },
-]
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
 
-const HomePage: React.FC = () => {
+const HomePageSnack: React.FC = () => {
   const [rapor, setRapor] = useState<Report>(
     {
       yeni_ogr_osym_guz: '',
-      yeni_ogr_osym_bahar:'',
+      yeni_ogr_osym_bahar: '',
       yeni_ogr_osym_toplam: '',
       devam_eden_ogr_guz: '',
       devam_eden_ogr_bahar: '',
@@ -34,7 +23,7 @@ const HomePage: React.FC = () => {
       yuksek_lisans_guz: '',
       yuksek_lisans_bahar: '',
       yuksek_lisans_toplam: '',
-      dgs_guz:'',
+      dgs_guz: '',
       dgs_bahar: '',
       dgs_toplam: '',
       yatay_gecis_guz: '',
@@ -45,253 +34,262 @@ const HomePage: React.FC = () => {
       yabanci_uyruk_toplam: '',
       guz_toplam: '',
       bahar_toplam: '',
-      genel_toplam:'',
+      genel_toplam: '',
     }
   );
-
- 
-
   const [totalscholarshipgrafic, setTotalscholarshipgrafic] = useState<Array<TotalScholarshipGrafic>>([]);
   const [deptVsPaid, setDeptVsPaid] = useState<Array<TotalScholarshipGrafic>>([]);
-
   const [isApi, setIsApi] = useState(true);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  const [guzGLoad, setguzGLoad] = useState(false);
+  const [baharGLoad, setbaharGLoad] = useState(false);
+  const [guzbaharGLoad, setguzbaharGLoad] = useState(false);
+  const [bursLoad, setbursLoad] = useState(false);
+  const [alinacakLoad, setalinacakLoad] = useState(false);
+
   useEffect(() => {
-    if(isApi)
-    {
-      axios.post<ReportResponse>('http://api-oasis.localhost/maliisler/maliisler/fall-spring-payment-raports',{
-          }).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                  setRapor(res.data.data);
-                  setIsApi(false);
-              }
-            console.log();
-          }).catch(err=>{
-            setIsApi(false);
-          })
-        
-      axios.post<TotalScholarshipListResponse>('http://api-oasis.localhost/maliisler/maliisler/total-scholarship-list').then((res)=>{
-                  // setLoading(false);
-                  if(res.status===200)
-                  {
-                    let categories:Array<TotalScholarshipGrafic>=[];
-                    res.data.data.forEach(scolar => {
-                      categories.push({
-                        label:scolar.name,
-                        y:+scolar.total
-                      })
-                    });
+    setguzGLoad(true);
+    setbaharGLoad(true);
+    setguzbaharGLoad(true);
+    api.fallSpringPaymentRaports().then((x) => {
+      setRapor(x);
+      setguzGLoad(false);
+      setbaharGLoad(false);
+      setguzbaharGLoad(false);
+    }).catch(err => catchFunc(err))
 
-                    setTotalscholarshipgrafic(categories);
-                    setIsApi(false);
-                  }
-                console.log();
-              }).catch(err=>{
-                setIsApi(false);
-              })
+    setbursLoad(true);
+    api.totalScholarshipList().then((x) => {
+      let categories: Array<TotalScholarshipGrafic> = [];
+      x.forEach(scolar => {
+        categories.push({
+          label: scolar.name,
+          y: +scolar.total
+        })
+      });
+      setbursLoad(false);
+      setTotalscholarshipgrafic(categories);
+      setIsApi(false);
+    }).catch(err => catchFunc(err))
 
-    axios.post<DeptVsPaidResponse>('http://api-oasis.localhost/maliisler/maliisler/debt-vs-paid').then((res)=>{
-                // setLoading(false);
-                if(res.status===200)
-                {
-                  let categories:Array<TotalScholarshipGrafic>=[];
-                   
-                  api.paymetFormat(res.data.data[0].aliacak)
-                    categories.push({
-                      label:'Alınacak',
-                      y:+res.data.data[0].aliacak
-                    })
-                    categories.push({
-                      label:'Alınacak USD',
-                      y:+res.data.data[0].alinacak_usd
-                    })
+    setalinacakLoad(true);
+    api.debtVsPaid().then((x: any) => {
+      let categories: Array<TotalScholarshipGrafic> = [];
 
-                    categories.push({
-                      label:'Ödenen',
-                      y:+res.data.data[0].odenen
-                    })
-                    categories.push({
-                      label:'Ödenen USD',
-                      y:+res.data.data[0].odenen_usd
-                    })
-                    console.log(categories);
-                    setDeptVsPaid(categories);
-                    setIsApi(false);
-                }
-              console.log();
-            }).catch(err=>{
-              setIsApi(false);
-            })
+      api.paymetFormat(x[0].aliacak)
+      categories.push({
+        label: 'Alınacak',
+        y: +x[0].aliacak
+      })
+      categories.push({
+        label: 'Alınacak USD',
+        y: +x[0].alinacak_usd
+      })
 
+      categories.push({
+        label: 'Ödenen',
+        y: +x[0].odenen
+      })
+      categories.push({
+        label: 'Ödenen USD',
+        y: +x[0].odenen_usd
+      })
+      console.log(categories);
+      setalinacakLoad(false);
+      setDeptVsPaid(categories);
+      setIsApi(false);
+    }).catch(err => catchFunc(err))
+  }, []);
 
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
     }
+    setIsApi(false);
   }
-  );
   return (
+    
     <>
+   
       <div className='row'>
+        <div className='col-md-3'>
+          <div className='col-md-12'>
         
-      
-           <div className='col-md-3'>
-           <div className='col-md-12'>
-          <div className="card mb-5 mb-xl-10">
-            <div className="card-header pt-9 pb-0">
-              <h4 style={{ textAlign: "center", width: '100%' }}>Güz Gerçekleşme</h4>
-            </div>
-            <div className="card-body pt-9 pb-0">
-              <table className="table table-bordered table-condensed  table-sm table-hover " style={{ border: "1px solid #f1f1f1 !important" }}>
+            <div className="card mb-5 mb-xl-10">
+              {guzGLoad?<Loading/>:''}
+              <div className="card-header pt-9 pb-0">
+                <h4 style={{ textAlign: "center", width: '100%' }}>Güz Gerçekleşme</h4>
+              </div>
+              <div className="card-body pt-9 pb-0">
+                <table className="table table-bordered table-condensed  table-sm table-hover " style={{ border: "1px solid #f1f1f1 !important" }}>
 
-                <tbody>
-                  <tr key={1}>
-                    <td >Yeni Öğrenci ÖSYM</td>
-                    <td >{rapor.yeni_ogr_osym_guz}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Devam Eden Öğrenci </td>
-                    <td >{rapor.devam_eden_ogr_guz}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yüksek Lisans</td>
-                    <td >{rapor.yuksek_lisans_guz}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni DGS</td>
-                    <td >{rapor.dgs_guz}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni Yatay Geçiş</td>
-                    <td >{rapor.yatay_gecis_guz}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni Yabancı Uyruklu Öğrenci</td>
-                    <td >{rapor.yabanci_uyruk_guz}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >TOPLAM</td>
-                    <td >{rapor.guz_toplam}</td>
-                  </tr>
-                </tbody>
-              </table>
+                  <tbody>
+                    <tr key={1}>
+                      <td >Yeni Öğrenci ÖSYM</td>
+                      <td >{rapor.yeni_ogr_osym_guz}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Devam Eden Öğrenci </td>
+                      <td >{rapor.devam_eden_ogr_guz}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yüksek Lisans</td>
+                      <td >{rapor.yuksek_lisans_guz}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni DGS</td>
+                      <td >{rapor.dgs_guz}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni Yatay Geçiş</td>
+                      <td >{rapor.yatay_gecis_guz}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni Yabancı Uyruklu Öğrenci</td>
+                      <td >{rapor.yabanci_uyruk_guz}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >TOPLAM</td>
+                      <td >{rapor.guz_toplam}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <div className='col-md-12'>
+            <div className="card mb-5 mb-xl-10">
+            {baharGLoad?<Loading/>:''}
+              <div className="card-header pt-9 pb-0">
+                <h4 style={{ textAlign: "center", width: '100%' }}>Bahar Gerçekleşme</h4>
+              </div>
+              <div className="card-body pt-9 pb-0">
+                <table className="table table-bordered table-condensed  table-sm table-hover " style={{ border: "1px solid #f1f1f1 !important" }}>
+
+                  <tbody>
+                    <tr key={1}>
+                      <td >Yeni Öğrenci ÖSYM</td>
+                      <td >{rapor.yeni_ogr_osym_bahar}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Devam Eden Öğrenci </td>
+                      <td >{rapor.devam_eden_ogr_bahar}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yüksek Lisans</td>
+                      <td >{rapor.yuksek_lisans_bahar}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni DGS</td>
+                      <td >{rapor.dgs_bahar}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni Yatay Geçiş</td>
+                      <td >{rapor.yatay_gecis_bahar}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni Yabancı Uyruklu Öğrenci</td>
+                      <td >{rapor.yabanci_uyruk_bahar}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >TOPLAM</td>
+                      <td >{rapor.bahar_toplam}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <div className='col-md-12'>
+            <div className="card mb-5 mb-xl-10">
+            {guzbaharGLoad?<Loading/>:''}
+              <div className="card-header pt-9 pb-0">
+                <h4 style={{ textAlign: "center", width: '100%' }}>Güz-Bahar Gerçekleşme</h4>
+              </div>
+              <div className="card-body pt-9 pb-0">
+                <table className="table table-bordered table-condensed  table-sm table-hover " style={{ border: "1px solid #f1f1f1 !important" }}>
+
+                  <tbody>
+                    <tr key={1}>
+                      <td >Yeni Öğrenci ÖSYM</td>
+                      <td >{rapor.yeni_ogr_osym_toplam}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Devam Eden Öğrenci </td>
+                      <td >{rapor.devam_eden_ogr_toplam}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yüksek Lisans</td>
+                      <td >{rapor.yuksek_lisans_toplam}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni DGS</td>
+                      <td >{rapor.dgs_toplam}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni Yatay Geçiş</td>
+                      <td >{rapor.yatay_gecis_toplam}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >Yeni Yabancı Uyruklu Öğrenci</td>
+                      <td >{rapor.yabanci_uyruk_toplam}</td>
+                    </tr>
+                    <tr key={1}>
+                      <td >TOPLAM</td>
+                      <td >{rapor.genel_toplam}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div className='col-md-9'>
+          <div className="card mb-5 mb-xl-10">
+            <div className="card-body pt-9 pb-0">
+            {bursLoad?<Loading/>:''}
+              <ScolarshipTotalList className='card-xl-stretch mb-xl-8'
+                chartColor='info'
+                chartHeight='200px'
+                scolarshipTotall={totalscholarshipgrafic} />
             </div>
           </div>
-          
+
         </div>
+
         <div className='col-md-12'>
           <div className="card mb-5 mb-xl-10">
-            <div className="card-header pt-9 pb-0">
-              <h4 style={{ textAlign: "center", width: '100%' }}>Bahar Gerçekleşme</h4>
-            </div>
             <div className="card-body pt-9 pb-0">
-              <table className="table table-bordered table-condensed  table-sm table-hover " style={{ border: "1px solid #f1f1f1 !important" }}>
-
-              <tbody>
-                  <tr key={1}>
-                    <td >Yeni Öğrenci ÖSYM</td>
-                    <td >{rapor.yeni_ogr_osym_bahar}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Devam Eden Öğrenci </td>
-                    <td >{rapor.devam_eden_ogr_bahar}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yüksek Lisans</td>
-                    <td >{rapor.yuksek_lisans_bahar}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni DGS</td>
-                    <td >{rapor.dgs_bahar}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni Yatay Geçiş</td>
-                    <td >{rapor.yatay_gecis_bahar}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni Yabancı Uyruklu Öğrenci</td>
-                    <td >{rapor.yabanci_uyruk_bahar}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >TOPLAM</td>
-                    <td >{rapor.bahar_toplam}</td>
-                  </tr>
-                </tbody>
-              </table>
+            {alinacakLoad?<Loading/>:''}
+              <DeptVsPaint className='card-xl-stretch mb-xl-8'
+                chartColor='info'
+                chartHeight='200px'
+                deptVsPaidx={deptVsPaid} />
             </div>
           </div>
-          
-        </div>
-        <div className='col-md-12'>
-          <div className="card mb-5 mb-xl-10">
-            <div className="card-header pt-9 pb-0">
-              <h4 style={{ textAlign: "center", width: '100%' }}>Güz-Bahar Gerçekleşme</h4>
-            </div>
-            <div className="card-body pt-9 pb-0">
-              <table className="table table-bordered table-condensed  table-sm table-hover " style={{ border: "1px solid #f1f1f1 !important" }}>
 
-              <tbody>
-                  <tr key={1}>
-                    <td >Yeni Öğrenci ÖSYM</td>
-                    <td >{rapor.yeni_ogr_osym_toplam}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Devam Eden Öğrenci </td>
-                    <td >{rapor.devam_eden_ogr_toplam}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yüksek Lisans</td>
-                    <td >{rapor.yuksek_lisans_toplam}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni DGS</td>
-                    <td >{rapor.dgs_toplam}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni Yatay Geçiş</td>
-                    <td >{rapor.yatay_gecis_toplam}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >Yeni Yabancı Uyruklu Öğrenci</td>
-                    <td >{rapor.yabanci_uyruk_toplam}</td>
-                  </tr>
-                  <tr key={1}>
-                    <td >TOPLAM</td>
-                    <td >{rapor.genel_toplam}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
         </div>
-           </div>
-           <div className='col-md-9'>
-          <div className="card mb-5 mb-xl-10">
-		  <div className="card-body pt-9 pb-0">
-      <ScolarshipTotalList className='card-xl-stretch mb-xl-8'
-            chartColor='info'
-            chartHeight='200px'
-            scolarshipTotall={totalscholarshipgrafic}/>
-            </div>
-            </div>
-            
+
       </div>
 
-      <div className='col-md-12'>
-          <div className="card mb-5 mb-xl-10">
-		  <div className="card-body pt-9 pb-0">
-      <DeptVsPaint className='card-xl-stretch mb-xl-8'
-            chartColor='info'
-            chartHeight='200px'
-            deptVsPaidx={deptVsPaid}/>
-            </div>
-            </div>
-            
-      </div>
-
-            </div>
-      
     </>
   )
 }
-
+function HomePage() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <HomePageSnack />
+    </SnackbarProvider>
+  );
+}
 export default HomePage

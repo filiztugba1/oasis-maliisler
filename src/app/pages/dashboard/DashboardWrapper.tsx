@@ -17,6 +17,7 @@ import {
   ListsWidget26,
   EngageWidget10,
 } from '../../../_metronic/partials/widgets'
+import HomePage from '../home/HomePage'
 
 const DashboardPage: FC = () => (
   <>
@@ -91,7 +92,7 @@ const DashboardWrapper: FC = () => {
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</PageTitle>
-      <DashboardPage />
+      <HomePage />
     </>
   )
 }

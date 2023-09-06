@@ -11,6 +11,7 @@ type Props = {
   icon?: string
   fontIcon?: string
   hasBullet?: boolean
+  menuTitle?:string
 }
 
 const SidebarMenuItem: FC<Props & WithChildren> = ({
@@ -20,15 +21,19 @@ const SidebarMenuItem: FC<Props & WithChildren> = ({
   icon,
   fontIcon,
   hasBullet = false,
+  menuTitle
 }) => {
   const {pathname} = useLocation()
   const isActive = checkIsActive(pathname, to)
   const {config} = useLayout()
   const {app} = config
 
+  const menuBaslik=(menuTitle:string)=>{
+    localStorage.setItem('menuBaslik',menuTitle);
+  }
   return (
     <div className='menu-item'>
-      <Link className={clsx('menu-link without-sub', {active: isActive})} to={to}>
+      <Link className={clsx('menu-link without-sub', {active: isActive})} to={to} onClick={()=>menuBaslik(menuTitle?menuTitle:'')}>
         {hasBullet && (
           <span className='menu-bullet'>
             <span className='bullet bullet-dot'></span>

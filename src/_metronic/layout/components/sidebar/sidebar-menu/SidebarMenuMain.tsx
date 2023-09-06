@@ -35,9 +35,9 @@ const SidebarMenuMain = () => {
         icon='/media/icons/duotune/art/art002.svg'
         fontIcon='bi-person'
       >
-        <SidebarMenuItem to='/definitive-records' title='Kesin Kayıtlar' hasBullet={true} />
-        <SidebarMenuItem to='/student-list' title='Öğrenci Listesi' hasBullet={true} />
-        <SidebarMenuItem to='/number-of-student-scholarships' title='Öğrenci Burs Sayıları' hasBullet={true} />
+        <SidebarMenuItem to='/definitive-records' title='Kesin Kayıtlar' menuTitle='İstatistikler / Kesin Kayıtlar' hasBullet={true} />
+        <SidebarMenuItem to='/student-list' title='Öğrenci Listesi' menuTitle='İstatistikler / Öğrenci Listesi' hasBullet={true} />
+        <SidebarMenuItem to='/number-of-student-scholarships' title='Öğrenci Burs Sayıları' menuTitle='İstatistikler / Öğrenci Burs Sayıları' hasBullet={true} />
       </SidebarMenuItemWithSub>
 
       <SidebarMenuItemWithSub
@@ -46,7 +46,7 @@ const SidebarMenuMain = () => {
         icon='/media/icons/duotune/general/gen005.svg'
         fontIcon='bi-person'
       >
-        <SidebarMenuItem to='/summer-fee-refund-requests' title='Yaz Okulu Ücreti İade Talepleri' hasBullet={true} />
+        <SidebarMenuItem to='/summer-fee-refund-requests' title='Yaz Okulu Ücreti İade Talepleri' menuTitle='Kontrol Listeleri / Yaz Okulu Ücreti İade Talepleri' hasBullet={true} />
         </SidebarMenuItemWithSub>
 
  
@@ -57,11 +57,11 @@ const SidebarMenuMain = () => {
           icon='/media/icons/duotune/general/gen051.svg'
           fontIcon='bi-person'
         >
-          <SidebarMenuItem to='/fee-payments-list' title='Tüm Ödemeler Listesi' hasBullet={true} />
-          <SidebarMenuItem to='/all-payables-list' title='Tüm Borçlar Listesi' hasBullet={true} />
-          <SidebarMenuItem to='/debt-check-list' title='Borç Kontrol Listesi' hasBullet={true} />
-          <SidebarMenuItem to='/installment' title='Taksit' hasBullet={true} />
-        <SidebarMenuItem to={`param-fees`} title='Yeni öğrencilere ait parametre tablosu' hasBullet={true} />
+          <SidebarMenuItem to='/fee-payments-list' title='Tüm Ödemeler Listesi' menuTitle='Finansal İşlemler / Tüm Ödemeler Listesi' hasBullet={true} />
+          <SidebarMenuItem to='/all-payables-list' title='Tüm Borçlar Listesi' menuTitle='Finansal İşlemler / Tüm Borçlar Listesi' hasBullet={true} />
+          <SidebarMenuItem to='/debt-check-list' title='Borç Kontrol Listesi' menuTitle='Finansal İşlemler / Borç Kontrol Listesi' hasBullet={true} />
+          <SidebarMenuItem to='/installment' title='Taksit' menuTitle='Finansal İşlemler / Taksit' hasBullet={true} />
+        <SidebarMenuItem to={`param-fees`} title='Yeni öğrencilere ait parametre tablosu' menuTitle='Finansal İşlemler / Yeni öğrencilere ait parametre tablosu' hasBullet={true} />
        </SidebarMenuItemWithSub>
 
 
@@ -74,11 +74,11 @@ const SidebarMenuMain = () => {
           </div>
         </div>
         
-        <SidebarMenuItem  to={`student-info`} title='Öğrenci Detay Bilgileri' hasBullet={true} />
-        <SidebarMenuItem  to={`student-transkript`} title='Transkript' hasBullet={true} />
-        <SidebarMenuItem  to={`student-payments`} title='Ödeme Bilgileri' hasBullet={true} />
-        <SidebarMenuItem  to={`student-history`} title='Öğrencinin Tarihçe Listeleri' hasBullet={true} />
-        <SidebarMenuItem to={`relation-mali`} title='Mali İşler İlişik Bilgileri' hasBullet={true} />
+        <SidebarMenuItem  to={`student-info`} title='Öğrenci Detay Bilgileri' menuTitle={`${localStorage.getItem('search-name')} ${localStorage.getItem('search-surname')} / Öğrenci Detay Bilgileri`} hasBullet={true} />
+        <SidebarMenuItem  to={`student-transkript`} title='Transkript' menuTitle={`${localStorage.getItem('search-name')} ${localStorage.getItem('search-surname')} / Transkript`} hasBullet={true} />
+        <SidebarMenuItem  to={`student-payments`} title='Ödeme Bilgileri' menuTitle={`${localStorage.getItem('search-name')} ${localStorage.getItem('search-surname')} / Ödeme Bilgileri`} hasBullet={true} />
+        <SidebarMenuItem  to={`student-history`} title='Öğrencinin Tarihçe Listeleri' menuTitle={`${localStorage.getItem('search-name')} ${localStorage.getItem('search-surname')} / Öğrencinin Tarihçe Listeleri`} hasBullet={true} />
+        <SidebarMenuItem to={`relation-mali`} title='Mali İşler İlişik Bilgileri' menuTitle={`${localStorage.getItem('search-name')} ${localStorage.getItem('search-surname')} / Mali İşler İlişik Bilgileri`} hasBullet={true} />
        
    </>
         :''

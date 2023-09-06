@@ -8,30 +8,25 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
 import { writeXLSX, readFile, utils } from 'xlsx';
 import api from '../../services/services';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const SummerFeeRefundRequestList: React.FC = () => {
+const SummerFeeRefundRequestListSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
-
+  const [listLoad, setlistLoad] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    if(isApi)
-    {
-      axios.post<SummerFeeRefundRequestsResponse>('http://api-oasis.localhost/maliisler/maliisler/summer-school-fee-refund-requests').then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setSummerFeeRefundRequests(res.data.data);
-                setFilteredData(res.data.data);
-                setIsApi(false);
-              }
-          }).catch(err=>{
-          })  
-    }
-  }
+    setlistLoad(true);
+    api.summerSchoolFeeRefundRequests().then((x) => {
+      setlistLoad(false);
+      setSummerFeeRefundRequests(x);
+      setFilteredData(x);
+    }).catch(err => catchFunc(err))
+  },[]
   );
-
-
 
   const columns: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
     { name: 'Öğrenci No', selector: (row) => row.id, sortable: true },
@@ -51,8 +46,6 @@ const SummerFeeRefundRequestList: React.FC = () => {
    
   ];
 
-
-  
   const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<SummerFeeRefundRequests>>([]);
 
 
@@ -108,11 +101,22 @@ const SummerFeeRefundRequestList: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
   return (
     <>
 
       <div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Yaz Okulu Ücreti İade Talepleri</h4>
         </div>
@@ -140,8 +144,14 @@ const SummerFeeRefundRequestList: React.FC = () => {
   )
 }
 
+function SummerFeeRefundRequestList() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <SummerFeeRefundRequestListSnack />
+    </SnackbarProvider>
+  );
+}
 export default SummerFeeRefundRequestList
-
 
 
 
