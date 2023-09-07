@@ -17,6 +17,7 @@ import Select from 'react-select';
 import { Switch } from '@mui/material';
 import { Snackbar } from '@mui/material';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import Loading from '../Loading';
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -36,6 +37,9 @@ const accountBreadCrumbs: Array<PageLink> = [
 
 
 const StudentPaymentsSnack: React.FC = () => {
+  const [listLoad, setlistLoad] = useState(false);
+  const [listPyLoad, setlistPyLoad] = useState(false);
+  const [listModalLoad, setlistModalLoad] = useState(false);
   const [studentInfo, setStudentInfo] = useState<StudentDetailModel>(
     {
       id: "",
@@ -59,7 +63,8 @@ const StudentPaymentsSnack: React.FC = () => {
       burs_tipi: "",
       alinan_ders: 0,
       image: "",
-      page: ""
+      page: "",
+      listLoad: false
     }
   );
 
@@ -75,124 +80,77 @@ const StudentPaymentsSnack: React.FC = () => {
   const [isApi, setIsApi] = useState(true);
   useEffect(() => {
     if (isApi) {
-
-      axios.post<StudentDetailResponseData>('http://api-oasis.localhost/maliisler/maliisler/active-student-detail', {
+      let formdata = {
         stu_id: localStorage.getItem('search-student-id')
-      }).then((res) => {
-        // setLoading(false);
-        if (res.status === 200) {
-          setStudentInfo(res.data.data);
-          setIsApi(false);
-        }
-        console.log();
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }) 
+      };
+      setlistLoad(true);
+      api.activeStudentDetail(formdata).then((x) => {
+        setlistLoad(false);
+        setStudentInfo(x);
+      }).catch(err => catchFunc(err))
+      setlistPyLoad(true);
+      api.studentFees(formdata).then((x) => {
+        setlistPyLoad(false);
+        setPaymentListOdemeBilgileri(x);
+        setfilteredDataOdemeBilgileri(x);
+      }).catch(err => catchFunc(err))
 
-      axios.post<PaymentsResponse>('http://api-oasis.localhost/maliisler/maliisler/student-fees', {
-        stu_id: localStorage.getItem('search-student-id')
-      }).then((res) => {
-        // setLoading(false);
-        if (res.status === 200) {
-          setPaymentListOdemeBilgileri(res.data.data);
-          setfilteredDataOdemeBilgileri(res.data.data);
-
-          setIsApi(false);
-        }
-        console.log();
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }) 
-
-      axios.post<CollectionsResponse>('http://api-oasis.localhost/maliisler/maliisler/student-payments', {
-        stu_id: localStorage.getItem('search-student-id')
-      }).then((res) => {
-        // setLoading(false);
-        if (res.status === 200) {
-          setPaymentList(res.data.data);
-          setFilteredData(res.data.data);
-
-          setIsApi(false);
-        }
-        console.log();
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }) 
-
+      api.studentPayments(formdata).then((x) => {
+        setlistPyLoad(false);
+        setPaymentList(x);
+        setFilteredData(x);
+      }).catch(err => catchFunc(err))
 
       api.scholarshipStatus().then((x) => {
         setSssList(x);
         setIsApi(false);
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }) 
+      }).catch(err => catchFunc(err))
+
       api.year().then((x) => {
         setYear(x);
         setIsApi(false);
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }).catch(err=>{
-      if (err.response && err.response.data && err.response.data.message) {
-           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-      }
-      setIsApi(false);
-  })  
+      }).catch(err => catchFunc(err))
 
 
       api.feeTypes().then((x) => {
         setFeetypes(x);
         setIsApi(false);
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }) 
+      }).catch(err => catchFunc(err))
 
       api.banks().then((x) => {
         setBanks(x);
         setIsApi(false);
-      }).catch(err=>{
-        if (err.response && err.response.data && err.response.data.message) {
-             enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        }
-        setIsApi(false);
-    }) 
+      }).catch(err => catchFunc(err))
 
 
     }
 
   }
   );
-
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
   const columns: TableColumn<typeof paymentList[0]>[] = [
     { name: 'Yıl', selector: (row) => row.year, sortable: true },
     { name: 'Dönem', selector: (row) => +row.semester == 1 ? 'Güz' : (+row.semester == 2 ? 'Bahar' : 'Yaz'), sortable: true },
     { name: 'Harç Tipi', selector: (row) => row.name, sortable: true },
     { name: 'Ödenen (USD)', selector: (row) => api.paymetFormat(row.Payment_Dolar || '') || '', sortable: true },
-    { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.Payments)||'', sortable: true },
+    { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.Payments) || '', sortable: true },
     { name: 'TARİH', selector: (row) => row.payment_date, sortable: true },
     { name: 'Son Ödeme Tarihi', selector: (row) => row.last_pay_date, sortable: true },
-    { name: 'Açıklama', selector: (row) => row.Comments||'', sortable: true },
+    { name: 'Açıklama', selector: (row) => row.Comments || '', sortable: true },
     {
-      name: 'İşlem', selector: (row) =>'',cell: (row) =>  <div>
-        <span><button className='btn  btn-warning btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={()=>updatePaymentShow(row)}><i className='fa fa-pen'></i></button></span>
-        <span><button className='btn  btn-danger btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={()=>deletePaymentShow(row)}><i className='fa fa-trash'></i></button></span>
+      name: 'İşlem', selector: (row) => '', cell: (row) => <div>
+        <span><button className='btn  btn-warning btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => updatePaymentShow(row)}><i className='fa fa-pen'></i></button></span>
+        <span><button className='btn  btn-danger btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => deletePaymentShow(row)}><i className='fa fa-trash'></i></button></span>
       </div>,
       sortable: true
     },
@@ -206,7 +164,7 @@ const StudentPaymentsSnack: React.FC = () => {
       item.semester.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.last_pay_date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.Comments.toLowerCase().includes(searchTerm.toLowerCase()) 
+      item.Comments.toLowerCase().includes(searchTerm.toLowerCase())
       // ||
       // item.Comments.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -249,159 +207,159 @@ const StudentPaymentsSnack: React.FC = () => {
     { name: 'Dönem', selector: (row) => +row.semester == 1 ? 'Güz' : (+row.semester == 2 ? 'Bahar' : 'Yaz'), sortable: true },
     { name: 'Ödeme Türü', selector: (row) => row.name_tr, sortable: true },
     { name: 'Borç Miktarı (USD)', selector: (row) => api.paymetFormat(row.Amount_Dolar) || '', sortable: true },
-    { name: 'Ödenen (USD)', selector: (row) => api.paymetFormat(row.dolar_payment) ||'', sortable: true },
-    { name: 'Kalan Bakiye (USD)', selector: (row) => api.paymetFormat(row.kalan_USD) ||'', sortable: true },
-    { name: 'Borç Miktarı (TL)', selector: (row) => api.paymetFormat(row.Amount) ||'', sortable: true },
-    { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.Payments) ||'', sortable: true },
-    { name: 'Kalan Bakiye (TL)', selector: (row) => api.paymetFormat(row.kalan) ||'', sortable: true },
+    { name: 'Ödenen (USD)', selector: (row) => api.paymetFormat(row.dolar_payment) || '', sortable: true },
+    { name: 'Kalan Bakiye (USD)', selector: (row) => api.paymetFormat(row.kalan_USD) || '', sortable: true },
+    { name: 'Borç Miktarı (TL)', selector: (row) => api.paymetFormat(row.Amount) || '', sortable: true },
+    { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.Payments) || '', sortable: true },
+    { name: 'Kalan Bakiye (TL)', selector: (row) => api.paymetFormat(row.kalan) || '', sortable: true },
     { name: 'TARİH', selector: (row) => row.create_date, sortable: true },
-    { name: 'Açıklama', selector: (row) => row.Comments||'' , sortable: true },
+    { name: 'Açıklama', selector: (row) => row.Comments || '', sortable: true },
     {
-      name: 'İşlem', selector: (row) =>'' ,cell: (row) => <div>
-        <span><button className='btn  btn-warning btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={()=>updateShow(row)}><i className='fa fa-pen'></i></button></span>
-        <span><button className='btn  btn-danger btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={()=>deleteShow(row)}><i className='fa fa-trash'></i></button></span>
+      name: 'İşlem', selector: (row) => '', cell: (row) => <div>
+        <span><button className='btn  btn-warning btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => updateShow(row)}><i className='fa fa-pen'></i></button></span>
+        <span><button className='btn  btn-danger btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => deleteShow(row)}><i className='fa fa-trash'></i></button></span>
       </div>,
       sortable: true
     },
   ];
 
-  
 
-  const updateShow=(row:PaymentList)=>{
+
+  const updateShow = (row: PaymentList) => {
     setSelectedYear(yearList.find((x) => +x.value === +row.year) ?? null);
     setSelectedFeeTypes(feetypes.find((x) => +x.value === +row.fee_id) ?? null);
     setSelectedScholarship(sssList.find((x) => +x.value === +row.fee_id) ?? null);
     setFormData({
-      comment:row.Comments,
-      create_date:row.create_date,
-      debt_amount:row.Amount,
-      debt_amount_dolar:row.Amount_Dolar,
-      dept_amount_day_date:row.dept_amount_day_date,
-      fee_type_id:row.fee_id,
-      last_pay_date:row.last_pay_date,
-      money:row.money,
-      move:row.move,
-      old_dept_amount:row.old_dept_amount,
-      partial:row.partial,
-      payments:row.payments,
-      return1:row.return1,
-      return_date:row.return_date,
-      sadece_proje:row.sadece_proje,
-      sadece_staj:row.sadece_staj,
-      scholarship_amount:row.scholarship_amount,
-      scholarship_code:row.scholarship_code,
-      semester:row.semester,
-      stu_id:row.stu_id,
-      tek_ders:row.tek_ders,
-      year:row.year,
-      d:row.dept,
-      f:row.faculty
+      comment: row.Comments,
+      create_date: row.create_date,
+      debt_amount: row.Amount,
+      debt_amount_dolar: row.Amount_Dolar,
+      dept_amount_day_date: row.dept_amount_day_date,
+      fee_type_id: row.fee_id,
+      last_pay_date: row.last_pay_date,
+      money: row.money,
+      move: row.move,
+      old_dept_amount: row.old_dept_amount,
+      partial: row.partial,
+      payments: row.payments,
+      return1: row.return1,
+      return_date: row.return_date,
+      sadece_proje: row.sadece_proje,
+      sadece_staj: row.sadece_staj,
+      scholarship_amount: row.scholarship_amount,
+      scholarship_code: row.scholarship_code,
+      semester: row.semester,
+      stu_id: row.stu_id,
+      tek_ders: row.tek_ders,
+      year: row.year,
+      d: row.dept,
+      f: row.faculty
     });
     handleShow();
   }
 
-  const deleteShow=(row:PaymentList)=>{
+  const deleteShow = (row: PaymentList) => {
     setSelectedYear(yearList.find((x) => +x.value === +row.year) ?? null);
     setSelectedFeeTypes(feetypes.find((x) => +x.value === +row.fee_id) ?? null);
     setSelectedScholarship(sssList.find((x) => +x.value === +row.fee_id) ?? null);
     setFormData({
-      comment:row.Comments,
-      create_date:row.create_date,
-      debt_amount:row.Amount,
-      debt_amount_dolar:row.Amount_Dolar,
-      dept_amount_day_date:row.dept_amount_day_date,
-      fee_type_id:row.fee_id,
-      last_pay_date:row.last_pay_date,
-      money:row.money,
-      move:row.move,
-      old_dept_amount:row.old_dept_amount,
-      partial:row.partial,
-      payments:row.payments,
-      return1:row.return1,
-      return_date:row.return_date,
-      sadece_proje:row.sadece_proje,
-      sadece_staj:row.sadece_staj,
-      scholarship_amount:row.scholarship_amount,
-      scholarship_code:row.scholarship_code,
-      semester:row.semester,
-      stu_id:row.stu_id,
-      tek_ders:row.tek_ders,
-      year:row.year,
-      d:row.dept,
-      f:row.faculty
+      comment: row.Comments,
+      create_date: row.create_date,
+      debt_amount: row.Amount,
+      debt_amount_dolar: row.Amount_Dolar,
+      dept_amount_day_date: row.dept_amount_day_date,
+      fee_type_id: row.fee_id,
+      last_pay_date: row.last_pay_date,
+      money: row.money,
+      move: row.move,
+      old_dept_amount: row.old_dept_amount,
+      partial: row.partial,
+      payments: row.payments,
+      return1: row.return1,
+      return_date: row.return_date,
+      sadece_proje: row.sadece_proje,
+      sadece_staj: row.sadece_staj,
+      scholarship_amount: row.scholarship_amount,
+      scholarship_code: row.scholarship_code,
+      semester: row.semester,
+      stu_id: row.stu_id,
+      tek_ders: row.tek_ders,
+      year: row.year,
+      d: row.dept,
+      f: row.faculty
     });
     handleDeleteShow();
   }
 
-  const createPaymentShow=()=>{
+  const createPaymentShow = () => {
     setSelectedYear(null);
     setSelectedFeeTypes(null);
     setSelectedBanks(null);
     setFormDataPayment({
       stu_id: '',
-      year:'',
-      semester:'',
+      year: '',
+      semester: '',
       fee_type_id: '',
       dekont_no: '',
       process_type: '',
       payment_date: '',
       payment: '',
       payment_dolar: '',
-      bank_code:'',
+      bank_code: '',
       create_date: '',
       explanation: '',
       rate: '',
-      money:'',
-      actionType:'insert'
+      money: '',
+      actionType: 'insert'
     });
     handlePaymentShow();
   }
-  
 
-  const updatePaymentShow=(row:CollectionList)=>{
+
+  const updatePaymentShow = (row: CollectionList) => {
     setSelectedYear(yearList.find((x) => +x.value === +row.year) ?? null);
     setSelectedFeeTypes(feetypes.find((x) => +x.value === +row.fee_type) ?? null);
     setSelectedBanks(banks.find((x) => +x.value === +row.bank_code) ?? null);
     setFormDataPayment({
       stu_id: row.stu_id,
-      year:row.year,
+      year: row.year,
       semester: row.semester,
       fee_type_id: row.fee_type,
       dekont_no: row.dekont_no,
-      process_type: row.process_type+'',
+      process_type: row.process_type + '',
       payment_date: row.payment_date_org,
       payment: row.payment,
-      payment_dolar: (row.payment_dolar===null?'0':row.payment_dolar)+'',
+      payment_dolar: (row.payment_dolar === null ? '0' : row.payment_dolar) + '',
       bank_code: row.bank_code,
       create_date: row.up_date,
       explanation: row.explanation,
       rate: row.rate,
       money: row.money,
-      actionType:'update'
+      actionType: 'update'
     });
     handlePaymentShow();
   }
 
-  const deletePaymentShow=(row:CollectionList)=>{
+  const deletePaymentShow = (row: CollectionList) => {
     setSelectedYear(yearList.find((x) => +x.value === +row.year) ?? null);
     setSelectedFeeTypes(feetypes.find((x) => +x.value === +row.fee_type) ?? null);
     setSelectedBanks(banks.find((x) => +x.value === +row.bank_code) ?? null);
     setFormDataPayment({
       stu_id: row.stu_id,
-      year:row.year,
+      year: row.year,
       semester: row.semester,
       fee_type_id: row.fee_type,
       dekont_no: row.dekont_no,
-      process_type: row.process_type+'',
+      process_type: row.process_type + '',
       payment_date: row.payment_date,
       payment: row.payment,
-      payment_dolar: row.payment_dolar+'',
+      payment_dolar: row.payment_dolar + '',
       bank_code: row.bank_code,
       create_date: row.create_date,
       explanation: row.explanation,
       rate: row.rate,
       money: row.money,
-      actionType:'delete'
+      actionType: 'delete'
     });
     handleDeletePaymentShow();
   }
@@ -421,7 +379,7 @@ const StudentPaymentsSnack: React.FC = () => {
       item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.Payments.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.kalan.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.create_date.toLowerCase().includes(searchTerm.toLowerCase()) 
+      item.create_date.toLowerCase().includes(searchTerm.toLowerCase())
       // ||
       // item.Comments.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -464,7 +422,7 @@ const StudentPaymentsSnack: React.FC = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  
+
   const [deleteshow, setDeleteShow] = useState(false);
 
   const handleDeleteClose = () => setDeleteShow(false);
@@ -475,13 +433,13 @@ const StudentPaymentsSnack: React.FC = () => {
   const handlePaymentClose = () => setShowPayment(false);
   const handlePaymentShow = () => setShowPayment(true);
 
-  
+
   const [deleteshowPayment, setDeleteShowPayment] = useState(false);
 
   const handleDeletePaymentClose = () => setDeleteShowPayment(false);
   const handleDeletePaymentShow = () => setDeleteShowPayment(true);
 
-  
+
   const [selectedYear, setSelectedYear] = React.useState<null | FacultyList>(null);
   const handleRegisterYear = (selected: any) => {
     setSelectedYear(selected);
@@ -540,7 +498,7 @@ const StudentPaymentsSnack: React.FC = () => {
       explanation: "",
       rate: "",
       money: "",
-      actionType:'insert'
+      actionType: 'insert'
     }
   );
   const formDoldur = (key: any, value: any) => {
@@ -550,9 +508,9 @@ const StudentPaymentsSnack: React.FC = () => {
         year: key == 'year' ? value : formData.year,
         semester: key == 'semester' ? value : formData.semester,
         fee_type_id: key == 'fee_type_id' ? value : formData.fee_type_id,
-        tek_ders: key == 'tek_ders' ? (+formData.tek_ders===1?0:1)+'' : formData.tek_ders,
-        sadece_staj: key == 'sadece_staj' ? (+formData.sadece_staj===1?0:1)+'' : formData.sadece_staj,
-        sadece_proje: key == 'sadece_proje' ? (+formData.sadece_proje===1?0:1)+'' : formData.sadece_proje,
+        tek_ders: key == 'tek_ders' ? (+formData.tek_ders === 1 ? 0 : 1) + '' : formData.tek_ders,
+        sadece_staj: key == 'sadece_staj' ? (+formData.sadece_staj === 1 ? 0 : 1) + '' : formData.sadece_staj,
+        sadece_proje: key == 'sadece_proje' ? (+formData.sadece_proje === 1 ? 0 : 1) + '' : formData.sadece_proje,
         f: key == 'f' ? value : formData.f,
         d: key == 'd' ? value : formData.d,
         scholarship_amount: key == 'scholarship_amount' ? value : formData.scholarship_amount,
@@ -606,13 +564,13 @@ const StudentPaymentsSnack: React.FC = () => {
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    formDoldur(name,value)
+    formDoldur(name, value)
     // setFormData({ ...formData, [name]: value });
   };
 
   const handlePaymentChange = (e: any) => {
     const { name, value } = e.target;
-    formDoldurPayment(name,value)
+    formDoldurPayment(name, value)
     // setFormData({ ...formData, [name]: value });
   };
 
@@ -625,96 +583,71 @@ const StudentPaymentsSnack: React.FC = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    axios.post<StudentFeesUpdateResponse>('http://api-oasis.localhost/maliisler/maliisler/student-fee-update', formData).then((res) => {
-      // setLoading(false);
-      if (res.status === 200) {
-        enqueueSnackbar('Güncelleme işlemi başarılı bir şekilde gerçekleşmiştir', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+    api.studentFeeUpdate(formData).then((x) => {
+      setlistModalLoad(false);
+      if (+x.status === 200) {
+        enqueueSnackbar('Güncelleme işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
         handleClose();
       }
-      else
-      {
-        enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      else {
+        enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err=>{
-      if (err.response && err.response.data && err.response.data.message) {
-           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-      }
-      setIsApi(false);
-  }) 
+    }).catch(err => catchFunc(err))
   };
 
 
   const handlePaymentSubmit = (e: any) => {
     e.preventDefault();
-    let cu='Güncelleme';
-    if(formDataPayment.actionType==='insert')
-    {
-      cu='Ekleme';
+    let cu = 'Güncelleme';
+    if (formDataPayment.actionType === 'insert') {
+      cu = 'Ekleme';
     }
-    axios.post<StudentFeesUpdateResponse>('http://api-oasis.localhost/maliisler/maliisler/student-payment-update', formDataPayment).then((res) => {
-      // setLoading(false);
-      if (res.status === 200) {
-        enqueueSnackbar(cu+' işlemi başarılı bir şekilde gerçekleşmiştir', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+
+    api.studentPaymentUpdate(formDataPayment).then((x) => {
+      setlistModalLoad(false);
+      if (+x.status === 200) {
+        enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
         handlePaymentClose();
       }
-      else
-      {
-        enqueueSnackbar(cu+' işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      else {
+        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err=>{
-      if (err.response && err.response.data && err.response.data.message) {
-           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-      }
-      setIsApi(false);
-  }) 
+    }).catch(err => catchFunc(err))
+
   };
 
 
   const { enqueueSnackbar } = useSnackbar();
 
-  
+
   const handleDeleteSubmit = (e: any) => {
     e.preventDefault();
-    
-    axios.post<StudentFeesUpdateResponse>('http://api-oasis.localhost/maliisler/maliisler/student-fee-delete', formData).then((res) => {
-      // setLoading(false);
-      if (res.status === 200) {
-        enqueueSnackbar('Silme işlemi başarılı bir şekilde gerçekleşmiştir', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        handleDeleteClose();
+    api.studentFeeDelete(formData).then((x) => {
+      setlistModalLoad(false);
+      if (+x.status === 200) {
+        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        handlePaymentClose();
       }
-      else
-      {
-        enqueueSnackbar('Silme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      else {
+        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err=>{
-      if (err.response && err.response.data && err.response.data.message) {
-           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-      }
-      setIsApi(false);
-  }) 
+    }).catch(err => catchFunc(err))
   };
 
   const handleDeletePaymentSubmit = (e: any) => {
     e.preventDefault();
-    
-    axios.post<StudentFeesUpdateResponse>('http://api-oasis.localhost/maliisler/maliisler/student-payment-delete', formDataPayment).then((res) => {
-      // setLoading(false);
-      if (res.status === 200) {
-        enqueueSnackbar('Silme işlemi başarılı bir şekilde gerçekleşmiştir', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-        handleDeletePaymentClose();
+    api.studentPaymentDelete(formDataPayment).then((x) => {
+      setlistModalLoad(false);
+      if (+x.status === 200) {
+        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        handlePaymentClose();
       }
-      else
-      {
-        enqueueSnackbar('Silme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      else {
+        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err=>{
-      if (err.response && err.response.data && err.response.data.message) {
-           enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-      }
-      setIsApi(false);
-  }) 
+    }).catch(err => catchFunc(err))
   };
-  
+
   const [open, setOpen] = React.useState(false);
   const handleClick = () => {
     setOpen(true);
@@ -756,6 +689,7 @@ const StudentPaymentsSnack: React.FC = () => {
                 alinan_ders={studentInfo.alinan_ders}
                 image={studentInfo.image}
                 page={'student-payments'}
+                listLoad={listLoad}
               />
               <Outlet />
             </>
@@ -766,10 +700,8 @@ const StudentPaymentsSnack: React.FC = () => {
             element={
               <>
                 <PageTitle breadcrumbs={accountBreadCrumbs}>Ödeme Bilgileri</PageTitle>
-
-
-
                 <div className='card mb-5 mb-xl-10'>
+                  {listPyLoad ? <Loading /> : ''}
                   <div className='card-header pt-9 pb-0'>
                     <h4>Ödeme Bilgileri</h4>
                   </div>
@@ -807,6 +739,7 @@ const StudentPaymentsSnack: React.FC = () => {
                 <PageTitle breadcrumbs={accountBreadCrumbs}>Tahsilat Ödemeleri</PageTitle>
 
                 <div className='card mb-5 mb-xl-10'>
+                {listPyLoad ? <Loading /> : ''}
                   <div className='card-header pt-9 pb-0'>
                     <h4> Tahsilat Bilgileri</h4>
                     <span><button className='btn btn-sm btn-primary' onClick={createPaymentShow}>Tahsilat Ekle</button></span>
@@ -841,12 +774,13 @@ const StudentPaymentsSnack: React.FC = () => {
         </Route>
       </Routes>
       <Modal show={show} onHide={handleClose} size='xl'>
+        {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear!==null?selectedYear.label:'')+(+formData.semester===1?' Güz':(+formData.semester===2?' Bahar':' Yaz'))+' dönemi "'+(selectedFeeTypes!==null?selectedFeeTypes.label:'')+'" Bilgilerini Güncelleme'}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formData.semester === 1 ? ' Güz' : (+formData.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedFeeTypes !== null ? selectedFeeTypes.label : '') + '" Bilgilerini Güncelleme'}</Modal.Title>
         </Modal.Header>
-        
+
         <form onSubmit={handleSubmit}>
-        <div className="card mb-5 mb-xl-10">
+          <div className="card mb-5 mb-xl-10">
 
             <div className="card-body pt-9 pb-0">
 
@@ -1063,7 +997,7 @@ const StudentPaymentsSnack: React.FC = () => {
                   </div>
 
 
-                
+
 
                   <div className='col-md-3'>
                     <label className='col-form-label fw-bold fs-6'>
@@ -1138,7 +1072,7 @@ const StudentPaymentsSnack: React.FC = () => {
                     <label className='col-form-label fw-bold fs-6'>
                       <span>Açıklama</span>
                     </label>
-                    <textarea   className='form-control' onChange={handleChange}  name="comment"
+                    <textarea className='form-control' onChange={handleChange} name="comment"
                       value={formData.comment} disabled>{formData.comment}</textarea>
 
                   </div>
@@ -1147,43 +1081,43 @@ const StudentPaymentsSnack: React.FC = () => {
                     <label className='col-form-label fw-bold fs-6'>
                       <span >TEK DERS ÜCRETİ ÖDEDİ</span>
                     </label>
-                  
+
                     <Switch
-                      checked={+formData.tek_ders===0?false:true}
+                      checked={+formData.tek_ders === 0 ? false : true}
                       onChange={handleChange}
                       name="tek_ders"
                       inputProps={{ 'aria-label': 'controlled' }}
                     />
 
-                </div>
+                  </div>
 
-                <div className='col-md-4'>
+                  <div className='col-md-4'>
                     <label className='col-form-label fw-bold fs-6'>
                       <span >SADECE STAJI KALDI</span>
                     </label>
-                  
+
                     <Switch
-                      checked={+formData.sadece_staj===0?false:true}
+                      checked={+formData.sadece_staj === 0 ? false : true}
                       onChange={handleChange}
                       name="sadece_staj"
                       inputProps={{ 'aria-label': 'controlled' }}
                     />
 
-                </div>
+                  </div>
 
-                <div className='col-md-4'>
+                  <div className='col-md-4'>
                     <label className='col-form-label fw-bold fs-6'>
                       <span >SADECE DÖNEM PROJESİ KALDI</span>
                     </label>
-                  
+
                     <Switch
-                      checked={+formData.sadece_proje===0?false:true}
+                      checked={+formData.sadece_proje === 0 ? false : true}
                       onChange={handleChange}
                       name="sadece_proje"
                       inputProps={{ 'aria-label': 'controlled' }}
                     />
 
-                </div>
+                  </div>
 
 
                   {/* 
@@ -1209,30 +1143,31 @@ const StudentPaymentsSnack: React.FC = () => {
 
 
               </Modal.Body>
-            
+
             </div>
 
-          
+
           </div>
           <Modal.Footer>
-                <a className='btn btn-secondary btn-xs' onClick={handleClose}>
-                  Kapat
-                </a>
-                <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
-                Kaydet
-              </button>
-              </Modal.Footer>
-              </form>
-    
+            <a className='btn btn-secondary btn-xs' onClick={handleClose}>
+              Kapat
+            </a>
+            <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
+              Kaydet
+            </button>
+          </Modal.Footer>
+        </form>
+
       </Modal>
 
       <Modal show={deleteshow} onHide={handleDeleteClose} >
+      {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear!==null?selectedYear.label:'')+(+formData.semester===1?' Güz':(+formData.semester===2?' Bahar':' Yaz'))+' dönemi "'+(selectedFeeTypes!==null?selectedFeeTypes.label:'')+'" Bilgilerini Silme'}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formData.semester === 1 ? ' Güz' : (+formData.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedFeeTypes !== null ? selectedFeeTypes.label : '') + '" Bilgilerini Silme'}</Modal.Title>
         </Modal.Header>
-        
+
         <form onSubmit={handleDeleteSubmit}>
-        <div className="card mb-5 mb-xl-10">
+          <div className="card mb-5 mb-xl-10">
 
             <div className="card-body pt-9 pb-0">
 
@@ -1244,32 +1179,33 @@ const StudentPaymentsSnack: React.FC = () => {
 
 
               </Modal.Body>
-             
+
             </div>
 
-          
-        </div>
-        <Modal.Footer>
-                <a className='btn btn-secondary btn-xs' onClick={handleDeleteClose}>
-                  Kapat
-                </a>
-                <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
-                Sil
-              </button>
-              </Modal.Footer>
+
+          </div>
+          <Modal.Footer>
+            <a className='btn btn-secondary btn-xs' onClick={handleDeleteClose}>
+              Kapat
+            </a>
+            <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
+              Sil
+            </button>
+          </Modal.Footer>
         </form>
-        
+
       </Modal>
 
 
 
       <Modal show={showPayment} onHide={handlePaymentClose} size='xl'>
+      {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear!==null?selectedYear.label:'')+(+formDataPayment.semester===1?' Güz':(+formDataPayment.semester===2?' Bahar':' Yaz'))+' dönemi "'+(selectedFeeTypes!==null?selectedFeeTypes.label:'')+'" Bilgilerini '+(formDataPayment.actionType==='insert'?'Ekleme':'Güncelleme')}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataPayment.semester === 1 ? ' Güz' : (+formDataPayment.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedFeeTypes !== null ? selectedFeeTypes.label : '') + '" Bilgilerini ' + (formDataPayment.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
         </Modal.Header>
-        
+
         <form onSubmit={handlePaymentSubmit}>
-        <div className="card mb-5 mb-xl-10">
+          <div className="card mb-5 mb-xl-10">
 
             <div className="card-body pt-9 pb-0">
 
@@ -1353,7 +1289,7 @@ const StudentPaymentsSnack: React.FC = () => {
                     />
 
                   </div>
-                  
+
                   <div className='col-md-3'>
                     <label className='col-form-label fw-bold fs-6'>
                       <span>Ödenen USD</span>
@@ -1384,7 +1320,7 @@ const StudentPaymentsSnack: React.FC = () => {
 
                   </div>
 
-                      
+
                   <div className='col-md-4'>
                     <label className='col-form-label fw-bold fs-6'>
                       <span >Banka</span>
@@ -1398,7 +1334,7 @@ const StudentPaymentsSnack: React.FC = () => {
                       placeholder="Banka seçiniz"
                       name="bank_code"
                     />
-                  </div> 
+                  </div>
 
 
                   <div className='col-md-3'>
@@ -1453,7 +1389,7 @@ const StudentPaymentsSnack: React.FC = () => {
                     <label className='col-form-label fw-bold fs-6'>
                       <span>Açıklama</span>
                     </label>
-                    <textarea   className='form-control' onChange={handlePaymentChange}  name="explanation"
+                    <textarea className='form-control' onChange={handlePaymentChange} name="explanation"
                       value={formDataPayment.explanation} >{formDataPayment.explanation}</textarea>
 
                   </div>
@@ -1461,30 +1397,31 @@ const StudentPaymentsSnack: React.FC = () => {
 
 
               </Modal.Body>
-            
+
             </div>
 
-          
+
           </div>
           <Modal.Footer>
-                <a className='btn btn-secondary btn-xs' onClick={handlePaymentClose}>
-                  Kapat
-                </a>
-                <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
-                Kaydet
-              </button>
-              </Modal.Footer>
-              </form>
-    
+            <a className='btn btn-secondary btn-xs' onClick={handlePaymentClose}>
+              Kapat
+            </a>
+            <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
+              Kaydet
+            </button>
+          </Modal.Footer>
+        </form>
+
       </Modal>
 
       <Modal show={deleteshowPayment} onHide={handleDeletePaymentClose} >
+      {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear!==null?selectedYear.label:'')+(+formDataPayment.semester===1?' Güz':(+formDataPayment.semester===2?' Bahar':' Yaz'))+' dönemi "'+(selectedFeeTypes!==null?selectedFeeTypes.label:'')+'" Bilgilerini Silme'}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataPayment.semester === 1 ? ' Güz' : (+formDataPayment.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedFeeTypes !== null ? selectedFeeTypes.label : '') + '" Bilgilerini Silme'}</Modal.Title>
         </Modal.Header>
-        
+
         <form onSubmit={handleDeletePaymentSubmit}>
-        <div className="card mb-5 mb-xl-10">
+          <div className="card mb-5 mb-xl-10">
             <div className="card-body pt-9 pb-0">
               <Modal.Body>
                 <div className='row'>
@@ -1492,20 +1429,20 @@ const StudentPaymentsSnack: React.FC = () => {
                 </div>
               </Modal.Body>
             </div>
-        </div>
-        <Modal.Footer>
-                <a className='btn btn-secondary btn-xs' onClick={handleDeletePaymentClose}>
-                  Kapat
-                </a>
-                <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
-                Sil
-              </button>
-              </Modal.Footer>
+          </div>
+          <Modal.Footer>
+            <a className='btn btn-secondary btn-xs' onClick={handleDeletePaymentClose}>
+              Kapat
+            </a>
+            <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
+              Sil
+            </button>
+          </Modal.Footer>
         </form>
-        
+
       </Modal>
 
-      
+
 
     </>
 
@@ -1521,7 +1458,7 @@ function StudentPayments() {
 }
 
 
-export default StudentPayments
+export default StudentPayments;
 
 
 

@@ -23,3 +23,7 @@ export interface ParamFeesResponse {
   status: number;
   data: Array<ParamFeesx>;
 }
+export interface ParamFeesUpdateResponse {
+  status: number;
+  message: string;
+}

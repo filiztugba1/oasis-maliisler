@@ -69,7 +69,8 @@ const RelationMaliSnack: React.FC = () => {
       burs_tipi: "",
       alinan_ders: 0,
       image: "",
-      page: ""
+      page: "",
+      listLoad:false
     }
   );
 
@@ -176,6 +177,7 @@ const RelationMaliSnack: React.FC = () => {
         alinan_ders={studentInfo.alinan_ders}
         image={studentInfo.image}
         page={'student-relationMaliDetail'}
+        listLoad={false}
       />
       <PageTitle breadcrumbs={accountBreadCrumbs}>Öğrencinin mali işler ilişik bilgileri</PageTitle>
       <div className='card mb-5 mb-xl-10'>

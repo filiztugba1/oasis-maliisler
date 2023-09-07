@@ -1,10 +1,11 @@
 import React from 'react'
 import { GeneralInformationModel } from '../models/_generalinformation.model';
-
+import Loading from '../../Loading'
     const GeneralInformation: React.FC<GeneralInformationModel> = (information) => {
 
         return (
             <div className="card mb-5 mb-xl-10">
+                {information.listLoad?<Loading/>:''}
             <div className="card-header pt-9 pb-0">
                 <h4>Genel Bilgiler</h4>
             </div>
@@ -17,7 +18,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.name}
+                        defaultValue={information.name}
                         disabled
                         data-kt-search-element='input'
                     />
@@ -31,7 +32,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.surname}
+                        defaultValue={information.surname}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -44,7 +45,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.class}
+                        defaultValue={information.class}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -57,7 +58,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.register_year}
+                        defaultValue={information.register_year}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -71,7 +72,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                    <input
                        type='text'
                        className='form-control form-control-lg form-control-solid'
-                       value={information.lisansUstuSinif}
+                       defaultValue={information.lisansUstuSinif}
                        data-kt-search-element='input'
                        disabled
                    />
@@ -85,7 +86,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.uyruk}
+                        defaultValue={information.uyruk}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -98,7 +99,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.register_date}
+                        defaultValue={information.register_date}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -111,7 +112,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.mezuniyet_ayrilma_tarihi}
+                        defaultValue={information.mezuniyet_ayrilma_tarihi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -125,7 +126,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.yatay_gecis_kayit_tarihi}
+                        defaultValue={information.yatay_gecis_kayit_tarihi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -139,7 +140,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.yatay_gecis_birim_id}
+                        defaultValue={information.yatay_gecis_birim_id}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -152,7 +153,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.kayit_tipi}
+                        defaultValue={information.kayit_tipi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -165,7 +166,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.std_state}
+                        defaultValue={information.std_state}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -178,7 +179,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.state_date}
+                        defaultValue={information.state_date}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -191,7 +192,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.burs_tipi}
+                        defaultValue={information.burs_tipi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -204,7 +205,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.burs_durumu}
+                        defaultValue={information.burs_durumu}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -218,7 +219,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.cap_durum_tarihi}
+                        defaultValue={information.cap_durum_tarihi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -231,7 +232,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.yandal_durum_tarihi}
+                        defaultValue={information.yandal_durum_tarihi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -245,7 +246,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.cap_durumu}
+                        defaultValue={information.cap_durumu}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -258,7 +259,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.yandal_durumu}
+                        defaultValue={information.yandal_durumu}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -271,7 +272,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.ikinci_yabanci_dil}
+                        defaultValue={information.ikinci_yabanci_dil}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -284,7 +285,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.mut_tercumanlik_dili}
+                        defaultValue={information.mut_tercumanlik_dili}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -297,7 +298,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.disiplin_cezasi}
+                        defaultValue={information.disiplin_cezasi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -310,7 +311,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.tc_kimlik_no}
+                        defaultValue={information.tc_kimlik_no}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -323,7 +324,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.danisman}
+                        defaultValue={information.danisman}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -337,7 +338,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.cap_danisman}
+                        defaultValue={information.cap_danisman}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -351,7 +352,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.yandal_danisman}
+                        defaultValue={information.yandal_danisman}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -364,7 +365,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.ogr_hakkini_kaybettigi_tarih}
+                        defaultValue={information.ogr_hakkini_kaybettigi_tarih}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -377,7 +378,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.gno_hesabi}
+                        defaultValue={information.gno_hesabi}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -390,7 +391,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.tabi_oldugu_plan}
+                        defaultValue={information.tabi_oldugu_plan}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -403,7 +404,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.lisans_ustu_ucret}
+                        defaultValue={information.lisans_ustu_ucret}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -416,7 +417,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.ayni_programi_tekrar_okuma}
+                        defaultValue={information.ayni_programi_tekrar_okuma}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -429,7 +430,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.tabi_olunan_musredat}
+                        defaultValue={information.tabi_olunan_musredat}
                         data-kt-search-element='input'
                         disabled
                     />
@@ -442,7 +443,7 @@ import { GeneralInformationModel } from '../models/_generalinformation.model';
                     <input
                         type='text'
                         className='form-control form-control-lg form-control-solid'
-                        value={information.ilave_burs}
+                        defaultValue={information.ilave_burs}
                         data-kt-search-element='input'
                         disabled
                     />

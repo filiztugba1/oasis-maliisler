@@ -5,7 +5,12 @@ import axios from "axios";
 import { StudentTranskript, StudentTranskriptData, year } from './models/_studenttranskript.model';
 import './transkript.css';
 import { SemesterHeader } from './components/SemesterHeader';
-    const Transkript: React.FC = () => {
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import Loading from '../Loading';
+import api from '../../services/services';
+    const TranskriptSnack: React.FC = () => {
+        const [listLoad, setlistLoad] = useState(false);
+        const { enqueueSnackbar } = useSnackbar();
         const [studentInfo, setStudentInfo] = useState<StudentDetailModel>(
             {
               id: "",
@@ -29,7 +34,8 @@ import { SemesterHeader } from './components/SemesterHeader';
               burs_tipi: "",
               alinan_ders: 0,
               image: "",
-              page:''
+              page:'',
+              listLoad:false
             }
           );
 
@@ -37,38 +43,21 @@ import { SemesterHeader } from './components/SemesterHeader';
 
           const [isApi, setIsApi] = useState(true);
           useEffect(() => {
-            if(isApi)
-            {
-              
-             axios.post<StudentDetailResponseData>('http://api-oasis.localhost/maliisler/maliisler/active-student-detail',{
-              stu_id:localStorage.getItem('search-student-id')
-                }).then((res)=>{
-                    // setLoading(false);
-                    if(res.status===200)
-                    {
-                        setStudentInfo(res.data.data);
-                        setIsApi(false);
-                    }
-                  console.log();
-                }).catch(err=>{
-                  setIsApi(false);
-                })
-
-                axios.post<StudentTranskript>('http://api-oasis.localhost/maliisler/maliisler/transkript',{
-                    stu_id:localStorage.getItem('search-student-id')
-                      }).then((res)=>{
-                          // setLoading(false);
-                          if(res.status===200)
-                          {
-                            setStudentTranskriptt(res.data.data);
-                              setIsApi(false);
-                          }
-                      }).catch(err=>{
-                        setIsApi(false);
-                })
-          }
+            let formdata = {
+                stu_id: localStorage.getItem('search-student-id')
+              };
+              setlistLoad(true);
+            api.activeStudentDetail(formdata).then((x) => {
+                setlistLoad(false);
+                setStudentInfo(x);
+              }).catch(err => catchFunc(err))
+            
+              api.transkript(formdata).then((x) => {
+                setlistLoad(false);
+                setStudentTranskriptt(x);
+              }).catch(err => catchFunc(err))
           
-        }
+        },[]
         );
 
          const colonHesap=(datam:year) => {
@@ -93,10 +82,21 @@ import { SemesterHeader } from './components/SemesterHeader';
         const map = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler;
         const result:Array<year> = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler!=undefined?Object.values(map):[];
 
-        console.log(studentTranskriptt?.transcriptCourses.dersler.cap_yandal_dersler);
+        const catchFunc = (err: any) => {
+            if (err.response && err.response.data && err.response.data.message) {
+              enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+              if (err.response.data.message === 'Expired token') {
+                localStorage.clear();
+                window.location.href = '/auth';
+                // navigate('/auth');
+              }
+            }
+            setIsApi(false);
+          }
         return (
            <>
             <div className="card mb-5 mb-xl-10">
+            {listLoad?<Loading/>:''}
              <StudentInfoHeader 
              id= {studentInfo.id}
              name= {studentInfo.name}
@@ -127,11 +127,13 @@ import { SemesterHeader } from './components/SemesterHeader';
              toplam_akts={studentTranskriptt?.transcriptCourses.info.akts}
              derece={studentTranskriptt?.transcriptCourses.info.derece}
              basim_tarihi={studentTranskriptt?.transcriptCourses.info.basim_tarihi}
+             listLoad={false}
              />
            
             </div>
             
             <div className="card mb-5 mb-xl-10">
+            {listLoad?<Loading/>:''}
                 <div className="card-header pt-9 pb-0">
                     <h4  style={{textAlign:"center",width:'100%'}}>İZMİR EKONOMİ ÜNİVERSİTESİ TRANSKRİPT</h4>
                 </div>
@@ -305,4 +307,13 @@ import { SemesterHeader } from './components/SemesterHeader';
         )
     }
 
-export default Transkript;
+
+function Transkript() {
+    return (
+      <SnackbarProvider maxSnack={3}>
+        <TranskriptSnack />
+      </SnackbarProvider>
+    );
+  }
+  
+  export default Transkript

@@ -43,4 +43,5 @@ export interface ContactInformationModel
     fatura_cep_tel?:  string,
     fatura_mail?:  string
     yurttami:string
+    listLoad:boolean
 }

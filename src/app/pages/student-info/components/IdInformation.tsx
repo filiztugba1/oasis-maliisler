@@ -1,9 +1,10 @@
 import React from 'react'
 import { IdInformationModel } from '../models/_idinformation.model'
-
+import Loading from '../../Loading'
 const IdInformation: React.FC<IdInformationModel> = (information) => {
   return (
     <div className="card mb-5 mb-xl-10">
+        {information.listLoad?<Loading/>:''}
       <div className="card-header pt-9 pb-0">
         <h4>Kimlik Bilgileri</h4>
       </div>
@@ -16,7 +17,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.adi}
+                defaultValue={information.adi}
                 data-kt-search-element='input'
             />
 
@@ -29,7 +30,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.soyadi}
+                defaultValue={information.soyadi}
                 data-kt-search-element='input'
             />
         </div>
@@ -41,7 +42,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.tc}
+                defaultValue={information.tc}
                 data-kt-search-element='input'
             />
         </div>
@@ -53,7 +54,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.ogr_kimlik_no}
+                defaultValue={information.ogr_kimlik_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -66,7 +67,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.seri_no}
+                defaultValue={information.seri_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -78,7 +79,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.medeni_hal}
+                defaultValue={information.medeni_hal}
                 data-kt-search-element='input'
             />
         </div>
@@ -90,7 +91,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.baba_adi}
+                defaultValue={information.baba_adi}
                 data-kt-search-element='input'
             />
         </div>
@@ -102,7 +103,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.kan_grubu}
+                defaultValue={information.kan_grubu}
                 data-kt-search-element='input'
             />
         </div>
@@ -114,7 +115,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.anne_adi}
+                defaultValue={information.anne_adi}
                 data-kt-search-element='input'
             />
         </div>
@@ -126,7 +127,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.uyruk}
+                defaultValue={information.uyruk}
                 data-kt-search-element='input'
             />
         </div>
@@ -138,7 +139,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.cinsiyet}
+                defaultValue={information.cinsiyet}
                 data-kt-search-element='input'
             />
         </div>
@@ -150,7 +151,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.dini}
+                defaultValue={information.dini}
                 data-kt-search-element='input'
             />
         </div>
@@ -162,7 +163,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.dogum_tarihi}
+                defaultValue={information.dogum_tarihi}
                 data-kt-search-element='input'
             />
         </div>
@@ -174,7 +175,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.dogum_yeri}
+                defaultValue={information.dogum_yeri}
                 data-kt-search-element='input'
             />
         </div>
@@ -187,7 +188,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.askerlik_durumu}
+                defaultValue={information.askerlik_durumu}
                 data-kt-search-element='input'
             />
         </div>:''}
@@ -200,7 +201,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.askerlik_subesi}
+                defaultValue={information.askerlik_subesi}
                 data-kt-search-element='input'
             />
         </div>:''}
@@ -212,7 +213,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.posta_kodu}
+                defaultValue={information.posta_kodu}
                 data-kt-search-element='input'
             />
         </div>
@@ -224,7 +225,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.nif_kayit_il}
+                defaultValue={information.nif_kayit_il}
                 data-kt-search-element='input'
             />
         </div>
@@ -236,7 +237,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.nif_kayit_ilce}
+                defaultValue={information.nif_kayit_ilce}
                 data-kt-search-element='input'
             />
         </div>
@@ -248,7 +249,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.mahalle}
+                defaultValue={information.mahalle}
                 data-kt-search-element='input'
             />
         </div>
@@ -260,7 +261,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.cild_no}
+                defaultValue={information.cild_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -272,7 +273,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.sira_no}
+                defaultValue={information.sira_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -284,7 +285,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.cuzdan_kayit_no}
+                defaultValue={information.cuzdan_kayit_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -296,7 +297,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.hane}
+                defaultValue={information.hane}
                 data-kt-search-element='input'
             />
         </div>
@@ -308,7 +309,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.kayit_no}
+                defaultValue={information.kayit_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -320,7 +321,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.verilis_nedeni}
+                defaultValue={information.verilis_nedeni}
                 data-kt-search-element='input'
             />
         </div>
@@ -332,7 +333,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.verilme_tarihi}
+                defaultValue={information.verilme_tarihi}
                 data-kt-search-element='input'
             />
         </div>
@@ -344,7 +345,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.verildigi_nifus_dairesi}
+                defaultValue={information.verildigi_nifus_dairesi}
                 data-kt-search-element='input'
             />
         </div>
@@ -356,7 +357,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.vergi_kimlik_no}
+                defaultValue={information.vergi_kimlik_no}
                 data-kt-search-element='input'
             />
         </div>
@@ -367,7 +368,7 @@ const IdInformation: React.FC<IdInformationModel> = (information) => {
             <input
                 type='text'
                 className='form-control form-control-lg form-control-solid'
-                value={information.vergi_dairesi}
+                defaultValue={information.vergi_dairesi}
                 data-kt-search-element='input'
             />
         </div>

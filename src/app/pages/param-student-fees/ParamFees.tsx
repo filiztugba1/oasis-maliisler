@@ -13,6 +13,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
 import { right } from '@popperjs/core';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
 const ParamFeesSnack: React.FC = () => {
@@ -20,35 +21,26 @@ const ParamFeesSnack: React.FC = () => {
   const [isApi, setIsApi] = useState(true);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const { enqueueSnackbar } = useSnackbar();
+  const handlePaymentClose = () => setShowPayment(false);
+  const handlePaymentShow = () => setShowPayment(true);
+  const [showPayment, setShowPayment] = useState(false);
+  const [listLoad, setlistLoad] = useState(false);
+  const [listUpdateLoad, setlistUpdateLoad] = useState(false);
   useEffect(() => {
-    if(isApi)
-    {
-      axios.post<ParamFeesResponse>('http://api-oasis.localhost/maliisler/maliisler/param-fees').then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                setSummerFeeRefundRequests(res.data.data);
-                setFilteredData(res.data.data);
-                setIsApi(false);
-              }
-          }).catch(err=>{
-              if (err.response && err.response.data && err.response.data.message) {
-                   enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-              }
-          })  
+    
+          setlistLoad(true);
+          api.paramFees().then((x) => {
+            setlistLoad(false);
+            setSummerFeeRefundRequests(x);
+            setFilteredData(x);
+          }).catch(err => catchFunc(err))
 
      api.year(1).then((x) => {
             setYear(x);
             setIsApi(false);
-          }).catch(err=>{
-            if (err.response && err.response.data && err.response.data.message) {
-                 enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-            }
-        }) 
+          }).catch(err => catchFunc(err))
     
-    }
-  }
-  );
+    },[]);
 
   const [selectedYear, setSelectedYear] = React.useState<null | FacultyList>(null);
   const handleRegisterYear = (selected: any) => {
@@ -188,30 +180,36 @@ const ParamFeesSnack: React.FC = () => {
       jsonData:JSON.stringify(jsonData),
       year:selectedYear?.value
     }
-    axios.post<ParamFeesResponse>('http://api-oasis.localhost/maliisler/maliisler/param-fees-cu',formData).then((res)=>{
-      // setLoading(false);
-        // if(res.status===200)
-        // {
-        //   setSummerFeeRefundRequests(res.data.data);
-        //   setFilteredData(res.data.data);
-        //   setIsApi(false);
-        // }
-        console.log(res);
-      }).catch(err=>{
-          if (err.response && err.response.data && err.response.data.message) {
-              enqueueSnackbar(err.response.data.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-          }
-      }) 
+    setlistUpdateLoad(true);
+    api.paramFeesCu(formData).then((x) => {
+      setlistUpdateLoad(false);
+      if(x.status!==200)
+      {
+        enqueueSnackbar(x.message, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      enqueueSnackbar(x.message, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+    }).catch(err => catchFunc(err)) 
   }
 
   
-  const handlePaymentClose = () => setShowPayment(false);
-  const handlePaymentShow = () => setShowPayment(true);
-  const [showPayment, setShowPayment] = useState(false);
+ 
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+    setIsApi(false);
+  }
+
   return (
     <>
 
       <div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           <h4>Yeni öğrencilere ait parametre tablosu</h4>
           
@@ -252,6 +250,7 @@ const ParamFeesSnack: React.FC = () => {
         </div>
       </div>
       <Modal show={showPayment} onHide={handlePaymentClose} size='xl'>
+      {listUpdateLoad?<Loading/>:''}
         <Modal.Header closeButton>
           <Modal.Title>Yüklemiş olduğunuz veriler </Modal.Title>
           

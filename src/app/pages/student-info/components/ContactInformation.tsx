@@ -1,11 +1,12 @@
 import React from 'react'
 import { ContactInformationModel } from '../models/_contactimformation.model'
-
+import Loading from '../../Loading'
 const ContactInformation: React.FC<ContactInformationModel> = (information) => {
   
   return (
     <>
     <div className="card mb-5 mb-xl-10">
+    {information.listLoad?<Loading/>:''}
       <div className="card-header pt-9 pb-0">
         <h4>Öğrenci Adresi ve İletişim Bilgileri</h4>
       </div>
@@ -15,36 +16,21 @@ const ContactInformation: React.FC<ContactInformationModel> = (information) => {
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 1</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.address1}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.address1} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 2</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.address2}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.address2} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 3</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.address3}
-                    data-kt-search-element='input'
-                />
+                 <textarea defaultValue={information.address3} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
@@ -146,36 +132,23 @@ const ContactInformation: React.FC<ContactInformationModel> = (information) => {
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 1</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.aile_address1}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.aile_address1} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 2</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.aile_address2}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.aile_address2} className='form-control form-control-lg form-control-solid'>
+               
+                </textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 3</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.aile_address3}
-                    data-kt-search-element='input'
-                />
+                 <textarea defaultValue={information.aile_address3}  className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
@@ -243,36 +216,21 @@ const ContactInformation: React.FC<ContactInformationModel> = (information) => {
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 1</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.acil_address1}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.acil_address1} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 2</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.acil_address2}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.acil_address2} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 3</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.acil_address3}
-                    data-kt-search-element='input'
-                />
+                  <textarea defaultValue={information.acil_address3} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
@@ -379,36 +337,21 @@ const ContactInformation: React.FC<ContactInformationModel> = (information) => {
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 1</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.fatura_address1}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.fatura_address1} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 2</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.fatura_address2}
-                    data-kt-search-element='input'
-                />
+                 <textarea defaultValue={information.fatura_address2} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>
                 <label className='col-form-label fw-bold fs-6'>
                     <span>Adres 3</span>
                 </label>
-                <input
-                    type='text'
-                    className='form-control form-control-lg form-control-solid'
-                    defaultValue={information.fatura_address3}
-                    data-kt-search-element='input'
-                />
+                <textarea defaultValue={information.fatura_address3} className='form-control form-control-lg form-control-solid'></textarea>
 
             </div>
             <div className='col-md-4'>

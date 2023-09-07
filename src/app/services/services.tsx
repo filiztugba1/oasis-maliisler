@@ -17,6 +17,15 @@ import { SummerFeeRefundRequestsResponse } from '../pages/summer-fee-refund-requ
 import { FeePaymentListRequest, FeePaymentListResponse } from '../pages/fee-payments-list/models/_feepaymentslist.model';
 import { AllPayablesListRequest, AllPayablesListResponse } from '../pages/all-payables-list/models/_allpayableslist.model';
 import { DebtCheckListsRequest, DebtCheckListsResponse } from '../pages/debt-check-list/models/_debtchecklist.model';
+import { InstallmentCURequest, InstallmentListsRequest, InstallmentListsResponse } from '../pages/installment/models/_installment.model';
+import { ParamFeesResponse, ParamFeesUpdateResponse } from '../pages/param-student-fees/models/_paramfees';
+import { StudentDetailResponseData } from '../pages/student-info/models/_studentdetail.model';
+import { GeneralInformationResponseData } from '../pages/student-info/models/_generalinformation.model';
+import { IdInformationResponseData } from '../pages/student-info/models/_idinformation.model';
+import { ContactInformationResponseData } from '../pages/student-info/models/_contactimformation.model';
+import { StudentTranskript } from '../pages/transkript/models/_studenttranskript.model';
+import { CollectionsResponse, PaymentsResponse, StudentCollectionUpdateRequest, StudentFeesUpdateRequest, StudentFeesUpdateResponse } from '../pages/student-payments/models/_payments.model';
+import { HistoryResponse, ScholarshipHistoryResponse } from '../pages/student-history/models/_history.model';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -168,9 +177,104 @@ const scholarshipStatus=async ()=>{
     const res= await axios.post<DebtCheckListsResponse>(url,formData);
     return res.data.data;
   }
+  const installment=async (formData:InstallmentListsRequest)=>{
+    const url=API_URL+'/maliisler/installment';
+    const res= await axios.post<InstallmentListsResponse>(url,formData);
+    return res.data.data;
+  }
+  const installmentUpdate=async (formData:InstallmentCURequest)=>{
+    const url=API_URL+'/maliisler/installment-update';
+    const res= await axios.post<InstallmentListsResponse>(url,formData);
+    return res.data.data;
+  }
+  const paramFees=async ()=>{
+    const url=API_URL+'/maliisler/param-fees';
+    const res= await axios.post<ParamFeesResponse>(url);
+    return res.data.data;
+  }
+
+  const paramFeesCu=async (formData:any)=>{
+    const url=API_URL+'/maliisler/param-fees-cu';
+    const res= await axios.post<ParamFeesUpdateResponse>(url,formData);
+    return res.data;
+  }
+  const activeStudentDetail=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/active-student-detail';
+    const res= await axios.post<StudentDetailResponseData>(url,formdata);
+    return res.data.data;
+  }
+  const generalInformation=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/general-information';
+    const res= await axios.post<GeneralInformationResponseData>(url,formdata);
+    return res.data.data;
+  }
+
+  const idInformation=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/id-information';
+    const res= await axios.post<IdInformationResponseData>(url,formdata);
+    return res.data.data;
+  }
+
+  const contactInformation=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/contact-information';
+    const res= await axios.post<ContactInformationResponseData>(url,formdata);
+    return res.data.data;
+  }
+
+  const transkript=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/transkript';
+    const res= await axios.post<StudentTranskript>(url,formdata);
+    return res.data.data;
+  }
+  const studentFees=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/student-fees';
+    const res= await axios.post<PaymentsResponse>(url,formdata);
+    return res.data.data;
+  }
+  const studentPayments=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/student-payments';
+    const res= await axios.post<CollectionsResponse>(url,formdata);
+    return res.data.data;
+  }
+
+  const studentFeeUpdate=async (formdata:StudentFeesUpdateRequest)=>{
+    const url=API_URL+'/maliisler/student-fee-update';
+    const res= await axios.post<StudentFeesUpdateResponse>(url,formdata);
+    return res.data;
+  }
+
+  const studentPaymentUpdate=async (formdata:StudentCollectionUpdateRequest)=>{
+    const url=API_URL+'/maliisler/student-payment-update';
+    const res= await axios.post<StudentFeesUpdateResponse>(url,formdata);
+    return res.data;
+  }
+
+  const studentFeeDelete=async (formdata:StudentFeesUpdateRequest)=>{
+    const url=API_URL+'/maliisler/student-fee-delete';
+    const res= await axios.post<StudentFeesUpdateResponse>(url,formdata);
+    return res.data;
+  }
+  const studentPaymentDelete=async (formdata:StudentCollectionUpdateRequest)=>{
+    const url=API_URL+'/maliisler/student-payment-delete';
+    const res= await axios.post<StudentFeesUpdateResponse>(url,formdata);
+    return res.data;
+  }
+
+  const studentHistoryList=async (formdata:any)=>{
+    const url=API_URL+'/maliisler/student-history-list';
+    const res= await axios.post<HistoryResponse>(url,formdata);
+    return res.data.data;
+  }
+
+  const  scholarshipHistoryLList =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/scholarship-history-list ';
+    const res= await axios.post<ScholarshipHistoryResponse>(url,formdata);
+    return res.data.data;
+  }
 
   
-  
+ 
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
-,debtCheckList};
+,debtCheckList,installment,installmentUpdate,paramFees,paramFeesCu,activeStudentDetail,generalInformation,idInformation,contactInformation,transkript,studentFees,studentPayments,
+studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList};

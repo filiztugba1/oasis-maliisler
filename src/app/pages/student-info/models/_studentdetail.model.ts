@@ -32,4 +32,5 @@ export interface StudentDetailModel {
     toplam_akts?:number
     derece?:string
     basim_tarihi?:string
+    listLoad:boolean
 }

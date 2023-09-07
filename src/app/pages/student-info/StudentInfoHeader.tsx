@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom'
 import {useLocation} from 'react-router'
 import axios from "axios";
 import { StudentDetailModel } from './models/_studentdetail.model';
-
+import Loading from '../Loading'
 
 
 const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
@@ -16,6 +16,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
 
   return (
     <div className='card mb-5 mb-xl-10'>
+      {studentDetail.listLoad?<Loading/>:''}
       <div className='card-body pt-9 pb-0'>
         <div className='d-flex flex-wrap flex-sm-nowrap mb-3' style={{flex:1}}>
           <div className='me-7 mb-4'>

@@ -51,4 +51,5 @@ export interface GeneralInformationModel
     burs_durumu: string,
     burs_tipi: string,
     alinan_ders: number,
+    listLoad:boolean
 }
