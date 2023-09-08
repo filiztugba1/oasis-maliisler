@@ -6,15 +6,18 @@ import {useFormik} from 'formik'
 import { Link, Link as LinkRouter, useNavigate,} from 'react-router-dom';
 import axios from "axios";
 import { StudentModel } from '../../../../app/modules/auth';
-
-const Search: FC = () => {
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import api from '../../../../app/services/services';
+import Loading from '../../../../app/pages/Loading';
+const SearchSnack: FC = () => {
   const [menuState, setMenuState] = useState<'main' | 'advanced' | 'preferences'>('main')
   const element = useRef<HTMLDivElement | null>(null)
   const wrapperElement = useRef<HTMLDivElement | null>(null)
   const resultsElement = useRef<HTMLDivElement | null>(null)
   const suggestionsElement = useRef<HTMLDivElement | null>(null)
   const emptyElement = useRef<HTMLDivElement | null>(null)
-
+  const [listLoad, setlistLoad] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const processs = (search: SearchComponent) => {
     setTimeout(function () {
       const number = Math.floor(Math.random() * 6) + 1
@@ -75,41 +78,30 @@ const Search: FC = () => {
        
       if(student.length>2)
       {
-        axios.post('http://api-oasis.localhost/maliisler/maliisler/active-student-list',{
-            student:student
-        }).then((res)=>{
-            setLoading(false);
-            if(res.status===200)
-            {
-                
-                setError(null);
-                setStudents(res.data.data);
-                // setUserSession(res.data.response.token,JSON.stringify(res.data.response));
-                // navigate('/admin');
-            }
-            // else
-            // {
-            //     setError(res.data.response);
-            // }
-        }).catch(err=>{
-            // setLoading(false);
-            // if(err.response.status===401 || err.response.status===400)
-            // {
-            //     setError(err.response.message);
-            // }
-            // else
-            // {
-            //     // setError("somethinh went WrongLocation.Please try again later");
-            // }
-            
-        })
+        let formdata = {
+          student:student
+      };
+        setlistLoad(true);
+        api.activeStudentList(formdata).then((x) => {
+          setlistLoad(false);
+          setStudents(x);
+        }).catch(err => catchFunc(err))
       }
       else
       {
         setStudents([]);
       }
 }
-
+const catchFunc = (err: any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 const studentdetail=(student:any)=>{
   localStorage.setItem('search-student-id', student.id);
   localStorage.setItem('search-name', student.name);
@@ -172,12 +164,13 @@ const studentdetail=(student:any)=>{
 
 
             <div ref={suggestionsElement} className='mb-4' data-kt-search-element='main'>
+            
               <div className='d-flex flex-stack fw-bold mb-4'>
                 <span className='text-muted fs-6 me-2'>Öğrenciler:</span>
               </div>
 
               <div className='scroll-y mh-200px mh-lg-325px'>
-
+              {listLoad?<Loading/>:''}
               {/* öğrencileri burada listeleyeceğiz aramak için */}
               {
                 students.map((student,i) => {
@@ -214,6 +207,15 @@ const studentdetail=(student:any)=>{
       </div>
     </>
   )
+}
+
+
+function Search() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <SearchSnack />
+    </SnackbarProvider>
+  );
 }
 
 export {Search}

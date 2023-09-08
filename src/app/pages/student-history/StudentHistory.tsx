@@ -18,6 +18,7 @@ import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import { Button, Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
+import Loading from '../Loading';
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Student Info',
@@ -304,36 +305,34 @@ const StudentHistorySnack: React.FC = () => {
     if (formDataScolar.actionType === 'insert') {
       cu = 'Ekleme';
     }
-    axios.post<ScholarshipHistoryCrudResponse>('http://api-oasis.localhost/maliisler/maliisler/student-payment-update', formDataScolar).then((res) => {
-      // setLoading(false);
-      if (res.status === 200) {
+    setlistModalLoad(true);
+    api.scholarshipHistoryUpdate(formDataScolar).then((x) => {
+      setlistModalLoad(false);
+      if (+x.status === 200) {
         enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
         handlePaymentClose();
       }
       else {
-        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + res.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => {
-      enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-    })
+    }).catch(err => catchFunc(err))
+  
   };
 
 
   const handleDeletePaymentSubmit = (e: any) => {
     e.preventDefault();
-
-    axios.post<ScholarshipHistoryCrudResponse>('http://api-oasis.localhost/maliisler/maliisler/student-payment-delete', formDataScolar).then((res) => {
-      // setLoading(false);
-      if (res.status === 200) {
-        enqueueSnackbar('Silme işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-        handleDeleteScolarClose();
+    setlistModalLoad(true);
+    api.scholarshipHistoryDelete(formDataScolar).then((x) => {
+      setlistModalLoad(false);
+      if (+x.status === 200) {
+        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        handlePaymentClose();
       }
       else {
-        enqueueSnackbar('Silme işlemi sırasında hata oluştu.Oluşan Hata:' + res.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => {
-      enqueueSnackbar('Silme işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-    })
+    }).catch(err => catchFunc(err))
   };
 
 
@@ -413,7 +412,7 @@ const StudentHistorySnack: React.FC = () => {
                 alinan_ders={studentInfo.alinan_ders}
                 image={studentInfo.image}
                 page={'student-history'}
-                listLoad={false}
+                listLoad={listLoad}
               />
               <Outlet />
             </>
@@ -425,6 +424,9 @@ const StudentHistorySnack: React.FC = () => {
               <>
                 <PageTitle breadcrumbs={accountBreadCrumbs}>Tarihçe Bilgileri</PageTitle>
                 <div className='card mb-5 mb-xl-10'>
+                {listPyLoad?<Loading/>:''}
+                
+                
                   <div className='card-header pt-9 pb-0'>
                     Tarihçe Bilgileri
                   </div>
@@ -461,7 +463,7 @@ const StudentHistorySnack: React.FC = () => {
               <>
                 <PageTitle breadcrumbs={accountBreadCrumbs}>Burs Tarihçesi</PageTitle>
                 <div className='card mb-5 mb-xl-10'>
-
+                {listPyLoad?<Loading/>:''}
                   <div className='card-header pt-9 pb-0'>
                     <h4> Burs Tarihçesi</h4>
                     <span><button className='btn btn-sm btn-primary' onClick={createPaymentShow}>Tahsilat Ekle</button></span>
@@ -500,8 +502,9 @@ const StudentHistorySnack: React.FC = () => {
       </Routes>
 
       <Modal show={showPayment} onHide={handlePaymentClose} size='xl'>
+      {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1 ? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedScholarship !== null ? selectedScholarship.label : '') + '" Bilgilerini ' + (formDataScolar.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1  || formDataScolar.semester==''? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedScholarship !== null ? selectedScholarship.label : '') + '" Tahsilat Bilgilerini ' + (formDataScolar.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
         </Modal.Header>
 
         <form onSubmit={handleScolarSubmit}>
@@ -643,6 +646,7 @@ const StudentHistorySnack: React.FC = () => {
       </Modal>
 
       <Modal show={deleteshowPayment} onHide={handleDeleteScolarClose} >
+      {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
           <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1 ? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedScholarship !== null ? selectedScholarship.label : '') + '" Bilgilerini Silme'}</Modal.Title>
         </Modal.Header>

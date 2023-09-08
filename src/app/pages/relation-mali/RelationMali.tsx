@@ -8,7 +8,8 @@ import { RelationMaliDetailRequest, RelationMaliDetailResponse, RelationMaliDeta
 import { Switch } from '@mui/material';
 import '../style.css';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-
+import api from '../../services/services';
+import Loading from '../Loading';
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Student Info',
@@ -29,6 +30,9 @@ const accountBreadCrumbs: Array<PageLink> = [
 const RelationMaliSnack: React.FC = () => {
 
   const { enqueueSnackbar } = useSnackbar();
+  const [listLoad, setlistLoad] = useState(false);
+  const [listPyLoad, setlistPyLoad] = useState(false);
+
   const [formData, setFormData] = useState<RelationMaliDetailRequest>(
     {
       mali_aciklama:"",
@@ -79,47 +83,32 @@ const RelationMaliSnack: React.FC = () => {
 
   const [isApi, setIsApi] = useState(true);
   useEffect(() => {
-    if (isApi) {
 
-      axios.post<StudentDetailResponseData>('http://api-oasis.localhost/maliisler/maliisler/active-student-detail', {
-        stu_id: localStorage.getItem('search-student-id')
-      }).then((res) => {
-        // setLoading(false);
-        if (res.status === 200) {
-          setStudentInfo(res.data.data);
-          setIsApi(false);
+      let formdata = {
+      stu_id: localStorage.getItem('search-student-id')
+    };
+    setlistLoad(true);
+    api.activeStudentDetail(formdata).then((x) => {
+      setlistLoad(false);
+      setStudentInfo(x);
+    }).catch(err => catchFunc(err))
+
+    setlistPyLoad(true);
+    api.financialAffairsAssociatedInformation(formdata).then((x) => {
+      setlistPyLoad(false);
+      const datam=x;
+      setFormData(
+        {
+          mali_aciklama: datam.mali_aciklama,
+          mali_borc: +datam.mali_borc,
+          mali_diploma: +datam.mali_diploma,
+          mali_diploma_cap: +datam.mali_diploma_cap,
+          mali_kimlik: +datam.mali_kimlik,
+          stu_id: datam.id,
         }
-        console.log();
-      }).catch(err => {
-        setIsApi(false);
-      })
-
-      axios.post<RelationMaliDetailResponse>('http://api-oasis.localhost/maliisler/maliisler/financial-affairs-associated-information', {
-        stu_id: localStorage.getItem('search-student-id')
-      }).then((res) => {
-        // setLoading(false);
-        if (res.status === 200) {
-          const datam=res.data.data;
-          setFormData(
-            {
-              mali_aciklama: datam.mali_aciklama,
-              mali_borc: +datam.mali_borc,
-              mali_diploma: +datam.mali_diploma,
-              mali_diploma_cap: +datam.mali_diploma_cap,
-              mali_kimlik: +datam.mali_kimlik,
-              stu_id: datam.id,
-            }
-          );
-
-          setIsApi(false);
-        }
-        console.log();
-      }).catch(err => {
-        setIsApi(false);
-      })
-    }
-
-  }
+      );
+    }).catch(err => catchFunc(err))
+    },[]
   );
   const toggle = (key:any) => {
     setFormData(
@@ -137,21 +126,31 @@ const RelationMaliSnack: React.FC = () => {
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
-      axios.post<RelationMaliDetailResponse>('http://api-oasis.localhost/maliisler/maliisler/faai-update',formData).then((res)=>{
-              // setLoading(false);
-              if(res.status===200)
-              {
-                enqueueSnackbar('Kaydetme işleminiz başarılı bir şekilde gerçekleştirilmiştir.', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-              }
-              else
-              {
-                enqueueSnackbar('Kaydetme işlemi sırasında hata oluştu.Oluşan Hata:'+res.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-              }
-          }).catch(err => {
-            enqueueSnackbar('Kaydetme işlemi sırasında hata oluştu.Lütfen YBS ye bildirin!', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
-          })
+    setlistPyLoad(true);
+    api.faaiUpdate(formData).then((x) => {
+      setlistPyLoad(false);
+      if(x.status===200)
+      {
+        enqueueSnackbar('Kaydetme işleminiz başarılı bir şekilde gerçekleştirilmiştir.', { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+      else
+      {
+        enqueueSnackbar('Kaydetme işlemi sırasında hata oluştu', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
+      }
+    }).catch(err => catchFunc(err))
   };
 
+
+  const catchFunc = (err: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+  }
   return (
     <>
       <StudentInfoHeader
@@ -177,10 +176,11 @@ const RelationMaliSnack: React.FC = () => {
         alinan_ders={studentInfo.alinan_ders}
         image={studentInfo.image}
         page={'student-relationMaliDetail'}
-        listLoad={false}
+        listLoad={listLoad}
       />
       <PageTitle breadcrumbs={accountBreadCrumbs}>Öğrencinin mali işler ilişik bilgileri</PageTitle>
       <div className='card mb-5 mb-xl-10'>
+      {listPyLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
           Öğrencinin mali işler ilişik bilgileri
         </div>

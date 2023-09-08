@@ -26,6 +26,8 @@ import { ContactInformationResponseData } from '../pages/student-info/models/_co
 import { StudentTranskript } from '../pages/transkript/models/_studenttranskript.model';
 import { CollectionsResponse, PaymentsResponse, StudentCollectionUpdateRequest, StudentFeesUpdateRequest, StudentFeesUpdateResponse } from '../pages/student-payments/models/_payments.model';
 import { HistoryResponse, ScholarshipHistoryResponse } from '../pages/student-history/models/_history.model';
+import { ResponseData, StudentModel } from '../modules/auth';
+import { RelationMaliDetailResponse } from '../pages/relation-mali/models/_relationmali.model';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -267,14 +269,45 @@ const scholarshipStatus=async ()=>{
   }
 
   const  scholarshipHistoryLList =async (formdata:any)=>{
-    const url=API_URL+'/maliisler/scholarship-history-list ';
+    const url=API_URL+'/maliisler/scholarship-history-list';
     const res= await axios.post<ScholarshipHistoryResponse>(url,formdata);
     return res.data.data;
   }
 
+  const  activeStudentList =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/active-student-list';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data.data;
+  }
+  const  scholarshipHistoryUpdate =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/scholarship-history-update';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data.data;
+  }
+
+  const  scholarshipHistoryDelete =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/scholarship-history-delete';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data.data;
+  }
+
   
- 
+  const  financialAffairsAssociatedInformation =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/financial-affairs-associated-information';
+    const res= await axios.post<RelationMaliDetailResponse>(url,formdata);
+    return res.data.data;
+  }
+
+  const  faaiUpdate =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/faai-update';
+    const res= await axios.post<RelationMaliDetailResponse>(url,formdata);
+    return res.data;
+  }
+
+  
+  
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
 ,debtCheckList,installment,installmentUpdate,paramFees,paramFeesCu,activeStudentDetail,generalInformation,idInformation,contactInformation,transkript,studentFees,studentPayments,
-studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList};
+studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList,activeStudentList,scholarshipHistoryUpdate
+,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate};

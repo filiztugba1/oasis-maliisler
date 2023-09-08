@@ -583,6 +583,7 @@ const StudentPaymentsSnack: React.FC = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    setlistModalLoad(true);
     api.studentFeeUpdate(formData).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
@@ -603,6 +604,7 @@ const StudentPaymentsSnack: React.FC = () => {
       cu = 'Ekleme';
     }
 
+    setlistModalLoad(true);
     api.studentPaymentUpdate(formDataPayment).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
