@@ -28,6 +28,7 @@ import { CollectionsResponse, PaymentsResponse, StudentCollectionUpdateRequest, 
 import { HistoryResponse, ScholarshipHistoryResponse } from '../pages/student-history/models/_history.model';
 import { ResponseData, StudentModel } from '../modules/auth';
 import { RelationMaliDetailResponse } from '../pages/relation-mali/models/_relationmali.model';
+import { CariNameListResponse } from '../pages/cari-name-list/models/_carinamelistx.model';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -304,10 +305,14 @@ const scholarshipStatus=async ()=>{
     return res.data;
   }
 
-  
+  const  cariList =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/cari-name-list';
+    const res= await axios.post<CariNameListResponse>(url,formdata);
+    return res.data.data;
+  }
   
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
 ,debtCheckList,installment,installmentUpdate,paramFees,paramFeesCu,activeStudentDetail,generalInformation,idInformation,contactInformation,transkript,studentFees,studentPayments,
 studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList,activeStudentList,scholarshipHistoryUpdate
-,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate};
+,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate,cariList};

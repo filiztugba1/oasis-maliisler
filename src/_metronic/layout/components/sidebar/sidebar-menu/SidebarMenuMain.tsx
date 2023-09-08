@@ -47,6 +47,7 @@ const SidebarMenuMain = () => {
         fontIcon='bi-person'
       >
         <SidebarMenuItem to='/summer-fee-refund-requests' title='Yaz Okulu Ücreti İade Talepleri' menuTitle='Kontrol Listeleri / Yaz Okulu Ücreti İade Talepleri' hasBullet={true} />
+        <SidebarMenuItem to='/cari-name-list' title='Cari İsim Listesi' menuTitle='Kontrol Listeleri / Cari İsim Listesi' hasBullet={true} />
         </SidebarMenuItemWithSub>
 
  
