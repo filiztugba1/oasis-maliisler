@@ -8,6 +8,7 @@ export interface CariNameList {
   tckimlik: string;
   fadi: string;
   badi: string;
+  derece:string;
 }
 export interface CariNameListResponse {
   status: number;

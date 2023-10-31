@@ -37,6 +37,8 @@ const accountBreadCrumbs: Array<PageLink> = [
 
 
 const DefinitiveRecordsSnack: React.FC = () => {
+  const userItem = localStorage.getItem('user');
+		const user = userItem ? JSON.parse(userItem) : null;
   const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
   const [dList, setDList] = useState<Array<DepartmentList>>([]);
@@ -51,16 +53,17 @@ const DefinitiveRecordsSnack: React.FC = () => {
 
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
+    console.log(selected);
     setSelectedFaculty(selected);
     setFormData({
       register_type: formData.register_type,
       d: formData.d,
-      f: selected.value,
+      f: JSON.stringify(selected),
       register_date_finish: formData.register_date_finish,
       register_date_start: formData.register_date_start,
       std_state: formData.std_state
     })
-    api.department({ f: selected.value }).then((x) => {
+    api.department({ f: JSON.stringify(selected) }).then((x) => {
       setDList(x);
       setBDisabled(false);
     }).catch(err => catchFunc(err))
@@ -71,7 +74,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
     setSelectedDepartment(selected);
     setFormData({
       register_type: formData.register_type,
-      d: selected.value,
+      d: JSON.stringify(selected),
       f: formData.f,
       register_date_finish: formData.register_date_finish,
       register_date_start: formData.register_date_start,
@@ -82,17 +85,13 @@ const DefinitiveRecordsSnack: React.FC = () => {
   const [selectedStuStatus, setSelectedStuStatus] = React.useState(null);
   const handleStuStatusChange = (selected: any) => {
     setSelectedStuStatus(selected);
-    let secim = [];
-    for (let i = 0; i < selected.length; i++) {
-      secim.push(+selected[i].value);
-    }
     setFormData({
       register_type: formData.register_type,
       d: formData.d,
       f: formData.f,
       register_date_finish: formData.register_date_finish,
       register_date_start: formData.register_date_start,
-      std_state: JSON.stringify(secim)
+      std_state: JSON.stringify(selected)
     })
   };
 
@@ -100,7 +99,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
   const handleRegisterTypeChange = (selected: any) => {
     setSelectedRegisterType(selected);
     setFormData({
-      register_type: selected.value,
+      register_type: JSON.stringify(selected),
       d: formData.d,
       f: formData.f,
       register_date_finish: formData.register_date_finish,
@@ -117,7 +116,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
       f: '',
       register_date_finish: '',
       register_date_start: '',
-      register_type: 0,
+      register_type:'',
       std_state: ''
     }
   );
@@ -238,6 +237,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
                     onChange={handleFacultyChange}
                     options={fList}
                     isSearchable={true}
+                    isMulti={true}
                     placeholder="Fakülte Seçiniz"
                   />
                 </div>
@@ -256,6 +256,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
                     isSearchable={true}
                     placeholder="Bölüm Seçiniz"
                     isDisabled={bDisabled}
+                    isMulti={true}
                   />
                 </div>
               </div>
@@ -338,7 +339,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
       {tableisActive?<div className='card mb-5 mb-xl-10'>
       {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
-          <h4>Kesin Kayıtlar</h4>
+          <h4>{user.academicYear} Yılı Kesin Kayıtlar</h4>
         </div>
         <div className='card-body pt-9 pb-0'>
        

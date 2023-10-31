@@ -63,6 +63,7 @@ const DebtCheckListSnack: React.FC = () => {
     { name: 'Sınıfı', selector: (row) => row.class, sortable: true },
     { name: 'Fakülte', selector: (row) => row.fak, sortable: true },
     { name: 'Bölüm', selector: (row) => row.dept, sortable: true },
+    { name: 'GNO', selector: (row) => row.derece, sortable: true },
     { name: 'Borç Miktarı (USD)', selector: (row) => api.paymetFormat(row.debt_dolar) || '', sortable: true },
     { name: 'Borç Miktarı (TL)', selector: (row) => api.paymetFormat(row.debt_tl) ||'', sortable: true },
     { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.payment)||'', sortable: true },
@@ -101,17 +102,12 @@ const DebtCheckListSnack: React.FC = () => {
   const handleSearch = (e:any) => {
     const searchTerm = e.target.value;
     const filteredItems = definitiverecordlist
-    // .filter((item) =>
-    //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.ogrno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   +item.id_no== +searchTerm ||
-    //   item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.faculty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.scholarship.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.status_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.regtype.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.sexx.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
+    .filter((item) =>
+      (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.stu_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.fak.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.dept.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     setFilteredData(filteredItems);
   };
 
@@ -224,7 +220,7 @@ const DebtCheckListSnack: React.FC = () => {
       {tableisActive?<div className='card mb-5 mb-xl-10'>
       {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
-          <h4>Tüm Borçlar Listesi</h4>
+          <h4>Borç Kontrol Listesi</h4>
         </div>
         <div className='card-body pt-9 pb-0'>
        {definitiverecordlist.length?

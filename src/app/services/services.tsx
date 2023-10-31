@@ -14,6 +14,7 @@ import { DefinitiveRecordRequest, DefinitiveRecordResponse } from '../pages/defi
 import { StudentListRequest, StudentListResponse } from '../pages/student-list/models/_studentlist.model';
 import { StudentScholarshipNumbersRequest, StudentScholarshipNumbersResponse } from '../pages/number-of-student-scholarships/models/_studentscholarships';
 import { SummerFeeRefundRequestsResponse } from '../pages/summer-fee-refund-requests/models/_summerfeerefund';
+import { MahsupResponse } from '../pages/mahsup-list/models/_mahsup.model';
 import { FeePaymentListRequest, FeePaymentListResponse } from '../pages/fee-payments-list/models/_feepaymentslist.model';
 import { AllPayablesListRequest, AllPayablesListResponse } from '../pages/all-payables-list/models/_allpayableslist.model';
 import { DebtCheckListsRequest, DebtCheckListsResponse } from '../pages/debt-check-list/models/_debtchecklist.model';
@@ -29,6 +30,7 @@ import { HistoryResponse, ScholarshipHistoryResponse } from '../pages/student-hi
 import { ResponseData, StudentModel } from '../modules/auth';
 import { RelationMaliDetailResponse } from '../pages/relation-mali/models/_relationmali.model';
 import { CariNameListResponse } from '../pages/cari-name-list/models/_carinamelistx.model';
+import { KomisyonluResponse } from '../pages/yaz-okulu-komisyonlu-odeyen-list/models/_yaz-okulu-komisyonlu.model';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -149,7 +151,7 @@ const scholarshipStatus=async ()=>{
 
   const studentList=async (formData:StudentListRequest)=>{
     const url=API_URL+'/maliisler/student-list';
-    const res= await axios.post<StudentListResponse>(url);
+    const res= await axios.post<StudentListResponse>(url,formData);
     return res.data.data;
   }
 
@@ -163,14 +165,18 @@ const scholarshipStatus=async ()=>{
     const res= await axios.post<SummerFeeRefundRequestsResponse>(url);
     return res.data.data;
   }
-
+  const mahsupResponse=async ()=>{
+    const url=API_URL+'/maliisler/mahsup-list';
+    const res= await axios.post<MahsupResponse>(url);
+    return res.data.data;
+  }
   const allPaymentsList=async (formData:FeePaymentListRequest)=>{
     const url=API_URL+'/maliisler/all-payments-list';
     const res= await axios.post<FeePaymentListResponse>(url,formData);
     return res.data.data;
   }
   const allPaymentsList2=async (formData:AllPayablesListRequest)=>{
-    const url=API_URL+'/maliisler/all-payments-list';
+    const url=API_URL+'/maliisler/all-payables-list';
     const res= await axios.post<AllPayablesListResponse>(url,formData);
     return res.data.data;
   }
@@ -310,9 +316,15 @@ const scholarshipStatus=async ()=>{
     const res= await axios.post<CariNameListResponse>(url,formdata);
     return res.data.data;
   }
+
+  const  komisyonluOdeyenler =async ()=>{
+    const url=API_URL+'/maliisler/yaz-komisyonlu-odeyen-listesi';
+    const res= await axios.post<KomisyonluResponse>(url);
+    return res.data.data;
+  }
   
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
 ,debtCheckList,installment,installmentUpdate,paramFees,paramFeesCu,activeStudentDetail,generalInformation,idInformation,contactInformation,transkript,studentFees,studentPayments,
 studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList,activeStudentList,scholarshipHistoryUpdate
-,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate,cariList};
+,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate,cariList,mahsupResponse,komisyonluOdeyenler};

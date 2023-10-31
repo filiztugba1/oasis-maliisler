@@ -25,6 +25,7 @@ export interface StudentScholarshipNumbers {
   kayit_tipi: string;
   burs_tipi?: any;
   burs_durumu?: any;
+  derece:string
 }
 export interface StudentScholarshipNumbersResponse {
   status: number;

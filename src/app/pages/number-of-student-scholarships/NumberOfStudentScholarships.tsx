@@ -31,9 +31,9 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
     setSelectedFaculty(selected);
-    formDoldur("f",selected.value);
+    formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    const datam = api.department({f:selected.value}).then((x)=>{
+    const datam = api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     }).catch(err => catchFunc(err))
   };
@@ -41,8 +41,8 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
   const handleDepartmentChange = (selected: any) => {
     setSelectedDepartment(selected);
-    formDoldur("d",selected.value);
-    const datam = api.option({f:formData.f,d:selected.value}).then((x)=>{
+    formDoldur("d",JSON.stringify(selected));
+    const datam = api.option({d:JSON.stringify(selected)}).then((x)=>{
       setOList(x);
     }).catch(err => catchFunc(err))
   };
@@ -50,26 +50,20 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
   const [selectedOption, setSelectedOption] = React.useState(null);
   const handleOptionChange = (selected: any) => {
     setSelectedOption(selected);
-    formDoldur("o",selected.value);
+    formDoldur("o",JSON.stringify(selected));
   };
 
   const [selectedRegisterType, setSelectedRegisterType] = React.useState(null);
   const handleRegisterTypeChange = (selected: any) => {
     setSelectedRegisterType(selected);
-
-    let secim=[];
-    for(let i=0;i<selected.length;i++)
-    {
-      secim.push(+selected[i].value);
-    }
-    formDoldur("register_type",JSON.stringify(secim));
+    formDoldur("register_type",JSON.stringify(selected));
 
   };
 
   const [selectedScholarship, setSelectedScholarship] = React.useState(null);
   const handleScholarshipChange = (selected: any) => {
     setSelectedScholarship(selected);
-    formDoldur("fee_status",selected.value);
+    formDoldur("credit",JSON.stringify(selected));
   };
 
  
@@ -110,6 +104,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
     { name: 'Kayıt Tipi', selector: (row) => row.kayit_tipi, sortable: true },
     { name: 'Burs/İndirim Tipi', selector: (row) => row.burs_tipi, sortable: true },
     { name: 'Burs/İndirim Durumu', selector: (row) => row.burs_durumu, sortable: true },
+    { name: 'GNO', selector: (row) => row.derece, sortable: true },
   ];
  
   const [numberofstudentscholarshiplist, setNumberofstudentscholarshiplist] = useState<Array<StudentScholarshipNumbers>>([]);
@@ -252,6 +247,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
                   onChange={handleFacultyChange}
                   options={fList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Fakülte Seçiniz"
                 />
               </div>
@@ -268,6 +264,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
                   onChange={handleDepartmentChange}
                   options={dList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Bölüm Seçiniz"
                 />
               </div>
@@ -283,6 +280,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
                   onChange={handleOptionChange}
                   options={oList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Opsiyon Seçiniz"
                 />
               </div>
@@ -401,6 +399,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
                 onChange={handleScholarshipChange}
                 options={sssList}
                 isSearchable={true}
+                isMulti={true}
                 placeholder="burs indirim tipini seçiniz"
               />
             </div>

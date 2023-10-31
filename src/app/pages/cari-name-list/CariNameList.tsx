@@ -21,7 +21,8 @@ import Loading from '../Loading';
 
 
 const CariNameListSnack: React.FC = () => {
-
+  const userItem = localStorage.getItem('user');
+  const user = userItem ? JSON.parse(userItem) : null;
   const [rtList, setRtList] = useState<Array<RegisterTypeList>>([]);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const CariNameListSnack: React.FC = () => {
     { name: 'TC Kimlik', selector: (row) => row.tckimlik, sortable: true, cell: row => <div className="cell">{row.tckimlik}</div> },
     { name: 'Fakülte', selector: (row) => row.fadi, sortable: true, cell: row => <div className="cell">{row.fadi}</div> },
     { name: 'Bölüm', selector: (row) => row.badi, sortable: true, cell: row => <div className="cell">{row.badi}</div> },
+    { name: 'GNO', selector: (row) => row.derece, sortable: true, cell: row => <div className="cell">{row.derece}</div> },
     { name: 'E-Mail', selector: (row) => row.email, sortable: true, cell: row => <div className="cell">{row.email}</div> },
     { name: 'İl', selector: (row) => row.il || '', sortable: true, cell: row => <div className="cell">{row.il}</div> },
     { name: 'İlçe', selector: (row) => row.ilce || '', sortable: true, cell: row => <div className="cell">{row.ilce}</div> },
@@ -142,6 +144,18 @@ const CariNameListSnack: React.FC = () => {
         label: "Dikey Geçiş",
         value: "5"
       },
+      {
+        label: "Ek DGS",
+        value: "6"
+      },
+      {
+        label: "Yabancı Uyruk",
+        value: "7"
+      },
+      {
+        label: "Enstütü",
+        value: "8"
+      },
     ]);
   }, []);
 
@@ -190,7 +204,7 @@ const CariNameListSnack: React.FC = () => {
       {tableisActive ? <div className='card mb-5 mb-xl-10'>
         {listLoad ? <Loading /> : ''}
         <div className='card-header pt-9 pb-0'>
-          <h4>Kesin Kayıtlar</h4>
+          <h4>{user.academicYear} {user.academicSemesterText} Cari İsim Listesi</h4>
         </div>
         <div className='card-body pt-9 pb-0'>
 

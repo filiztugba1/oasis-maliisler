@@ -42,6 +42,7 @@ export interface AllPayablesLists {
   aktarilan: string;
   move: string;
   fakulte_name?: any;
+  derece?: any;
 }
 export interface AllPayablesListResponse {
   status: number;

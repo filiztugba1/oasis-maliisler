@@ -2,7 +2,7 @@ export interface DefinitiveRecordRequest {
   f: string;
   d: string;
   std_state: string;
-  register_type: number;
+  register_type: string;
   register_date_start: string;
   register_date_finish: string;
 }

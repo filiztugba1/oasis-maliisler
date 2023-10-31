@@ -1,0 +1,26 @@
+.bg-coffe {
+    background-color: #EDE4E0;
+}
+table {
+    font-size: 10px;
+    vertical-align: middle;
+}
+.css-1howxi1-MuiTableCell-root {
+    font-size: 10px;
+}
+.table > :not(:first-child) {
+     border-color: #EDE4E0 !important;
+    /* border-width: 0; */
+    /* border-style: none; */
+}
+tbody{
+    border-bottom:initial;
+}
+.table td, .table th{
+    padding:0.5rem 0.5rem !important;
+}
+
+.table tr, .table th, .table td {
+    border-color: inherit;
+    border-width: 0px;
+}

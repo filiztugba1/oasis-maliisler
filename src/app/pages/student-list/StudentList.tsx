@@ -29,9 +29,9 @@ const StudentListtSnack: React.FC = () => {
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
     setSelectedFaculty(selected);
-    formDoldur("f",selected.value);
+    formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    const datam = api.department({f:selected.value}).then((x)=>{
+    const datam = api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     }).catch(err => catchFunc(err))
   };
@@ -39,18 +39,13 @@ const StudentListtSnack: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
   const handleDepartmentChange = (selected: any) => {
     setSelectedDepartment(selected);
-    formDoldur("d",selected.value);
+    formDoldur("d",JSON.stringify(selected));
   };
 
   const [selectedStuStatus, setSelectedStuStatus] = React.useState(null);
   const handleStuStatusChange = (selected: any) => {
     setSelectedStuStatus(selected);
-    let secim=[];
-    for(let i=0;i<selected.length;i++)
-    {
-      secim.push(+selected[i].value);
-    }
-    formDoldur("stu_status",JSON.stringify(secim));
+    formDoldur("stu_status",JSON.stringify(selected));
   };
 
   const [selectedRegisterType, setSelectedRegisterType] = React.useState(null);
@@ -58,18 +53,14 @@ const StudentListtSnack: React.FC = () => {
     setSelectedRegisterType(selected);
 
     let secim=[];
-    for(let i=0;i<selected.length;i++)
-    {
-      secim.push(+selected[i].value);
-    }
-    formDoldur("register_type",JSON.stringify(secim));
+    formDoldur("register_type",JSON.stringify(selected));
 
   };
 
   const [selectedScholarship, setSelectedScholarship] = React.useState(null);
   const handleScholarshipChange = (selected: any) => {
     setSelectedScholarship(selected);
-    formDoldur("fee_status",selected.value);
+    formDoldur("fee_status",JSON.stringify(selected));
   };
 
  
@@ -119,7 +110,7 @@ const StudentListtSnack: React.FC = () => {
     { name: 'Burs/İndirim Durumu', selector: (row) => row.burs_durumu, sortable: true , cell: row => <div className="cell">{row.burs_durumu}</div>},
     { name: 'ÇAP/YDP Durumu', selector: (row) => row.cift_durum, sortable: true, cell: row => <div className="cell">{row.cift_durum}</div> },
     { name: 'ÇAP/YDP Tarihçe Durum Tarihi', selector: (row) => row.cift_tar, sortable: true, cell: row => <div className="cell">{row.cift_tar}</div> },
-    { name: 'GNO', selector: (row) => '', sortable: true , cell: row => <div className="cell">{}</div>},
+    { name: 'GNO', selector: (row) => row.derece, sortable: true , cell: row => <div className="cell">{row.derece}</div>},
     { name: 'Kayıt Yılı', selector: (row) => row.register_year, sortable: true , cell: row => <div className="cell">{row.register_year}</div>},
     { name: 'D.Tarihi', selector: (row) => row.birth_date, sortable: true , cell: row => <div className="cell">{row.birth_date}</div>},
     { name: 'Uyruğu', selector: (row) => row.ulke, sortable: true , cell: row => <div className="cell">{row.ulke}</div>},
@@ -193,17 +184,19 @@ const StudentListtSnack: React.FC = () => {
   const handleSearch = (e:any) => {
     const searchTerm = e.target.value;
     const filteredItems = definitiverecordlist
-    // .filter((item) =>
-    //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.ogrno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   +item.id_no== +searchTerm ||
-    //   item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.faculty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.scholarship.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.status_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.regtype.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.sexx.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
+    .filter((item) =>
+      (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      +item.tckimlik== +searchTerm ||
+      item.fadi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.badi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.opt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.kayit_tipi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // item.status_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // (item.burs_tipi?item.burs_tipi.toLowerCase().includes(searchTerm.toLowerCase()):false) ||
+      // (item.burs_durumu?item.burs_durumu.toLowerCase().includes(searchTerm.toLowerCase()):false) ||
+      item.sexx.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     setFilteredData(filteredItems);
   };
 
@@ -327,6 +320,7 @@ const StudentListtSnack: React.FC = () => {
                   onChange={handleFacultyChange}
                   options={fList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Fakülte Seçiniz"
                 />
               </div>
@@ -342,6 +336,7 @@ const StudentListtSnack: React.FC = () => {
                   value={selectedDepartment}
                   onChange={handleDepartmentChange}
                   options={dList}
+                  isMulti={true}
                   isSearchable={true}
                   placeholder="Bölüm Seçiniz"
                 />

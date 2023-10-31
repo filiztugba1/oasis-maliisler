@@ -56,11 +56,14 @@ export interface UserModel {
   cell_nr?: any;
   language?: 'en' | 'tr';
   first_name?:any;
+  academicYear?:number;
+  academicSemester?:number;
 }
 
 export interface UserModelResponse {
   status: number;
   data: UserModel;
+  
 }
 
 ////////////////// yeni medeller ekleniyor  ///////////
@@ -92,7 +95,7 @@ export interface StudentDetail {
         burs_durumu: string
         burs_tipi: string
         alinan_ders: number
-        image:string
+        image:string,
 }
 
 export interface ResponseData{

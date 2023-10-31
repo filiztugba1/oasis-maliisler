@@ -14,6 +14,7 @@ export interface SummerFeeRefundRequests {
   IBAN: string;
   account_name: string;
   phone: string;
+  derece:string;
 }
 export interface SummerFeeRefundRequestsResponse {
   status: number;

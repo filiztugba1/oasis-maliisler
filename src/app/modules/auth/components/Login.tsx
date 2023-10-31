@@ -49,7 +49,8 @@ export function Login() {
         setCurrentUser(user)
         localStorage.setItem('user',JSON.stringify({
           cell_nr: user.data.cell_nr,email: user.data.email,name:user.data.name,sub_type: user.data.sub_type,surname: user.data.surname,tckimlik: user.data.tckimlik,title: user.data.title,type: user.data.type
-          ,username: user.data.username}))
+          ,username: user.data.username,academicYear:user.data.academicYear,academicSemester:user.data.academicSemester,academicSemesterText:(user.data.academicSemester==1?'Güz':(user.data.academicSemester==2?'Bahar':'Yaz'))}))
+
       } catch (error) {
         console.error(error)
         saveAuth(undefined)

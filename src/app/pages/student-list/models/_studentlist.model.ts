@@ -58,6 +58,7 @@ export interface StudentList {
   puanTuru:string;
   yerlestirmePuani:string;
   yerlestirmeSirasi:string;
+  derece:string;
 }
 export interface StudentListResponse {
   status: number;

@@ -7,10 +7,13 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 class DeptVsPaint extends Component {
 	render() {
+		const userItem = localStorage.getItem('user');
+		const user = userItem ? JSON.parse(userItem) : null;
+
 		const options = {
 			animationEnabled: true,
 			title: {
-				text: "2022 bahar dönemi ödenen - alınacak grafiği"
+				text: user.academicYear+" "+user.academicSemesterText+" dönemi ödenen - alınacak grafiği"
 			},
 			subtitles: [{
 				text: this.props.deptVsPaidx.length>0?api.paymetFormat((this.props.deptVsPaidx[0].y+this.props.deptVsPaidx[1].y))+' ödenen ':'',

@@ -17,6 +17,7 @@ export interface DebtCheckLists {
   payment: string;
   balance: string;
   payment_dolar:string;
+  derece:string;
 }
 export interface DebtCheckListsResponse {
   status: number;

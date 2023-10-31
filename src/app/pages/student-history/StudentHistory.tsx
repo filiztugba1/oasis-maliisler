@@ -466,7 +466,7 @@ const StudentHistorySnack: React.FC = () => {
                 {listPyLoad?<Loading/>:''}
                   <div className='card-header pt-9 pb-0'>
                     <h4> Burs Tarihçesi</h4>
-                    <span><button className='btn btn-sm btn-primary' onClick={createPaymentShow}>Tahsilat Ekle</button></span>
+                    <span><button className='btn btn-sm btn-primary' onClick={createPaymentShow}>Burs Ekle</button></span>
                   </div>
 
                   <div className='card-body pt-9 pb-0'>

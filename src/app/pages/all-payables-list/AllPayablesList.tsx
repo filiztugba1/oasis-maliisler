@@ -62,9 +62,9 @@ const AllPayablesListSnack: React.FC = () => {
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
     setSelectedFaculty(selected);
-    formDoldur("f",selected.value);
+    formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    const datam = api.department({f:selected.value}).then((x)=>{
+    const datam = api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     }).catch(err => catchFunc(err))
   };
@@ -72,8 +72,8 @@ const AllPayablesListSnack: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
   const handleDepartmentChange = (selected: any) => {
     setSelectedDepartment(selected);
-    formDoldur("d",selected.value);
-    api.option({f:formData.f,d:selected.value}).then((x)=>{
+    formDoldur("d",JSON.stringify(selected));
+    api.option({f:formData.f,d:JSON.stringify(selected)}).then((x)=>{
       setOList(x);
     }).catch(err => catchFunc(err))
   };
@@ -81,13 +81,13 @@ const AllPayablesListSnack: React.FC = () => {
   const [selectedOption, setSelectedOption] = React.useState(null);
   const handleOptionChange = (selected: any) => {
     setSelectedOption(selected);
-    formDoldur("o",selected.value);
+    formDoldur("o",JSON.stringify(selected));
   };
 
   const [selectedScholarship, setSelectedScholarship] = React.useState(null);
   const handleScholarshipChange = (selected: any) => {
     setSelectedScholarship(selected);
-    formDoldur("fee_status",selected.value);
+    formDoldur("fee_status",JSON.stringify(selected));
   };
 
  
@@ -100,7 +100,7 @@ const AllPayablesListSnack: React.FC = () => {
   const [selectedFeetypes, setselectedFeetypes] = React.useState(null);
   const handleFeetypes = (selected: any) => {
     setselectedFeetypes(selected);
-    formDoldur("fee_id",selected.value);
+    formDoldur("fee_id",JSON.stringify(selected));
   };
 
   const formDoldur = (key: any,value:any) => {
@@ -136,16 +136,15 @@ const AllPayablesListSnack: React.FC = () => {
     { name: 'Borç Tarihi', selector: (row) => row.create_date, sortable: true },
     { name: 'Borç Miktarı (TL)', selector: (row) =>  api.paymetFormat(row.p1), sortable: true },
     { name: 'Ödeme Miktarı TL', selector: (row) => api.paymetFormat(row.p3), sortable: true },
+    { name: 'Bakiye', selector: (row) => api.paymetFormat((+row.p1-(+row.p3)-(+row.move))+''), sortable: true },
     { name: 'Borç Miktarı (USD)', selector: (row) => api.paymetFormat(row.p2), sortable: true },
     { name: 'Ödeme Miktarı USD.', selector: (row) => api.paymetFormat(row.p4), sortable: true },
-    { name: 'Aktarılan', selector: (row) => api.paymetFormat(row.aktarilan), sortable: true },
-    { name: 'Bakiye', selector: (row) => api.paymetFormat((+row.p1-(+row.p3)-(+row.move))+''), sortable: true },
     { name: 'Türü', selector: (row) => row.harc_tipi, sortable: true },
     { name: 'Burs', selector: (row) => (row.burstip!==null?row.burstip:'')+' '+(+row.fee_status==4?'Kesildi!':''), sortable: true },
     { name: 'Son Tarihçe', selector: (row) => row.tarihce, sortable: true },
     { name: 'Tarihçe Tarihi', selector: (row) => row.tarihce_date, sortable: true },
     { name: 'Kayıt Tipi', selector: (row) => row.register_type, sortable: true },
-    { name: 'GNO', selector: (row) => '', sortable: true },
+    { name: 'GNO', selector: (row) => row.derece, sortable: true },
   ];
 
   const [definitiverecordlist, setDefinitiverecordlist] = useState<Array<AllPayablesLists>>([]);
@@ -219,16 +218,16 @@ const AllPayablesListSnack: React.FC = () => {
       'Borç Tarihi': item.create_date,
       'Borç Miktarı (TL)': api.paymetFormat(item.p1),
       'Ödeme Miktarı TL': api.paymetFormat(item.p3),
+      'Bakiye': api.paymetFormat((+item.p1-(+item.p3)-(+item.move))+''),
       'Borç Miktarı (USD)': api.paymetFormat(item.p2),
       'Ödeme Miktarı USD.': api.paymetFormat(item.p4),
-      'Aktarılan':api.paymetFormat(item.aktarilan) ,
-      'Bakiye': api.paymetFormat((+item.p1-(+item.p3)-(+item.move))+''),
+      
       'Türü': item.harc_tipi,
       'Burs': item.burstip+' '+(+item.fee_status==4?'Kesildi!':''),
       'Son Tarihçe': item.tarihce,
       'Tarihçe Tarihi': item.tarihce_date,
       'Kayıt Tipi': item.register_type,
-      'GNO': '',
+      'GNO': item.derece,
     }));
     const ws = utils .json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
@@ -269,6 +268,7 @@ const AllPayablesListSnack: React.FC = () => {
                   options={fList}
                   isSearchable={true}
                   placeholder="Fakülte Seçiniz"
+                  isMulti={true}
                 />
               </div>
             </div>
@@ -285,6 +285,7 @@ const AllPayablesListSnack: React.FC = () => {
                   options={dList}
                   isSearchable={true}
                   placeholder="Bölüm Seçiniz"
+                  isMulti={true}
                 />
               </div>
             </div>
@@ -301,6 +302,7 @@ const AllPayablesListSnack: React.FC = () => {
                   options={oList}
                   isSearchable={true}
                   placeholder="Opsiyon Seçiniz"
+                  isMulti={true}
                 />
               </div>
             </div>
@@ -330,13 +332,13 @@ const AllPayablesListSnack: React.FC = () => {
                   value={formData.semester}
                 >
                   <option value="-1">Tümü</option>
-                  <option value="0">Yıllık</option>
+                  {/* <option value="0">Yıllık</option> */}
                   <option value="1">1.Dönem</option>
                   <option value="2">2.Dönem</option>
                   <option value="3">3.Dönem</option>
-                  <option value="7">Tek Ders</option>
+                  {/* <option value="7">Tek Ders</option>
                   <option value="21">Azami Süre Güz Dönemi</option>
-                  <option value="22">Azami Süre Bahar Dönemi</option>
+                  <option value="22">Azami Süre Bahar Dönemi</option> */}
                 </select>
               </div>
             </div>
@@ -407,7 +409,7 @@ const AllPayablesListSnack: React.FC = () => {
                 options={sssList}
                 isSearchable={true}
                 placeholder="Burs Tipini Seçiniz"
-                isMulti
+                isMulti={true}
               />
             </div>
 
@@ -421,6 +423,7 @@ const AllPayablesListSnack: React.FC = () => {
                 options={feetypeList}
                 isSearchable={true}
                 placeholder="Ücret Tipini Seçiniz"
+                isMulti={true}
               />
             </div>
 

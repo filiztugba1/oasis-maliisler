@@ -54,9 +54,9 @@ const FeePaymentsListSnack: React.FC = () => {
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
     setSelectedFaculty(selected);
-    formDoldur("f",selected.value);
+    formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    api.department({f:selected.value}).then((x)=>{
+    api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     })
   };
@@ -64,8 +64,8 @@ const FeePaymentsListSnack: React.FC = () => {
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
   const handleDepartmentChange = (selected: any) => {
     setSelectedDepartment(selected);
-    formDoldur("d",selected.value);
-    api.option({f:formData.f,d:selected.value}).then((x)=>{
+    formDoldur("d",JSON.stringify(selected));
+    api.option({d:JSON.stringify(selected)}).then((x)=>{
       setOList(x);
     })
   };
@@ -73,19 +73,19 @@ const FeePaymentsListSnack: React.FC = () => {
   const [selectedOption, setSelectedOption] = React.useState(null);
   const handleOptionChange = (selected: any) => {
     setSelectedOption(selected);
-    formDoldur("o",selected.value);
+    formDoldur("o",JSON.stringify(selected));
   };
 
   const [selectedBanks, setSelectedBanks] = React.useState(null);
   const handleBanksChange = (selected: any) => {
     setSelectedBanks(selected);
-    formDoldur("banka",selected.value);
+    formDoldur("banka",JSON.stringify(selected));
   };
 
   const [selectedFeeTypes, setSelectedFeeTypes] = React.useState(null);
   const handleFeeTypesChange = (selected: any) => {
     setSelectedFeeTypes(selected);
-    formDoldur("banka",selected.value);
+    formDoldur("fee_type",JSON.stringify(selected));
   };
 
 
@@ -120,6 +120,7 @@ const FeePaymentsListSnack: React.FC = () => {
     { name: 'Durumu', selector: (row) => row.durumu, sortable: true },
     { name: 'Fakülte', selector: (row) => row.fakulte_name, sortable: true },
     { name: 'Bölüm', selector: (row) => row.name_tr, sortable: true },
+    { name: 'GNO', selector: (row) => row.derece, sortable: true },
     { name: 'Ödeme Tarihi', selector: (row) => row.payment_date, sortable: true },
     { name: 'Miktarı TL.', selector: (row) => api.paymetFormat(row.payment), sortable: true },
    
@@ -167,17 +168,14 @@ const FeePaymentsListSnack: React.FC = () => {
   const handleSearch = (e:any) => {
     const searchTerm = e.target.value;
     const filteredItems = numberofstudentscholarshiplist
-    // .filter((item) =>
-    //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.ogrno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   +item.id_no== +searchTerm ||
-    //   item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.faculty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.scholarship.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.status_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.regtype.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.sexx.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
+    .filter((item) =>
+      (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.fakulte_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.accounts.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.register_type.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     setFilteredData(filteredItems);
   };
 
@@ -197,6 +195,7 @@ const FeePaymentsListSnack: React.FC = () => {
         'Durumu': item.durumu,
         'Fakülte': item.fakulte_name,
         'Bölüm': item.name_tr,
+        'GNO': item.derece,
         'Ödeme Tarihi': item.payment_date,
         'Miktarı TL.': api.paymetFormat(item.payment),
         'Miktarı USD.': api.paymetFormat(item.payment_dolar),
@@ -244,6 +243,7 @@ const FeePaymentsListSnack: React.FC = () => {
                   onChange={handleFacultyChange}
                   options={fList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Fakülte Seçiniz"
                 />
               </div>
@@ -260,6 +260,7 @@ const FeePaymentsListSnack: React.FC = () => {
                   onChange={handleDepartmentChange}
                   options={dList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Bölüm Seçiniz"
                 />
               </div>
@@ -275,6 +276,7 @@ const FeePaymentsListSnack: React.FC = () => {
                   onChange={handleOptionChange}
                   options={oList}
                   isSearchable={true}
+                  isMulti={true}
                   placeholder="Opsiyon Seçiniz"
                 />
               </div>
@@ -306,13 +308,13 @@ const FeePaymentsListSnack: React.FC = () => {
                   value={formData.semester}
                 >
                    <option value="-1">Tümü</option>
-                  <option value="0">Yıllık</option>
+                  {/* <option value="0">Yıllık</option> */}
                   <option value="1">1.Dönem</option>
                   <option value="2">2.Dönem</option>
                   <option  value="3">3.Dönem</option>
-                  <option value="7">Tek Ders</option>
+                  {/* <option value="7">Tek Ders</option>
                   <option value="21">Azami Süre Güz Dönemi</option>
-                  <option value="22">Azami Süre Bahar Dönemi</option>
+                  <option value="22">Azami Süre Bahar Dönemi</option> */}
                 </select>
               </div>
             </div>
@@ -327,6 +329,7 @@ const FeePaymentsListSnack: React.FC = () => {
                 onChange={handleBanksChange}
                 options={banks}
                 isSearchable={true}
+                isMulti={true}
                 placeholder="Banka seçiniz"
               />
             </div>
@@ -341,6 +344,7 @@ const FeePaymentsListSnack: React.FC = () => {
                 onChange={handleFeeTypesChange}
                 options={feetypes}
                 isSearchable={true}
+                isMulti={true}
                 placeholder="Ücret Tipi seçiniz"
               />
             </div>
@@ -394,7 +398,7 @@ const FeePaymentsListSnack: React.FC = () => {
       {tableisActive?<div className='card mb-5 mb-xl-10'>
       {listLoad?<Loading/>:''}
         <div className='card-header pt-9 pb-0'>
-          <h4>Öğrenci Ödeme Listesi</h4>
+          <h4>Tüm Ödemeler Listesi</h4>
         </div>
         <div className='card-body pt-9 pb-0'>
        {numberofstudentscholarshiplist.length?

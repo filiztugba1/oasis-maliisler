@@ -48,17 +48,24 @@ const ParamFeesSnack: React.FC = () => {
   };
 
   const columns: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
+    {
+      name: 'İşlem', selector: (row) => '', cell: (row) => <div>
+        <span><button className='btn  btn-warning btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => updateShow(row)}><i className='fa fa-pen'></i></button></span>
+        <span><button className='btn  btn-danger btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => deleteShow(row)}><i className='fa fa-trash'></i></button></span>
+      </div> ,
+      sortable: true
+    },
     { name: 'Fakülte', selector: (row) => row.fak_name, sortable: true },
     { name: 'Bölüm', selector: (row) => row.dep_name, sortable: true },
     { name: 'f', selector: (row) => row.f, sortable: true },
     { name: 'd', selector: (row) => row.d, sortable: true },
     { name: 'fdo', selector: (row) => row.fdo, sortable: true },
-    { name: '2016 Akademik Yılı ve Öncesi', selector: (row) => row.fee || '', sortable: true },
-    { name: '2017 Yılı', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
-    { name: '2018 Yılı', selector: (row) => api.paymetFormat(row.fee3) || '', sortable: true },
-    { name: '2019 Yılı', selector: (row) => api.paymetFormat(row.fee4)|| '', sortable: true },
-    { name: '2020 Yılı', selector: (row) => api.paymetFormat(row.fee5) || '', sortable: true },
-    { name: '2021 Yılı', selector: (row) => api.paymetFormat(row.fee6) || '', sortable: true },
+    { name: '2011 Akademik Yılı ve Öncesi', selector: (row) => row.fee || '', sortable: true },
+    { name: '2012-2013-2014 Yılı', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
+    { name: '2015-2016 Yılı', selector: (row) => api.paymetFormat(row.fee3) || '', sortable: true },
+    { name: '2017-2018 Yılı', selector: (row) => api.paymetFormat(row.fee4)|| '', sortable: true },
+    { name: '2019 Yılı', selector: (row) => api.paymetFormat(row.fee5) || '', sortable: true },
+    { name: '2020-2021 Yılı', selector: (row) => api.paymetFormat(row.fee6) || '', sortable: true },
     { name: '2022 Yılı', selector: (row) => api.paymetFormat(row.fee7) || '', sortable: true },
     { name: '2023 Yılı', selector: (row) => api.paymetFormat(row.fee8) || '', sortable: true },
     { name: 'Hazırlık 2021 Yılı ve Öncesi', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
@@ -68,25 +75,67 @@ const ParamFeesSnack: React.FC = () => {
 
 
   const columns2: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
+   
+
     { name: 'Fakülte', selector: (row) =>Object.values(row)[Object.keys(row).findIndex(key => key==='Fakülte')], sortable: true },
     { name: 'Bölüm', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='Bölüm')], sortable: true },
     { name: 'f', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='f')], sortable: true },
     { name: 'd', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='d')], sortable: true },
     { name: 'fdo', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='fdo')], sortable: true },
-    { name: '2016 Akademik Yılı ve Öncesi', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='2016 Akademik Yılı ve Öncesi')] || '', sortable: true },
-    { name: '2017 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2017 Yılı')]) || '', sortable: true },
-    { name: '2018 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2018 Yılı')]) || '', sortable: true },
-    { name: '2019 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2019 Yılı')])|| '', sortable: true },
-    { name: '2020 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2020 Yılı')]) || '', sortable: true },
-    { name: '2021 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2021 Yılı')]) || '', sortable: true },
+    { name: '2011 Akademik Yılı ve Öncesi', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='2016 Akademik Yılı ve Öncesi')] || '', sortable: true },
+    { name: '2012-2013-2014 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2017 Yılı')]) || '', sortable: true },
+    { name: '2015-2016 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2018 Yılı')]) || '', sortable: true },
+    { name: '2017-2018 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2019 Yılı')])|| '', sortable: true },
+    { name: '2019 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2020 Yılı')]) || '', sortable: true },
+    { name: '2020-2021 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2021 Yılı')]) || '', sortable: true },
     { name: '2022 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2022 Yılı')]) || '', sortable: true },
     { name: '2023 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2023 Yılı')]) || '', sortable: true },
     { name: 'Hazırlık 2021 Yılı ve Öncesi', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Hazırlık 2021 Yılı ve Öncesi')]) || '', sortable: true },
     { name: 'Hazırlık 2022 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Hazırlık 2022 Yılı')]) || '', sortable: true },
     { name: 'Hazırlık 2023 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Hazırlık 2023 Yılı')]) || '', sortable: true },
   ];
+  const [showFees, setShowFees] = useState(false);
+
+  const handleFeesClose = () => setShowFees(false);
+  const handleFeesShow = () => setShowFees(true);
 
 
+  const [deleteshowFees, setDeleteShowFees] = useState(false);
+
+  const handleDeleteFeesClose = () => setDeleteShowFees(false);
+  const handleDeleteFeesShow = () => setDeleteShowFees(true);
+
+  const updateShow = (row: ParamFeesx) => {
+    // setSelectedYear(yearList.find((x) => +x.value === +row.Year) ?? null);
+    // setSelectedScholarship(sssList.find((x) => +x.value === +row.sid) ?? null);
+    // setFormDataScolar({
+    //   year: row.Year,
+    //   semester: row.Semester,
+    //   scholarship_type: row.sid,
+    //   scholarship_status: row.stat_id,
+    //   explanation: row.Explanation,
+    //   std_state_date: row.stat_date_,
+    //   update_date: row.update_date_,
+    //   actionType: 'update'
+    // });
+    handleFeesShow();
+  }
+
+  const deleteShow = (row: ParamFeesx) => {
+    // setSelectedYear(yearList.find((x) => +x.value === +row.Year) ?? null);
+    // setSelectedScholarship(sssList.find((x) => +x.value === +row.sid) ?? null);
+    // setFormDataScolar({
+    //   year: row.Year,
+    //   semester: row.Semester,
+    //   scholarship_type: row.sid,
+    //   scholarship_status: row.stat_id,
+    //   explanation: row.Explanation,
+    //   std_state_date: row.stat_date_,
+    //   update_date: row.update_date_,
+    //   actionType: 'delete'
+    // });
+    handleDeleteFeesShow();
+  }
   
   const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<ParamFeesx>>([]);
 
@@ -124,12 +173,12 @@ const ParamFeesSnack: React.FC = () => {
         'f': item.f,
         'd': item.d,
         'fdo': item.fdo,
-        '2016 Akademik Yılı ve Öncesi': api.paymetFormat(item.fee),
-        '2017 Yılı': api.paymetFormat(item.fee2),
-        '2018 Yılı': api.paymetFormat(item.fee3),
-        '2019 Yılı':api.paymetFormat(item.fee4),
-        '2020 Yılı': api.paymetFormat(item.fee5),
-        '2021 Yılı': api.paymetFormat(item.fee6),
+        '2011 Akademik Yılı ve Öncesi': api.paymetFormat(item.fee),
+        '2012-2013-2014 Yılı': api.paymetFormat(item.fee2),
+        '2015-2016 Yılı': api.paymetFormat(item.fee3),
+        '2017-2018 Yılı':api.paymetFormat(item.fee4),
+        '2019 Yılı': api.paymetFormat(item.fee5),
+        '2020-2021 Yılı': api.paymetFormat(item.fee6),
         '2022 Yılı': api.paymetFormat(item.fee7),
         '2023 Yılı': api.paymetFormat(item.fee8),
         'Hazırlık 2021 Yılı ve Öncesi': api.paymetFormat(item.fee_prep),
@@ -207,11 +256,9 @@ const ParamFeesSnack: React.FC = () => {
 
   return (
     <>
-
-      <div className='card mb-5 mb-xl-10'>
-      {listLoad?<Loading/>:''}
-        <div className='card-header pt-9 pb-0'>
-          <h4>Yeni öğrencilere ait parametre tablosu</h4>
+<div className='card mb-5 mb-xl-10'>
+        <div className='card-header pt-9 pb-9'>
+          <h4>Excel ile toplu parametre ekleme</h4>
           
           <div>
           <button className="btn btn-sm btn-success" onClick={handleYukleModal} style={{float: 'right'}}>Yüklenecek verileri gör</button>
@@ -228,6 +275,15 @@ const ParamFeesSnack: React.FC = () => {
           </div>
           
             {/* <pre>{JSON.stringify(jsonData, null, 2)}</pre> */}
+        </div>
+</div>
+      <div className='card mb-5 mb-xl-10'>
+      {listLoad?<Loading/>:''}
+      <div className='card-header pt-9 pb-5'>
+          <h4>Yeni öğrencilere ait parametre tablosu</h4>
+          
+          <button className="btn btn-sm btn-success" onClick={handleYukleModal} style={{float: 'right'}}>Parametre Ekle</button>
+          
         </div>
         <div className='card-body pt-9 pb-0'>
        {summerFeeRefundRequests.length?

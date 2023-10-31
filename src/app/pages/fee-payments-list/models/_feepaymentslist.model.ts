@@ -27,6 +27,7 @@ export interface FeePaymentList {
   fakulte_name?: any;
   register_year?: any;
   register_type?: any;
+  derece:string;
 }
 export interface FeePaymentListResponse {
   status: number;
