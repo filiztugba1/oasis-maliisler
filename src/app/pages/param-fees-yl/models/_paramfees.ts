@@ -1,34 +1,23 @@
-export interface ParamFeesx {
+export interface ParamFeesYlx {
   year: string;
   f: string;
   d: string;
   fee: string;
-  fee2: string;
-  fee3: string;
-  fee4: string;
-  fee5: string;
-  fee6: string;
-  fee7: string;
-  fee8?: any;
   fee_prep: string;
-  fee_prep2: string;
-  fee_prep3?: any;
   fdo: string;
-  ikinci_ogretim?: any;
-  yabanci_dille_egitim?: any;
   dep_name: string;
   fak_name: string;
 }
-export interface ParamFeesResponse {
+export interface ParamFeesYlResponse {
   status: number;
-  data: Array<ParamFeesx>;
+  data: Array<ParamFeesYlx>;
 }
-export interface ParamFeesUpdateResponse {
+export interface ParamFeesYlUpdateResponse {
   status: number;
   message: string;
 }
 
-export interface ParamFeesAppList {
+export interface ParamFeesYlAppList {
   appUser?: any;
   createUser: string;
   id: string;
@@ -44,12 +33,12 @@ export interface ParamFeesAppList {
   message?: any;
   module: string;
 }
-export interface ParamFeesAppResponse {
+export interface ParamFeesYlAppResponse {
   status: number;
-  data: ParamFeesAppList[];
+  data: ParamFeesYlAppList[];
 }
 
-export interface ParamFeesRed {
+export interface ParamFeesYlOnayRed {
   id: number;
   message:string ;
 }

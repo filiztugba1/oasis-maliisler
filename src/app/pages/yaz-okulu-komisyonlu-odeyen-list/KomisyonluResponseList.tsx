@@ -39,7 +39,7 @@ const KomisyonluListSnack: React.FC = () => {
     { name: 'Aldığı İEU Kredisi', selector: (row) => row.aldigi_ieu_kredisi || '', sortable: true },
     { name: 'Tahsilat Ödeme', selector: (row) => api.paymetFormat(row.tahsilat_odeme) || '', sortable: true },
     { name: 'Oasis Ödeme', selector: (row) => api.paymetFormat(row.oasis_odeme) || '', sortable: true },
-    { name: 'İade', selector: (row) => api.paymetFormat(row.iade) || '', sortable: true },
+    { name: 'İade', selector: (row) => (+row.iade>0?api.paymetFormat(row.iade):row.iade) || '', sortable: true },
     { name: 'Faturalanacak Tutar', selector: (row) => api.paymetFormat(row.faturalanacak_tutar) || '', sortable: true },
     { name: 'Komisyon', selector: (row) => api.paymetFormat(row.komisyon) || '', sortable: true },
 
@@ -88,7 +88,7 @@ const KomisyonluListSnack: React.FC = () => {
         'Aldığı İEU Kredisi': api.paymetFormat(item.aldigi_ieu_kredisi),
         'Tahsilat Ödeme': api.paymetFormat(item.tahsilat_odeme),
         'Oasis Ödeme': api.paymetFormat(item.oasis_odeme),
-        'İade': api.paymetFormat(item.iade),
+        'İade': (+item.iade>0?api.paymetFormat(item.iade):item.iade),
         'Faturalanacak Tutar': item.faturalanacak_tutar,
         'Komisyon': item.komisyon,
       })

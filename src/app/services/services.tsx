@@ -19,7 +19,7 @@ import { FeePaymentListRequest, FeePaymentListResponse } from '../pages/fee-paym
 import { AllPayablesListRequest, AllPayablesListResponse } from '../pages/all-payables-list/models/_allpayableslist.model';
 import { DebtCheckListsRequest, DebtCheckListsResponse } from '../pages/debt-check-list/models/_debtchecklist.model';
 import { InstallmentCURequest, InstallmentListsRequest, InstallmentListsResponse } from '../pages/installment/models/_installment.model';
-import { ParamFeesResponse, ParamFeesUpdateResponse } from '../pages/param-student-fees/models/_paramfees';
+import { ParamFeesAppList, ParamFeesAppResponse, ParamFeesRed, ParamFeesResponse, ParamFeesUpdateResponse, ParamFeesx } from '../pages/param-student-fees/models/_paramfees';
 import { StudentDetailResponseData } from '../pages/student-info/models/_studentdetail.model';
 import { GeneralInformationResponseData } from '../pages/student-info/models/_generalinformation.model';
 import { IdInformationResponseData } from '../pages/student-info/models/_idinformation.model';
@@ -31,6 +31,8 @@ import { ResponseData, StudentModel } from '../modules/auth';
 import { RelationMaliDetailResponse } from '../pages/relation-mali/models/_relationmali.model';
 import { CariNameListResponse } from '../pages/cari-name-list/models/_carinamelistx.model';
 import { KomisyonluResponse } from '../pages/yaz-okulu-komisyonlu-odeyen-list/models/_yaz-okulu-komisyonlu.model';
+import { ParamFeesYlAppResponse, ParamFeesYlOnayRed, ParamFeesYlResponse, ParamFeesYlUpdateResponse, ParamFeesYlx } from '../pages/param-fees-yl/models/_paramfees';
+import { ParamFeesDolarResponse, ParamFeesDolarUpdateResponse } from '../pages/param-fees-dolar/models/_paramfees';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -115,13 +117,14 @@ const scholarshipStatus=async ()=>{
       // console.log((formatla.split(' €'))[0]);
       return (formatla.split(' €'))[0];
     }
-    if(number!==null && number!=='' && number!==undefined)
+    if(number!==null && number!=='' && number!==undefined && +number!==0)
     {
       const noktaDegis=number.replace('.','-');
       const virgulDegis=noktaDegis.replace(',','.');
       const sonDegis=virgulDegis.replace('-',',');
       return sonDegis;
     }
+    return number;
   }
 
 
@@ -322,9 +325,85 @@ const scholarshipStatus=async ()=>{
     const res= await axios.post<KomisyonluResponse>(url);
     return res.data.data;
   }
+
+  const  paramfeeadd =async (formdata:ParamFeesx)=>{
+    const url=API_URL+'/maliisler/param-fees-create-update';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  paramfeedelete =async (formdata:ParamFeesx)=>{
+    const url=API_URL+'/maliisler/param-fees-delete';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  paramAppFees =async (formdata:any)=>{
+    const url=API_URL+'/maliisler/param-fees-approval-list';
+    const res= await axios.post<ParamFeesAppResponse>(url,formdata);
+    return res.data.data;
+  }
+  const  paramfeered =async (formdata:ParamFeesRed)=>{
+    const url=API_URL+'/maliisler/param-fees-red';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  paramfeeonay =async (formdata:ParamFeesRed)=>{
+    const url=API_URL+'/maliisler/param-fees-onay';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+
+
+  const  paramfeeyladd =async (formdata:ParamFeesYlx)=>{
+    const url=API_URL+'/maliisler/param-fees-yl-create-update';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  paramfeeyldelete =async (formdata:ParamFeesYlx)=>{
+    const url=API_URL+'/maliisler/param-fees-yl-delete';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+
+  const paramFeesYl=async ()=>{
+    const url=API_URL+'/maliisler/param-fees-yl';
+    const res= await axios.post<ParamFeesYlResponse>(url);
+    return res.data.data;
+  }
+
+  const paramFeesYlCu=async (formData:any)=>{
+    const url=API_URL+'/maliisler/param-fees-yl-cu';
+    const res= await axios.post<ParamFeesYlUpdateResponse>(url,formData);
+    return res.data;
+  }
+
+  const paramFeesDolar=async ()=>{
+    const url=API_URL+'/maliisler/param-fees-yl';
+    const res= await axios.post<ParamFeesDolarResponse>(url);
+    return res.data.data;
+  }
+
+  const paramFeesDolarCu=async (formData:any)=>{
+    const url=API_URL+'/maliisler/param-fees-yl-cu';
+    const res= await axios.post<ParamFeesDolarUpdateResponse>(url,formData);
+    return res.data;
+  }
+
+  const  paramfeedolaradd =async (formdata:ParamFeesYlx)=>{
+    const url=API_URL+'/maliisler/param-fees-yl-create-update';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  paramfeedolardelete =async (formdata:ParamFeesYlx)=>{
+    const url=API_URL+'/maliisler/param-fees-yl-delete';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+
   
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
 ,debtCheckList,installment,installmentUpdate,paramFees,paramFeesCu,activeStudentDetail,generalInformation,idInformation,contactInformation,transkript,studentFees,studentPayments,
 studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList,activeStudentList,scholarshipHistoryUpdate
-,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate,cariList,mahsupResponse,komisyonluOdeyenler};
+,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate,cariList,mahsupResponse,komisyonluOdeyenler,paramfeeadd,paramfeedelete,paramAppFees,paramfeered,
+paramfeeonay,paramfeeyladd,paramfeeyldelete,paramFeesYl,paramFeesYlCu,paramFeesDolar,paramFeesDolarCu,paramfeedolaradd,paramfeedolardelete
+};

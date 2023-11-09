@@ -24,6 +24,9 @@ import RelationMali from '../pages/relation-mali/RelationMali'
 import ParamFees from '../pages/param-student-fees/ParamFees'
 import CariNameListe from '../pages/cari-name-list/CariNameList'
 import MahsupResponseList from '../pages/mahsup-list/MahsupResponseList'
+import KomisyonluResponseList from '../pages/yaz-okulu-komisyonlu-odeyen-list/KomisyonluResponseList'
+import ParamFeesYl from '../pages/param-fees-yl/ParamFeesYl'
+import ParamFeesDolar from '../pages/param-fees-dolar/ParamFeesDolar'
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
@@ -52,12 +55,16 @@ const PrivateRoutes = () => {
         <Route path='number-of-student-scholarships' element={<NumberOfStudentScholarships />} />
         <Route path='summer-fee-refund-requests' element={< SummerFeeRefundRequestList/>} />
         <Route path='mahsup-list' element={< MahsupResponseList/>} />
+        <Route path='yaz-okulu-komisyonlu-odeyen-listesi' element={< KomisyonluResponseList/>} />
         <Route path='cari-name-list' element={< CariNameListe/>} />
         <Route path='fee-payments-list' element={< FeePaymentsList/>} />
         <Route path='all-payables-list' element={< AllPayablesList/>} />
         <Route path='debt-check-list' element={< DebtCheckList/>} />
         <Route path='installment' element={< Installment/>} />
         <Route path='param-fees' element={< ParamFees/>} />
+        <Route path='yl-param-fees' element={< ParamFeesYl/>} />
+        <Route path='dolar-param-fees' element={< ParamFeesDolar/>} />
+        
 
         {/* <Route path='menu-test' element={<MenuTestPage />} /> */}
         {/* Lazy Modules */}

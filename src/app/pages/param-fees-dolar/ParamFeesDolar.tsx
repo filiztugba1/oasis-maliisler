@@ -1,7 +1,7 @@
 import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import axios from "axios";
-import {ParamFeesx, ParamFeesResponse, ParamFeesAppList, ParamFeesRed} from './models/_paramfees'
+import {ParamFeesDolarx, ParamFeesDolarAppList, ParamFeesDolarOnayRed} from './models/_paramfees'
 import './payments.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -16,7 +16,7 @@ import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const ParamFeesSnack: React.FC = () => {
+const ParamFeesDolarSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
@@ -55,10 +55,6 @@ const ParamFeesSnack: React.FC = () => {
             setFList(x);
             setIsApi(false);
           }).catch(err => catchFunc(err))
-
-
-          
-    
     },[]);
 
   const [selectedYear, setSelectedYear] = React.useState<null | FacultyList>(null);
@@ -67,7 +63,7 @@ const ParamFeesSnack: React.FC = () => {
   };
 
   const paramList = () => {
-    api.paramFees().then((x) => {
+    api.paramFeesDolar().then((x) => {
       setlistLoad(false);
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
@@ -75,7 +71,7 @@ const ParamFeesSnack: React.FC = () => {
   }
 
   const paramAppList = () => {
-    api.paramAppFees({module:'param-fees'}).then((x) => {
+    api.paramAppFees({module:'param-fees-dolar'}).then((x) => {
       setlistLoad(false);
       setSummerFeeAppRefundRequests(x);
       setFilteredAppData(x);
@@ -95,18 +91,9 @@ const ParamFeesSnack: React.FC = () => {
     { name: 'f', selector: (row) => row.f, sortable: true },
     { name: 'd', selector: (row) => row.d, sortable: true },
     { name: 'fdo', selector: (row) => row.fdo, sortable: true },
-    { name: '2011 Akademik Yılı ve Öncesi', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
-    { name: '2012-2013-2014 Yılı', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
-    { name: '2015-2016 Yılı', selector: (row) => api.paymetFormat(row.fee3) || '', sortable: true },
-    { name: '2017-2018 Yılı', selector: (row) => api.paymetFormat(row.fee4)|| '', sortable: true },
-    { name: '2019 Yılı', selector: (row) => api.paymetFormat(row.fee5) || '', sortable: true },
-    { name: '2020-2021 Yılı', selector: (row) => api.paymetFormat(row.fee6) || '', sortable: true },
-    { name: '2022 Yılı', selector: (row) => api.paymetFormat(row.fee7) || '', sortable: true },
-    { name: '2023 Yılı', selector: (row) => api.paymetFormat(row.fee8) || '', sortable: true },
-    { name: 'Hazırlık 2021 Yılı ve Öncesi', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
-    { name: 'Hazırlık 2022 Yılı', selector: (row) => api.paymetFormat(row.fee_prep2) || '', sortable: true },
-    { name: 'Hazırlık 2023 Yılı', selector: (row) => api.paymetFormat(row.fee_prep3) || '', sortable: true },
-  ];
+    { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
+    { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(row.fee_prep) || '', sortable: true },
+   ];
 
 
   const columns2: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
@@ -117,20 +104,11 @@ const ParamFeesSnack: React.FC = () => {
     { name: 'f', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='f')], sortable: true },
     { name: 'd', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='d')], sortable: true },
     { name: 'fdo', selector: (row) => Object.values(row)[Object.keys(row).findIndex(key => key==='fdo')], sortable: true },
-    { name: '2011 Akademik Yılı ve Öncesi', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2011 Akademik Yılı ve Öncesi')]) || '', sortable: true },
-    { name: '2012-2013-2014 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2012-2013-2014 Yılı')]) || '', sortable: true },
-    { name: '2015-2016 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2015-2016 Yılı')]) || '', sortable: true },
-    { name: '2017-2018 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2017-2018 Yılı')])|| '', sortable: true },
-    { name: '2019 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2019 Yılı')]) || '', sortable: true },
-    { name: '2020-2021 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2020-2021 Yılı')]) || '', sortable: true },
-    { name: '2022 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2022 Yılı')]) || '', sortable: true },
-    { name: '2023 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='2023 Yılı')]) || '', sortable: true },
-    { name: 'Hazırlık 2021 Yılı ve Öncesi', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Hazırlık 2021 Yılı ve Öncesi')]) || '', sortable: true },
-    { name: 'Hazırlık 2022 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Hazırlık 2022 Yılı')]) || '', sortable: true },
-    { name: 'Hazırlık 2023 Yılı', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Hazırlık 2023 Yılı')]) || '', sortable: true },
-  ];
+    { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Yüksek Lisans')]) || '', sortable: true },
+    { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Yüksek Lisans Hazırlık')]) || '', sortable: true },
+    ];
 
-  const [summerFeeReAppfundRequests, setSummerFeeAppRefundRequests] = useState<Array<ParamFeesAppList>>([]);
+  const [summerFeeReAppfundRequests, setSummerFeeAppRefundRequests] = useState<Array<ParamFeesDolarAppList>>([]);
   const columnsOnay: TableColumn<typeof summerFeeReAppfundRequests[0]>[] = [
     { name: 'Ekleme zamanı', selector: (row) => row.created_date, sortable: true },
     { name: 'Ekleyen Kullanıcı', selector: (row) => row.createUser, sortable: true },
@@ -195,17 +173,8 @@ const ParamFeesSnack: React.FC = () => {
     { name: 'f', selector: (row) => row.f, sortable: true },
     { name: 'd', selector: (row) => row.d, sortable: true },
     { name: 'fdo', selector: (row) => row.fdo, sortable: true },
-    { name: '2011 Akademik Yılı ve Öncesi', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
-    { name: '2012-2013-2014 Yılı', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
-    { name: '2015-2016 Yılı', selector: (row) => api.paymetFormat(row.fee3) || '', sortable: true },
-    { name: '2017-2018 Yılı', selector: (row) => api.paymetFormat(row.fee4)|| '', sortable: true },
-    { name: '2019 Yılı', selector: (row) => api.paymetFormat(row.fee5) || '', sortable: true },
-    { name: '2020-2021 Yılı', selector: (row) => api.paymetFormat(row.fee6) || '', sortable: true },
-    { name: '2022 Yılı', selector: (row) => api.paymetFormat(row.fee7) || '', sortable: true },
-    { name: '2023 Yılı', selector: (row) => api.paymetFormat(row.fee8) || '', sortable: true },
-    { name: 'Hazırlık 2021 Yılı ve Öncesi', selector: (row) => api.paymetFormat(row.fee2) || '', sortable: true },
-    { name: 'Hazırlık 2022 Yılı', selector: (row) => api.paymetFormat(row.fee_prep2) || '', sortable: true },
-    { name: 'Hazırlık 2023 Yılı', selector: (row) => api.paymetFormat(row.fee_prep3) || '', sortable: true },
+    { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
+    { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(row.fee_prep) || '', sortable: true },
   ];
 
 
@@ -224,12 +193,12 @@ const ParamFeesSnack: React.FC = () => {
   const handleFeesAppClose = () => setShowAppFees(false);
   const handleFeesAppShow = () => setShowAppFees(true);
 
-  const paramFeeOnayList=(row:ParamFeesAppList)=>{
+  const paramFeeOnayList=(row:ParamFeesDolarAppList)=>{
     setJsonDataApp(JSON.parse(row.json_data));
     handleFeesAppShow();
   }
 
-  const updateShow = (row: ParamFeesx) => {
+  const updateShow = (row: ParamFeesDolarx) => {
     let selectFac:any=fList.find((x) => +x.value === +row.f);
     setSelectedFaculty(selectFac);
     api.department({f:JSON.stringify([selectFac])}).then((x)=>{
@@ -240,24 +209,12 @@ const ParamFeesSnack: React.FC = () => {
 
       if (selectDep) {
         setSelectedDepartment(selectDep);
-        const newFormData: ParamFeesx = {
+        const newFormData: ParamFeesDolarx = {
           f: JSON.stringify(selectFac),
           d: JSON.stringify(selectDep),
-          
           fee:row.fee!==null?formatNumber(row.fee) + '':'',
-          fee2:  row.fee2!==null?formatNumber(row.fee2) + '':'',
-          fee3:  row.fee3!==null?formatNumber(row.fee3) + '':'',
-          fee4:  row.fee4!==null?formatNumber(row.fee4) + '':'',
-          fee5:  row.fee5!==null?formatNumber(row.fee5) + '':'',
-          fee6:  row.fee6!==null?formatNumber(row.fee6) + '':'',
-          fee7:  row.fee7!==null?formatNumber(row.fee7) + '':'',
-          fee8:  row.fee8!==null?formatNumber(row.fee8) + '':'',
           fee_prep:  row.fee_prep!==null?formatNumber(row.fee_prep) + '':'',
-          fee_prep2:  row.fee_prep2!==null?formatNumber(row.fee_prep2) + '':'',
-          fee_prep3:  row.fee_prep3!==null?formatNumber(row.fee_prep3) + '':'',
           fdo: row.fdo,
-          ikinci_ogretim: row.ikinci_ogretim,
-          yabanci_dille_egitim: row.yabanci_dille_egitim,
           dep_name: row.dep_name,
           fak_name: row.fak_name,
           year: ''
@@ -281,7 +238,7 @@ const ParamFeesSnack: React.FC = () => {
     setDList([]);
     handleAddPaymentShow();
   }
-  const deleteShow = (row: ParamFeesx) => {
+  const deleteShow = (row: ParamFeesDolarx) => {
     // setSelectedYear(yearList.find((x) => +x.value === +row.Year) ?? null);
     // setSelectedScholarship(sssList.find((x) => +x.value === +row.sid) ?? null);
     // setFormDataScolar({
@@ -298,7 +255,7 @@ const ParamFeesSnack: React.FC = () => {
     handleDeleteFeesShow();
   }
   
-  const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<ParamFeesx>>([]);
+  const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<ParamFeesDolarx>>([]);
 
 
   const [filteredData, setFilteredData] = useState(summerFeeRefundRequests);
@@ -334,17 +291,8 @@ const ParamFeesSnack: React.FC = () => {
         'f': item.f,
         'd': item.d,
         'fdo': item.fdo,
-        '2011 Akademik Yılı ve Öncesi': api.paymetFormat(item.fee),
-        '2012-2013-2014 Yılı': api.paymetFormat(item.fee2),
-        '2015-2016 Yılı': api.paymetFormat(item.fee3),
-        '2017-2018 Yılı':api.paymetFormat(item.fee4),
-        '2019 Yılı': api.paymetFormat(item.fee5),
-        '2020-2021 Yılı': api.paymetFormat(item.fee6),
-        '2022 Yılı': api.paymetFormat(item.fee7),
-        '2023 Yılı': api.paymetFormat(item.fee8),
-        'Hazırlık 2021 Yılı ve Öncesi': api.paymetFormat(item.fee_prep),
-        'Hazırlık 2022 Yılı': api.paymetFormat(item.fee_prep2),
-        'Hazırlık 2023 Yılı': api.paymetFormat(item.fee_prep3),
+        'Yüksek Lisans': api.paymetFormat(item.fee),
+        'Yüksek Lisans Hazırlık': api.paymetFormat(item.fee_prep),
 
       })
     }
@@ -360,7 +308,7 @@ const ParamFeesSnack: React.FC = () => {
   const [jsonDataApp, setJsonDataApp] = useState<any[]>([]);
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files && e.target.files[0];
-
+      console.log(file);
       if (!file) return;
 
       const reader = new FileReader();
@@ -369,6 +317,7 @@ const ParamFeesSnack: React.FC = () => {
           const worksheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[worksheetName];
           const data = XLSX.utils.sheet_to_json(worksheet);
+          
           setJsonData(data);
       };
       reader.readAsBinaryString(file);
@@ -389,7 +338,7 @@ const ParamFeesSnack: React.FC = () => {
     let formData={
       jsonData:JSON.stringify(jsonData),
       year:selectedYear?.value,
-      type:'param-fees'
+      type:'param-fees-dolar'
     }
     setlistUpdateLoad(true);
     api.paramFeesCu(formData).then((x) => {
@@ -437,26 +386,15 @@ const ParamFeesSnack: React.FC = () => {
     f: "",
     d: "",
     fee: "",
-    fee2: "",
-    fee3: "",
-    fee4: "",
-    fee5: "",
-    fee6:"",
-    fee7: "",
-    fee8:"",
     fee_prep: "",
-    fee_prep2: "",
-    fee_prep3: "",
     fdo: "",
-    ikinci_ogretim: "",
-    yabanci_dille_egitim:"",
     dep_name: "",
     fak_name: "",
   };
-  const [formData, setFormData] = useState<ParamFeesx>(
+  const [formData, setFormData] = useState<ParamFeesDolarx>(
     formNull
   );
-  const [formRedData, setFormRedData] = useState<ParamFeesRed>(
+  const [formRedData, setFormRedData] = useState<ParamFeesDolarOnayRed>(
     {
       id: 0,
       message:''
@@ -475,19 +413,8 @@ const ParamFeesSnack: React.FC = () => {
         f: key=='f'?value:formData.f,
         d: key=='d'?value:formData.d,
         fee: key=='fee'?value:formData.fee,
-        fee2: key=='fee2'?value:formData.fee2,
-        fee3: key=='fee3'?value:formData.fee3,
-        fee4: key=='fee4'?value:formData.fee4,
-        fee5: key=='fee5'?value:formData.fee5,
-        fee6:key=='fee6'?value:formData.fee6,
-        fee7: key=='fee7'?value:formData.fee7,
-        fee8:key=='fee8'?value:formData.fee8,
         fee_prep: key=='fee_prep'?value:formData.fee_prep,
-        fee_prep2: key=='fee_prep2'?value:formData.fee_prep2,
-        fee_prep3: key=='fee_prep3'?value:formData.fee_prep3,
         fdo: key=='fdo'?value:formData.fdo,
-        ikinci_ogretim:key=='ikinci_ogretim'?value:formData.ikinci_ogretim,
-        yabanci_dille_egitim:key=='yabanci_dille_egitim'?value:formData.yabanci_dille_egitim,
         dep_name: key=='dep_name'?value:formData.dep_name,
         fak_name: key=='fak_name'?value:formData.fak_name,
         year:''
@@ -523,7 +450,7 @@ const ParamFeesSnack: React.FC = () => {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     setlistLoad(true);
-    api.paramfeeadd(formData).then((x) => {
+    api.paramfeeyladd(formData).then((x) => {
       setlistLoad(false);
       paramList();
       if(x.status!==200)
@@ -558,29 +485,30 @@ const ParamFeesSnack: React.FC = () => {
     }).catch(err => catchFunc(err))
     
   };
+  
   const handleSubmitParametreDelete = (e:any) => {
     e.preventDefault();
     setlistLoad(true);
-    api.paramfeedelete(formData).then((x) => {
+    console.log(formData);
+    api.paramfeeyldelete(formData).then((x) => {
       setlistLoad(false);
+      
       if(x.status!==200)
       {
         enqueueSnackbar(x.data, { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
       else
       {
+        paramList();
         handleDeleteFeesClose();
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-      
-        paramList();
-      paramAppList();
      
     }).catch(err => catchFunc(err))
     
   };
-  
-  const handleparamFeeOnay = (row:ParamFeesAppList) => {
+
+  const handleparamFeeOnay = (row:ParamFeesDolarAppList) => {
     setFormRedData({
       id:+row.id,
       message:''
@@ -608,7 +536,7 @@ const ParamFeesSnack: React.FC = () => {
 
   
 
-  const handleparamFeeRed = (row:ParamFeesAppList) => {
+  const handleparamFeeRed = (row:ParamFeesDolarAppList) => {
     setFormRedData({
       id:+row.id,
       message:''
@@ -672,7 +600,7 @@ const ParamFeesSnack: React.FC = () => {
       <div className='card mb-5 mb-xl-10'>
       {listLoad?<Loading/>:''}
       <div className='card-header pt-9 pb-5'>
-          <h4>Yeni öğrencilere ait parametre tablosu</h4>
+          <h4>Dolar parametre tablosu</h4>
           
           <button className="btn btn-sm btn-success" onClick={addShow} style={{float: 'right'}}>Parametre Ekle</button>
           
@@ -787,9 +715,9 @@ const ParamFeesSnack: React.FC = () => {
               </div>
             </div>
 
-            <div className='col-md-3'>
+            <div className='col-md-6'>
               <label className='col-form-label fw-bold fs-6'>
-                <span>2011 Akademik Yılı ve Öncesi</span>
+                <span>Yüksek Lisans</span>
               </label>
               <input
                 type='text'
@@ -802,114 +730,10 @@ const ParamFeesSnack: React.FC = () => {
               />
             </div>
 
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>2012-2013-2014 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee2"
-                value={formData.fee2}
-                placeholder="000.000,00"
-              />
-            </div>
 
-            <div className='col-md-3'>
+            <div className='col-md-6'>
               <label className='col-form-label fw-bold fs-6'>
-                <span>2015-2016 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee3"
-                value={formData.fee3}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>2017-2018 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee4"
-                value={formData.fee4}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>2019 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee5"
-                value={formData.fee5}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>2020-2021 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee6"
-                value={formData.fee6}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>2022 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee7"
-                value={formData.fee7}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>2023 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee8"
-                value={formData.fee8}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>Hazırlık 2021 Yılı ve Öncesi</span>
+                <span>Yüksek Lisans Hazırlık</span>
               </label>
               <input
                 type='text'
@@ -922,36 +746,6 @@ const ParamFeesSnack: React.FC = () => {
               />
             </div>
 
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>Hazırlık 2022 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee_prep2"
-                value={formData.fee_prep2}
-                placeholder="000.000,00"
-              />
-            </div>
-
-            <div className='col-md-3'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>Hazırlık 2023 Yılı</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee_prep3"
-                value={formData.fee_prep3}
-                placeholder="000.000,00"
-              />
-            </div>
-
        
             <div className='card-footer d-flex justify-content-end mt-10' style={{ height: "43px" }}>
               <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
@@ -959,7 +753,8 @@ const ParamFeesSnack: React.FC = () => {
               </button>
             </div>
 
-            <br />
+
+            <br /><br />
           </div>
 
         </div>
@@ -1007,6 +802,8 @@ const ParamFeesSnack: React.FC = () => {
         </Modal.Body>
       </Modal>
 
+
+      
       <Modal show={deleteshowFees} onHide={handleDeleteFeesClose} size='sm'>
       {listUpdateLoad?<Loading/>:''}
         <Modal.Header closeButton>
@@ -1044,15 +841,15 @@ const ParamFeesSnack: React.FC = () => {
   )
 }
 
-function ParamFees() {
+function ParamFeesDolar() {
   return (
     <SnackbarProvider maxSnack={3}>
-      <ParamFeesSnack />
+      <ParamFeesDolarSnack />
     </SnackbarProvider>
   );
 }
 
-export default ParamFees
+export default ParamFeesDolar
 
 
 

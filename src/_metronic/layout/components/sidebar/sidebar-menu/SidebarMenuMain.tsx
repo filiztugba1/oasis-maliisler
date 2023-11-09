@@ -49,6 +49,8 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/summer-fee-refund-requests' title='Yaz Okulu Ücreti İade Talepleri' menuTitle='Kontrol Listeleri / Yaz Okulu Ücreti İade Talepleri' hasBullet={true} />
         <SidebarMenuItem to='/cari-name-list' title='Cari İsim Listesi' menuTitle='Kontrol Listeleri / Cari İsim Listesi' hasBullet={true} />
         <SidebarMenuItem to='/mahsup-list' title='Mahsup Listesi' menuTitle='Kontrol Listeleri / Mahsup Listesi' hasBullet={true} />
+        <SidebarMenuItem to='/yaz-okulu-komisyonlu-odeyen-listesi' title='Yaz Okulu Komisyonlu Ödeyen Listesi' menuTitle='Kontrol Listeleri / Yaz Okulu Komisyonlu Ödeyen Listesi' hasBullet={true} />
+        
         </SidebarMenuItemWithSub>
 
  
@@ -63,7 +65,10 @@ const SidebarMenuMain = () => {
           <SidebarMenuItem to='/all-payables-list' title='Tüm Borçlar Listesi' menuTitle='Finansal İşlemler / Tüm Borçlar Listesi' hasBullet={true} />
           <SidebarMenuItem to='/debt-check-list' title='Borç Kontrol Listesi' menuTitle='Finansal İşlemler / Borç Kontrol Listesi' hasBullet={true} />
           <SidebarMenuItem to='/installment' title='Taksit' menuTitle='Finansal İşlemler / Taksit' hasBullet={true} />
-        <SidebarMenuItem to={`param-fees`} title='Yeni öğrencilere ait parametre tablosu' menuTitle='Finansal İşlemler / Yeni öğrencilere ait parametre tablosu' hasBullet={true} />
+        <SidebarMenuItem to={`/param-fees`} title='Yeni öğrencilere ait parametre tablosu' menuTitle='Finansal İşlemler / Yeni öğrencilere ait parametre tablosu' hasBullet={true} />
+        <SidebarMenuItem to={`/yl-param-fees`} title='Yüksek lisans parametre tablosu' menuTitle='Finansal İşlemler / Yüksek lisans parametre tablosu' hasBullet={true} />
+        <SidebarMenuItem to={`/dolar-param-fees`} title='Dolar parametre tablosu' menuTitle='Finansal İşlemler / Dolar parametre tablosu' hasBullet={true} />
+    
        </SidebarMenuItemWithSub>
 
 
