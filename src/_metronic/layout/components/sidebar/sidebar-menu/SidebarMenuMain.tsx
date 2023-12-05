@@ -68,7 +68,8 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to={`/param-fees`} title='Yeni öğrencilere ait parametre tablosu' menuTitle='Finansal İşlemler / Yeni öğrencilere ait parametre tablosu' hasBullet={true} />
         <SidebarMenuItem to={`/yl-param-fees`} title='Yüksek lisans parametre tablosu' menuTitle='Finansal İşlemler / Yüksek lisans parametre tablosu' hasBullet={true} />
         <SidebarMenuItem to={`/dolar-param-fees`} title='Dolar parametre tablosu' menuTitle='Finansal İşlemler / Dolar parametre tablosu' hasBullet={true} />
-    
+        <SidebarMenuItem to={`/summer-param-fees`} title='Yaz okulu parametre tablosu' menuTitle='Finansal İşlemler / Yaz okulu parametre tablosu' hasBullet={true} />
+        <SidebarMenuItem to={`/create-debt`} title='Öğrencilere Borç Oluşturma' menuTitle='Finansal İşlemler / Öğrencilere Borç Oluşturma' hasBullet={true} />
        </SidebarMenuItemWithSub>
 
 

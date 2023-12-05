@@ -27,6 +27,8 @@ import MahsupResponseList from '../pages/mahsup-list/MahsupResponseList'
 import KomisyonluResponseList from '../pages/yaz-okulu-komisyonlu-odeyen-list/KomisyonluResponseList'
 import ParamFeesYl from '../pages/param-fees-yl/ParamFeesYl'
 import ParamFeesDolar from '../pages/param-fees-dolar/ParamFeesDolar'
+import ParamFeesSummer from '../pages/param-fees-summer/ParamFeesSummer'
+import CreateDebt from '../pages/create-debt/CreateDebt'
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
@@ -64,7 +66,8 @@ const PrivateRoutes = () => {
         <Route path='param-fees' element={< ParamFees/>} />
         <Route path='yl-param-fees' element={< ParamFeesYl/>} />
         <Route path='dolar-param-fees' element={< ParamFeesDolar/>} />
-        
+        <Route path='summer-param-fees' element={< ParamFeesSummer/>} />
+        <Route path='create-debt' element={< CreateDebt/>} />
 
         {/* <Route path='menu-test' element={<MenuTestPage />} /> */}
         {/* Lazy Modules */}

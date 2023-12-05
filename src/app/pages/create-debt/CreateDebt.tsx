@@ -1,7 +1,7 @@
 import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import axios from "axios";
-import {ParamFeesDolarx, ParamFeesDolarAppList, ParamFeesDolarOnayRed} from './models/_paramfees'
+import {CreateDebtx, CreateDebtAppList, CreateDebtOnayRed} from './models/_createdebt'
 import './payments.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -16,7 +16,7 @@ import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const ParamFeesDolarSnack: React.FC = () => {
+const CreateDebtSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
@@ -57,13 +57,13 @@ const ParamFeesDolarSnack: React.FC = () => {
           }).catch(err => catchFunc(err))
     },[]);
 
-  const [selectedYear, setSelectedYear] = React.useState<null | FacultyList>(null);
-  const handleRegisterYear = (selected: any) => {
-    setSelectedYear(selected);
+  const [selectedStuType, setSelectedStuType] = React.useState<any>(null);
+  const handleStuType = (selected: any) => {
+    setSelectedStuType(selected.value);
   };
 
   const paramList = () => {
-    api.paramFeesDolar().then((x) => {
+    api.createdebt().then((x) => {
       setlistLoad(false);
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
@@ -108,7 +108,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Yüksek Lisans Hazırlık')]) || '', sortable: true },
     ];
 
-  const [summerFeeReAppfundRequests, setSummerFeeAppRefundRequests] = useState<Array<ParamFeesDolarAppList>>([]);
+  const [summerFeeReAppfundRequests, setSummerFeeAppRefundRequests] = useState<Array<CreateDebtAppList>>([]);
   const columnsOnay: TableColumn<typeof summerFeeReAppfundRequests[0]>[] = [
     { name: 'Ekleme zamanı', selector: (row) => row.created_date, sortable: true },
     { name: 'Ekleyen Kullanıcı', selector: (row) => row.createUser, sortable: true },
@@ -193,12 +193,12 @@ const ParamFeesDolarSnack: React.FC = () => {
   const handleFeesAppClose = () => setShowAppFees(false);
   const handleFeesAppShow = () => setShowAppFees(true);
 
-  const paramFeeOnayList=(row:ParamFeesDolarAppList)=>{
+  const paramFeeOnayList=(row:CreateDebtAppList)=>{
     setJsonDataApp(JSON.parse(row.json_data));
     handleFeesAppShow();
   }
 
-  const updateShow = (row: ParamFeesDolarx) => {
+  const updateShow = (row: CreateDebtx) => {
     let selectFac:any=fList.find((x) => +x.value === +row.f);
     setSelectedFaculty(selectFac);
     api.department({f:JSON.stringify([selectFac])}).then((x)=>{
@@ -209,7 +209,7 @@ const ParamFeesDolarSnack: React.FC = () => {
 
       if (selectDep) {
         setSelectedDepartment(selectDep);
-        const newFormData: ParamFeesDolarx = {
+        const newFormData: CreateDebtx = {
           f: JSON.stringify(selectFac),
           d: JSON.stringify(selectDep),
           fee:row.fee!==null?formatNumber(row.fee) + '':'',
@@ -238,7 +238,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     setDList([]);
     handleAddPaymentShow();
   }
-  const deleteShow = (row: ParamFeesDolarx) => {
+  const deleteShow = (row: CreateDebtx) => {
     // setSelectedYear(yearList.find((x) => +x.value === +row.Year) ?? null);
     // setSelectedScholarship(sssList.find((x) => +x.value === +row.sid) ?? null);
     // setFormDataScolar({
@@ -255,7 +255,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     handleDeleteFeesShow();
   }
   
-  const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<ParamFeesDolarx>>([]);
+  const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<CreateDebtx>>([]);
 
 
   const [filteredData, setFilteredData] = useState(summerFeeRefundRequests);
@@ -336,9 +336,8 @@ const ParamFeesDolarSnack: React.FC = () => {
   const handleAktar = (e: any) => {
     e.preventDefault();
     let formData={
-      jsonData:JSON.stringify(jsonData),
-      year:selectedYear?.value,
-      type:'param-fees-dolar'
+      stu_type:selectedStuType?.value,
+      type:'create-debt'
     }
     setlistUpdateLoad(true);
     api.paramFeesCu(formData).then((x) => {
@@ -391,10 +390,10 @@ const ParamFeesDolarSnack: React.FC = () => {
     dep_name: "",
     fak_name: "",
   };
-  const [formData, setFormData] = useState<ParamFeesDolarx>(
+  const [formData, setFormData] = useState<CreateDebtx>(
     formNull
   );
-  const [formRedData, setFormRedData] = useState<ParamFeesDolarOnayRed>(
+  const [formRedData, setFormRedData] = useState<CreateDebtOnayRed>(
     {
       id: 0,
       message:''
@@ -508,7 +507,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     
   };
 
-  const handleparamFeeOnay = (row:ParamFeesDolarAppList) => {
+  const handleparamFeeOnay = (row:CreateDebtAppList) => {
     setFormRedData({
       id:+row.id,
       message:''
@@ -536,7 +535,7 @@ const ParamFeesDolarSnack: React.FC = () => {
 
   
 
-  const handleparamFeeRed = (row:ParamFeesDolarAppList) => {
+  const handleparamFeeRed = (row:CreateDebtAppList) => {
     setFormRedData({
       id:+row.id,
       message:''
@@ -560,24 +559,28 @@ const ParamFeesDolarSnack: React.FC = () => {
     <>
 <div className='card mb-5 mb-xl-10'>
         <div className='card-header pt-9 pb-9'>
-          <h4>Excel ile toplu parametre ekleme</h4>
-          
-          <div>
-          <button className="btn btn-sm btn-success" onClick={handleYukleModal} style={{float: 'right'}}>Yüklenecek verileri gör</button>
-          {/* <div style={{float: 'right',marginRight: "4px",marginTop: "-2px"}}>
-          <Select 
-                      value={selectedYear}
-                      onChange={handleRegisterYear}
-                      options={yearList}
-                      isSearchable={true}
-                      placeholder="yılı seçiniz"
-                    />
-            </div> */}
-          <input type="file" onChange={handleFileUpload} style={{float: 'right'}} />
+          <h4>Toplu borç oluşturma</h4>
           </div>
-          
-            {/* <pre>{JSON.stringify(jsonData, null, 2)}</pre> */}
-        </div>
+          <div className='card-body pt-9 pb-0'>
+      
+          <div className='row'>
+          <div className='col-md-4'>
+                <select style={{float: 'left'}}
+                  className='form-select'
+                  onChange={handleStuType}
+                  name="stu_type"
+                  value={selectedStuType}
+                >
+                  <option value="1">Yeni Öğrenciler</option>
+                  <option value="2">Eski Öğrenciler</option>
+                </select>
+          </div>
+          <div className='col-md-4'>
+            <button className="btn btn-sm btn-success" onClick={handleYukleModal} style={{float: 'left'}}>Öğrencilere oluşturulacak borçları incele</button>
+         </div>
+          </div>
+      </div>
+    <br/>
 </div>
 
 <div className='card mb-5 mb-xl-10'>
@@ -841,15 +844,15 @@ const ParamFeesDolarSnack: React.FC = () => {
   )
 }
 
-function ParamFeesDolar() {
+function CreateDebt() {
   return (
     <SnackbarProvider maxSnack={3}>
-      <ParamFeesDolarSnack />
+      <CreateDebtSnack />
     </SnackbarProvider>
   );
 }
 
-export default ParamFeesDolar
+export default CreateDebt
 
 
 

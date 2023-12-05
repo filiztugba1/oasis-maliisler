@@ -1,7 +1,7 @@
 import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import axios from "axios";
-import {ParamFeesDolarx, ParamFeesDolarAppList, ParamFeesDolarOnayRed} from './models/_paramfees'
+import {ParamFeesSummerx, ParamFeesSummerAppList, ParamFeesSummerOnayRed} from './models/_paramfees'
 import './payments.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
@@ -16,7 +16,7 @@ import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
-const ParamFeesDolarSnack: React.FC = () => {
+const ParamFeesSummerSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
@@ -63,7 +63,7 @@ const ParamFeesDolarSnack: React.FC = () => {
   };
 
   const paramList = () => {
-    api.paramFeesDolar().then((x) => {
+    api.paramFeesSummer().then((x) => {
       setlistLoad(false);
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
@@ -71,7 +71,7 @@ const ParamFeesDolarSnack: React.FC = () => {
   }
 
   const paramAppList = () => {
-    api.paramAppFees({module:'param-fees-dolar'}).then((x) => {
+    api.paramAppFees({module:'param-fees-summer'}).then((x) => {
       setlistLoad(false);
       setSummerFeeAppRefundRequests(x);
       setFilteredAppData(x);
@@ -86,15 +86,10 @@ const ParamFeesDolarSnack: React.FC = () => {
       </div> ,
       sortable: true
     },
-    { name: 'Fakülte', selector: (row) => row.fak_name, sortable: true },
-    { name: 'Bölüm', selector: (row) => row.dep_name, sortable: true },
-    { name: 'f', selector: (row) => row.f, sortable: true },
-    { name: 'd', selector: (row) => row.d, sortable: true },
-    { name: 'fdo', selector: (row) => row.fdo, sortable: true },
-    { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
-    { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(row.fee_prep) || '', sortable: true },
+    { name: 'Fakülte', selector: (row) => row.f_text, sortable: true },
+    { name: 'Hazırlık Durumu', selector: (row) => row.prep_status_text, sortable: true },
+    { name: 'Ücret', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
    ];
-
 
   const columns2: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
    
@@ -108,7 +103,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(Object.values(row)[Object.keys(row).findIndex(key => key==='Yüksek Lisans Hazırlık')]) || '', sortable: true },
     ];
 
-  const [summerFeeReAppfundRequests, setSummerFeeAppRefundRequests] = useState<Array<ParamFeesDolarAppList>>([]);
+  const [summerFeeReAppfundRequests, setSummerFeeAppRefundRequests] = useState<Array<ParamFeesSummerAppList>>([]);
   const columnsOnay: TableColumn<typeof summerFeeReAppfundRequests[0]>[] = [
     { name: 'Ekleme zamanı', selector: (row) => row.created_date, sortable: true },
     { name: 'Ekleyen Kullanıcı', selector: (row) => row.createUser, sortable: true },
@@ -168,14 +163,10 @@ const ParamFeesDolarSnack: React.FC = () => {
 
 
   const columnsAppJsonList: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
-    { name: 'Fakülte', selector: (row) => row.fak_name, sortable: true },
-    { name: 'Bölüm', selector: (row) => row.dep_name, sortable: true },
-    { name: 'f', selector: (row) => row.f, sortable: true },
-    { name: 'd', selector: (row) => row.d, sortable: true },
-    { name: 'fdo', selector: (row) => row.fdo, sortable: true },
-    { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
-    { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(row.fee_prep) || '', sortable: true },
-  ];
+    { name: 'Fakülte', selector: (row) => row.f_text, sortable: true },
+    { name: 'Hazırlık Durumu', selector: (row) => row.prep_status_text, sortable: true },
+    { name: 'Ücret', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
+   ];
 
 
   const [showFees, setShowFees] = useState(false);
@@ -193,37 +184,26 @@ const ParamFeesDolarSnack: React.FC = () => {
   const handleFeesAppClose = () => setShowAppFees(false);
   const handleFeesAppShow = () => setShowAppFees(true);
 
-  const paramFeeOnayList=(row:ParamFeesDolarAppList)=>{
+  const paramFeeOnayList=(row:ParamFeesSummerAppList)=>{
     setJsonDataApp(JSON.parse(row.json_data));
     handleFeesAppShow();
   }
 
-  const updateShow = (row: ParamFeesDolarx) => {
+  const updateShow = (row: ParamFeesSummerx) => {
     let selectFac:any=fList.find((x) => +x.value === +row.f);
     setSelectedFaculty(selectFac);
-    api.department({f:JSON.stringify([selectFac])}).then((x)=>{
-      setDList(x);
-
-      // api.department işlemi tamamlandığında yeni x değeri ile selectDep'i bul
-      const selectDep:any = x.find((item) => +item.value === +row.fdo);
-
-      if (selectDep) {
-        setSelectedDepartment(selectDep);
-        const newFormData: ParamFeesDolarx = {
-          f: JSON.stringify(selectFac),
-          d: JSON.stringify(selectDep),
-          fee:row.fee!==null?formatNumber(row.fee) + '':'',
-          fee_prep:  row.fee_prep!==null?formatNumber(row.fee_prep) + '':'',
-          fdo: row.fdo,
-          dep_name: row.dep_name,
-          fak_name: row.fak_name,
-          year: ''
-        };
-        
-        setFormData(newFormData);
-      }
-    })
- 
+    const newFormData: ParamFeesSummerx = {
+      f: JSON.stringify(selectFac),
+      id: row.id,
+      fee:row.fee!==null?formatNumber(row.fee) + '':'',
+      f_text: row.f_text,
+      prep_status: row.prep_status,
+      prep_status_text: row.prep_status_text,
+      year: row.year
+    };
+    
+    setFormData(newFormData);
+   
     setModalFormTitle('Parametre Güncelleme');
     setModalFormButton('Güncelle');
 
@@ -238,7 +218,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     setDList([]);
     handleAddPaymentShow();
   }
-  const deleteShow = (row: ParamFeesDolarx) => {
+  const deleteShow = (row: ParamFeesSummerx) => {
     // setSelectedYear(yearList.find((x) => +x.value === +row.Year) ?? null);
     // setSelectedScholarship(sssList.find((x) => +x.value === +row.sid) ?? null);
     // setFormDataScolar({
@@ -255,7 +235,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     handleDeleteFeesShow();
   }
   
-  const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<ParamFeesDolarx>>([]);
+  const [summerFeeRefundRequests, setSummerFeeRefundRequests] = useState<Array<ParamFeesSummerx>>([]);
 
 
   const [filteredData, setFilteredData] = useState(summerFeeRefundRequests);
@@ -286,17 +266,15 @@ const ParamFeesDolarSnack: React.FC = () => {
       x++;
       return (
         {
-        'Fakülte': item.fak_name,
-        'Bölüm': item.dep_name,
-        'f': item.f,
-        'd': item.d,
-        'fdo': item.fdo,
-        'Yüksek Lisans': api.paymetFormat(item.fee),
-        'Yüksek Lisans Hazırlık': api.paymetFormat(item.fee_prep),
+        'Fakülte': item.f_text,
+        'Hazırlık Durumu': item.prep_status_text,
+        'Ücret': api.paymetFormat(item.fee),
 
       })
     }
     );
+
+
     const ws = utils .json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
@@ -338,7 +316,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     let formData={
       jsonData:JSON.stringify(jsonData),
       year:selectedYear?.value,
-      type:'param-fees-dolar'
+      type:'param-fees-summer'
     }
     setlistUpdateLoad(true);
     api.paramFeesCu(formData).then((x) => {
@@ -382,19 +360,18 @@ const ParamFeesDolarSnack: React.FC = () => {
     formDoldur("d",JSON.stringify(selected));
   };
   const formNull={
+    id: "",
     year: "",
-    f: "",
-    d: "",
     fee: "",
-    fee_prep: "",
-    fdo: "",
-    dep_name: "",
-    fak_name: "",
+    f: "",
+    prep_status: "",
+    f_text:"",
+    prep_status_text: "",
   };
-  const [formData, setFormData] = useState<ParamFeesDolarx>(
+  const [formData, setFormData] = useState<ParamFeesSummerx>(
     formNull
   );
-  const [formRedData, setFormRedData] = useState<ParamFeesDolarOnayRed>(
+  const [formRedData, setFormRedData] = useState<ParamFeesSummerOnayRed>(
     {
       id: 0,
       message:''
@@ -410,14 +387,14 @@ const ParamFeesDolarSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        f: key=='f'?value:formData.f,
-        d: key=='d'?value:formData.d,
+        id: key=='id'?value:formData.id,
+        year: key=='year'?value:formData.year,
         fee: key=='fee'?value:formData.fee,
-        fee_prep: key=='fee_prep'?value:formData.fee_prep,
-        fdo: key=='fdo'?value:formData.fdo,
-        dep_name: key=='dep_name'?value:formData.dep_name,
-        fak_name: key=='fak_name'?value:formData.fak_name,
-        year:''
+        f: key=='f'?value:formData.f,
+        prep_status:key=='prep_status'?value:formData.prep_status,
+        f_text:key=='f_text'?value:formData.f_text,
+        prep_status_text: key=='prep_status_text'?value:formData.prep_status_text,
+
       }
     );
   };
@@ -450,7 +427,7 @@ const ParamFeesDolarSnack: React.FC = () => {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     setlistLoad(true);
-    api.paramfeedolaradd(formData).then((x) => {
+    api.paramfeesummeradd(formData).then((x) => {
       setlistLoad(false);
       paramList();
       if(x.status!==200)
@@ -490,7 +467,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     e.preventDefault();
     setlistLoad(true);
     console.log(formData);
-    api.paramfeedolardelete(formData).then((x) => {
+    api.paramfeesummerdelete(formData).then((x) => {
       setlistLoad(false);
       
       if(x.status!==200)
@@ -508,7 +485,7 @@ const ParamFeesDolarSnack: React.FC = () => {
     
   };
 
-  const handleparamFeeOnay = (row:ParamFeesDolarAppList) => {
+  const handleparamFeeOnay = (row:ParamFeesSummerAppList) => {
     setFormRedData({
       id:+row.id,
       message:''
@@ -536,7 +513,7 @@ const ParamFeesDolarSnack: React.FC = () => {
 
   
 
-  const handleparamFeeRed = (row:ParamFeesDolarAppList) => {
+  const handleparamFeeRed = (row:ParamFeesSummerAppList) => {
     setFormRedData({
       id:+row.id,
       message:''
@@ -600,7 +577,7 @@ const ParamFeesDolarSnack: React.FC = () => {
       <div className='card mb-5 mb-xl-10'>
       {listLoad?<Loading/>:''}
       <div className='card-header pt-9 pb-5'>
-          <h4>Dolar parametre tablosu</h4>
+          <h4>Yaz okulu parametre tablosu</h4>
           
           <button className="btn btn-sm btn-success" onClick={addShow} style={{float: 'right'}}>Parametre Ekle</button>
           
@@ -669,7 +646,7 @@ const ParamFeesDolarSnack: React.FC = () => {
       </Modal>
 
 
-      <Modal show={showAddPayment} onHide={handleAddPaymentClose} size='xl'>
+      <Modal show={showAddPayment} onHide={handleAddPaymentClose} size='lg'>
       {listUpdateLoad?<Loading/>:''}
         <Modal.Header closeButton>
           <Modal.Title>{modalFormTitle}</Modal.Title>
@@ -680,44 +657,38 @@ const ParamFeesDolarSnack: React.FC = () => {
         <form onSubmit={handleSubmit}>
         <div className="card-body pt-9 pb-0">
           <div className='row'>
-            <div className='col-lg-6'>
+            <div className='col-md-12'>
+                    <label className='col-form-label fw-bold fs-6'>Fakülte</label>
+                    <div className='col-lg-12 fv-row'>
+                      <select
+                        className='form-select'
+                        onChange={handleChange}
+                        name="f"
+                        value={formData.f}
+                      >
+                        <option value='0'>Lisans</option>
+                        <option value='1'>Meslek Yüksek Okulu</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className='col-md-12'>
+                    <label className='col-form-label fw-bold fs-6'>Hazırlık Durumu</label>
+                    <div className='col-lg-12 fv-row'>
+                      <select
+                        className='form-select'
+                        onChange={handleChange}
+                        name="prep_status"
+                        value={formData.f}
+                      >
+                        <option value='0'>Diğer</option>
+                        <option value='1'>Hazırlık</option>
+                      </select>
+                    </div>
+                  </div>
+
+            <div className='col-md-12'>
               <label className='col-form-label fw-bold fs-6'>
-                <span  >Fakülte</span>
-              </label>
-
-              <div className='fv-row'>
-                <Select
-                  value={selectedFaculty}
-                  onChange={handleFacultyChange}
-                  options={fList}
-                  isSearchable={true}
-                  isMulti={false}
-                  placeholder="Fakülte Seçiniz"
-                />
-              </div>
-            </div>
-
-            <div className='col-md-6'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span >Bölüm</span>
-              </label>
-
-              <div className='fv-row'>
-                <Select
-                  value={selectedDepartment}
-                  onChange={handleDepartmentChange}
-                  options={dList}
-                  isSearchable={true}
-                  isMulti={false}
-                  placeholder="Bölüm Seçiniz"
-                  isDisabled={selectedFaculty===null?true:false}
-                />
-              </div>
-            </div>
-
-            <div className='col-md-6'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>Yüksek Lisans</span>
+                <span>Ücret</span>
               </label>
               <input
                 type='text'
@@ -730,23 +701,6 @@ const ParamFeesDolarSnack: React.FC = () => {
               />
             </div>
 
-
-            <div className='col-md-6'>
-              <label className='col-form-label fw-bold fs-6'>
-                <span>Yüksek Lisans Hazırlık</span>
-              </label>
-              <input
-                type='text'
-                className='form-control'
-                data-kt-search-element='input'
-                onChange={handleChange}
-                name="fee_prep"
-                value={formData.fee_prep}
-                placeholder="000.000,00"
-              />
-            </div>
-
-       
             <div className='card-footer d-flex justify-content-end mt-10' style={{ height: "43px" }}>
               <button type='submit' className='btn btn-primary' style={{ height: "43px" }}>
               {modalFormuButton}
@@ -818,10 +772,7 @@ const ParamFeesDolarSnack: React.FC = () => {
               <label className='col-form-label fw-bold fs-6'>
                 <span>Parametreyi silmek istediğinize emin misiniz?</span>
               </label>
-              <input type='hidden' name='year' value={formData.year}></input>
-              <input type='hidden' name='f' value={formData.f}></input>
-              <input type='hidden' name='d' value={formData.d}></input>
-              <input type='hidden' name='fdo' value={formData.fdo}></input>
+              <input type='hidden' name='id' value={formData.id}></input>
             </div>       
             <div className='card-footer d-flex justify-content-end mt-10' style={{ height: "43px" }}>
               <button type='submit' className='btn btn-danger' style={{ height: "43px" }}>
@@ -841,15 +792,15 @@ const ParamFeesDolarSnack: React.FC = () => {
   )
 }
 
-function ParamFeesDolar() {
+function ParamFeesSummer() {
   return (
     <SnackbarProvider maxSnack={3}>
-      <ParamFeesDolarSnack />
+      <ParamFeesSummerSnack />
     </SnackbarProvider>
   );
 }
 
-export default ParamFeesDolar
+export default ParamFeesSummer
 
 
 

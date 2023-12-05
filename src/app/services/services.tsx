@@ -32,7 +32,8 @@ import { RelationMaliDetailResponse } from '../pages/relation-mali/models/_relat
 import { CariNameListResponse } from '../pages/cari-name-list/models/_carinamelistx.model';
 import { KomisyonluResponse } from '../pages/yaz-okulu-komisyonlu-odeyen-list/models/_yaz-okulu-komisyonlu.model';
 import { ParamFeesYlAppResponse, ParamFeesYlOnayRed, ParamFeesYlResponse, ParamFeesYlUpdateResponse, ParamFeesYlx } from '../pages/param-fees-yl/models/_paramfees';
-import { ParamFeesDolarResponse, ParamFeesDolarUpdateResponse } from '../pages/param-fees-dolar/models/_paramfees';
+import { ParamFeesDolarResponse, ParamFeesDolarUpdateResponse, ParamFeesDolarx } from '../pages/param-fees-dolar/models/_paramfees';
+import { ParamFeesSummerResponse, ParamFeesSummerUpdateResponse, ParamFeesSummerx } from '../pages/param-fees-summer/models/_paramfees';
 const API_URL = process.env.REACT_APP_API_URL
 const headers={
     headers:{"Content-Type" : "application/json"},
@@ -377,33 +378,83 @@ const scholarshipStatus=async ()=>{
   }
 
   const paramFeesDolar=async ()=>{
-    const url=API_URL+'/maliisler/param-fees-yl';
+    const url=API_URL+'/maliisler/param-fees-dolar';
     const res= await axios.post<ParamFeesDolarResponse>(url);
     return res.data.data;
   }
 
   const paramFeesDolarCu=async (formData:any)=>{
-    const url=API_URL+'/maliisler/param-fees-yl-cu';
+    const url=API_URL+'/maliisler/param-fees-dolar-cu';
     const res= await axios.post<ParamFeesDolarUpdateResponse>(url,formData);
     return res.data;
   }
 
-  const  paramfeedolaradd =async (formdata:ParamFeesYlx)=>{
-    const url=API_URL+'/maliisler/param-fees-yl-create-update';
+  const  paramfeedolaradd =async (formdata:ParamFeesDolarx)=>{
+    const url=API_URL+'/maliisler/param-fees-dolar-create-update';
     const res= await axios.post<ResponseData>(url,formdata);
     return res.data;
   }
-  const  paramfeedolardelete =async (formdata:ParamFeesYlx)=>{
-    const url=API_URL+'/maliisler/param-fees-yl-delete';
+  const  paramfeedolardelete =async (formdata:ParamFeesDolarx)=>{
+    const url=API_URL+'/maliisler/param-fees-dolar-delete';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+
+
+  
+  const paramFeesSummer=async ()=>{
+    const url=API_URL+'/maliisler/param-fees-summer';
+    const res= await axios.post<ParamFeesSummerResponse>(url);
+    return res.data.data;
+  }
+
+  const paramFeesSummerCu=async (formData:any)=>{
+    const url=API_URL+'/maliisler/param-fees-summer-cu';
+    const res= await axios.post<ParamFeesSummerUpdateResponse>(url,formData);
+    return res.data;
+  }
+
+  const  paramfeesummeradd =async (formdata:ParamFeesSummerx)=>{
+    const url=API_URL+'/maliisler/param-fees-summer-create-update';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  paramfeesummerdelete =async (formdata:ParamFeesSummerx)=>{
+    const url=API_URL+'/maliisler/param-fees-summer-delete';
     const res= await axios.post<ResponseData>(url,formdata);
     return res.data;
   }
 
   
+
+  const createdebt=async ()=>{
+    const url=API_URL+'/maliisler/param-fees-dolar';
+    const res= await axios.post<ParamFeesDolarResponse>(url);
+    return res.data.data;
+  }
+
+  const createdebtCu=async (formData:any)=>{
+    const url=API_URL+'/maliisler/param-fees-dolar-cu';
+    const res= await axios.post<ParamFeesDolarUpdateResponse>(url,formData);
+    return res.data;
+  }
+
+  const  createdebtadd =async (formdata:ParamFeesDolarx)=>{
+    const url=API_URL+'/maliisler/param-fees-dolar-create-update';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+  const  createdebtdelete =async (formdata:ParamFeesDolarx)=>{
+    const url=API_URL+'/maliisler/param-fees-dolar-delete';
+    const res= await axios.post<ResponseData>(url,formdata);
+    return res.data;
+  }
+
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2
 ,debtCheckList,installment,installmentUpdate,paramFees,paramFeesCu,activeStudentDetail,generalInformation,idInformation,contactInformation,transkript,studentFees,studentPayments,
 studentFeeUpdate,studentPaymentUpdate,studentFeeDelete,studentPaymentDelete,studentHistoryList,scholarshipHistoryLList,activeStudentList,scholarshipHistoryUpdate
 ,scholarshipHistoryDelete,financialAffairsAssociatedInformation,faaiUpdate,cariList,mahsupResponse,komisyonluOdeyenler,paramfeeadd,paramfeedelete,paramAppFees,paramfeered,
-paramfeeonay,paramfeeyladd,paramfeeyldelete,paramFeesYl,paramFeesYlCu,paramFeesDolar,paramFeesDolarCu,paramfeedolaradd,paramfeedolardelete
+paramfeeonay,paramfeeyladd,paramfeeyldelete,paramFeesYl,paramFeesYlCu,paramFeesDolar,paramFeesDolarCu,paramfeedolaradd,paramfeedolardelete,
+paramFeesSummer,paramFeesSummerCu,paramfeesummeradd,paramfeesummerdelete,createdebt
 };
