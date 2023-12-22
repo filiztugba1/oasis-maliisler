@@ -118,7 +118,7 @@ const StudentPaymentsSnack: React.FC = () => {
 
     }
 
-  }
+  },[]
   );
   const catchFunc = (err: any) => {
     if (err.response && err.response.data && err.response.data.message) {

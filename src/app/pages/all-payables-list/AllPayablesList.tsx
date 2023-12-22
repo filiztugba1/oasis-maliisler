@@ -53,7 +53,7 @@ const AllPayablesListSnack: React.FC = () => {
         setIsApi(false);
       }).catch(err => catchFunc(err))
     }
-  }
+  },[]
   );
 
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);

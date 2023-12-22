@@ -291,7 +291,7 @@ const StudentListtSnack: React.FC = () => {
         setIsApi(false);
       }).catch(err => catchFunc(err))
     }
-  }
+  },[]
   );
 
   return (

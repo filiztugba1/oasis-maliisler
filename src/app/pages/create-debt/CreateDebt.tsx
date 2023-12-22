@@ -123,7 +123,7 @@ const CreateDebtSnack: React.FC = () => {
     { name: 'Onaylayan / Reddeden Kullanıcı', selector: (row) => row.appUser, sortable: true },
     {
       name: 'Onay / Red Durumu', selector: (row) => '', cell: (row) =>    <div style={{ textAlign: 'center' }}>
-        {row.approval_rejection==null?
+        {row.approval_rejection===null?
            <>
            <button 
            className="btn btn-success btn-sm"
@@ -147,7 +147,7 @@ const CreateDebtSnack: React.FC = () => {
           className={`btn btn-${row.approval_rejection==1?'success':'danger'} btn-sm`}
           style={{ padding: "3px 9px", margin: "0px 1px", display: 'inline-block' }}
         >
-          {row.approval_rejection==1?'Onaylandı':'Red Edildi'}
+          {row.approval_rejection===1?'Onaylandı':'Red Edildi'}
         </button>
       </span>}
       
@@ -402,13 +402,13 @@ const CreateDebtSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        f: key=='f'?value:formData.f,
-        d: key=='d'?value:formData.d,
-        fee: key=='fee'?value:formData.fee,
-        fee_prep: key=='fee_prep'?value:formData.fee_prep,
-        fdo: key=='fdo'?value:formData.fdo,
-        dep_name: key=='dep_name'?value:formData.dep_name,
-        fak_name: key=='fak_name'?value:formData.fak_name,
+        f: key==='f'?value:formData.f,
+        d: key==='d'?value:formData.d,
+        fee: key==='fee'?value:formData.fee,
+        fee_prep: key==='fee_prep'?value:formData.fee_prep,
+        fdo: key==='fdo'?value:formData.fdo,
+        dep_name: key==='dep_name'?value:formData.dep_name,
+        fak_name: key==='fak_name'?value:formData.fak_name,
         year:''
       }
     );

@@ -132,27 +132,27 @@ const HomePageSnack: React.FC = () => {
                       <td >Yeni Öğrenci ÖSYM</td>
                       <td >{rapor.yeni_ogr_osym_guz}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={2}>
                       <td >Devam Eden Öğrenci </td>
                       <td >{rapor.devam_eden_ogr_guz}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={3}>
                       <td >Yüksek Lisans</td>
                       <td >{rapor.yuksek_lisans_guz}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={4}>
                       <td >Yeni DGS</td>
                       <td >{rapor.dgs_guz}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={5}>
                       <td >Yeni Yatay Geçiş</td>
                       <td >{rapor.yatay_gecis_guz}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={6}>
                       <td >Yeni Yabancı Uyruklu Öğrenci</td>
                       <td >{rapor.yabanci_uyruk_guz}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={7}>
                       <td >TOPLAM</td>
                       <td >{rapor.guz_toplam}</td>
                     </tr>
@@ -176,27 +176,27 @@ const HomePageSnack: React.FC = () => {
                       <td >Yeni Öğrenci ÖSYM</td>
                       <td >{rapor.yeni_ogr_osym_bahar}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={2}>
                       <td >Devam Eden Öğrenci </td>
                       <td >{rapor.devam_eden_ogr_bahar}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={3}>
                       <td >Yüksek Lisans</td>
                       <td >{rapor.yuksek_lisans_bahar}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={5}>
                       <td >Yeni DGS</td>
                       <td >{rapor.dgs_bahar}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={6}>
                       <td >Yeni Yatay Geçiş</td>
                       <td >{rapor.yatay_gecis_bahar}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={7}>
                       <td >Yeni Yabancı Uyruklu Öğrenci</td>
                       <td >{rapor.yabanci_uyruk_bahar}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={8}>
                       <td >TOPLAM</td>
                       <td >{rapor.bahar_toplam}</td>
                     </tr>
@@ -220,27 +220,27 @@ const HomePageSnack: React.FC = () => {
                       <td >Yeni Öğrenci ÖSYM</td>
                       <td >{rapor.yeni_ogr_osym_toplam}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={2}>
                       <td >Devam Eden Öğrenci </td>
                       <td >{rapor.devam_eden_ogr_toplam}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={3}>
                       <td >Yüksek Lisans</td>
                       <td >{rapor.yuksek_lisans_toplam}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={4}>
                       <td >Yeni DGS</td>
                       <td >{rapor.dgs_toplam}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={5}>
                       <td >Yeni Yatay Geçiş</td>
                       <td >{rapor.yatay_gecis_toplam}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={6}>
                       <td >Yeni Yabancı Uyruklu Öğrenci</td>
                       <td >{rapor.yabanci_uyruk_toplam}</td>
                     </tr>
-                    <tr key={1}>
+                    <tr key={7}>
                       <td >TOPLAM</td>
                       <td >{rapor.genel_toplam}</td>
                     </tr>

@@ -1,6 +1,4 @@
-import clsx from 'clsx'
 import {useLayout} from '../../core'
-import {Footer} from './Footer'
 
 const FooterWrapper = () => {
   const {config} = useLayout()

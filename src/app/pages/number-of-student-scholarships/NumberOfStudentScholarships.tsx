@@ -221,7 +221,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
         setIsApi(false);
       })
     }
-  }
+  },[]
   );
   return (
     <>
