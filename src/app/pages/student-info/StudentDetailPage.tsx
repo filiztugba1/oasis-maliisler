@@ -1,17 +1,15 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
+import React, {useEffect, useState } from 'react'
 import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import ContactInformation from './components/ContactInformation'
 import IdInformation from './components/IdInformation'
 import GeneralInformation from './components/GeneralInformation'
 import { StudentInfoHeader } from './StudentInfoHeader'
-import axios from "axios";
-import { StudentDetail } from '../../modules/auth'
-import { StudentDetailModel, StudentDetailResponseData } from './models/_studentdetail.model'
-import { GeneralInformationModel, GeneralInformationResponseData } from './models/_generalinformation.model'
-import { IdInformationModel, IdInformationResponseData } from './models/_idinformation.model'
-import { ContactInformationModel, ContactInformationResponseData } from './models/_contactimformation.model'
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { StudentDetailModel } from './models/_studentdetail.model'
+import { GeneralInformationModel } from './models/_generalinformation.model'
+import { IdInformationModel } from './models/_idinformation.model'
+import { ContactInformationModel } from './models/_contactimformation.model'
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 import api from '../../services/services';
 const accountBreadCrumbs: Array<PageLink> = [
@@ -193,7 +191,6 @@ const { enqueueSnackbar } = useSnackbar();
     }
   );
 
-  const [isApi, setIsApi] = useState(true);
   useEffect(() => {
       setlistLoad(true);
       let formdata = {
@@ -229,7 +226,6 @@ const { enqueueSnackbar } = useSnackbar();
         // navigate('/auth');
       }
     }
-    setIsApi(false);
   }
   return (
     <Routes>

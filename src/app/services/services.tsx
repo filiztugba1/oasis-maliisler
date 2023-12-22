@@ -1,5 +1,4 @@
 import axios from 'axios';
-import React from 'react'
 import { FacultyListResponse } from './models/_faculty';
 import { DepartmentListResponse } from './models/_department';
 import { StuStatusListResponse } from './models/_stuStatus';
@@ -19,7 +18,7 @@ import { FeePaymentListRequest, FeePaymentListResponse } from '../pages/fee-paym
 import { AllPayablesListRequest, AllPayablesListResponse } from '../pages/all-payables-list/models/_allpayableslist.model';
 import { DebtCheckListsRequest, DebtCheckListsResponse } from '../pages/debt-check-list/models/_debtchecklist.model';
 import { InstallmentCURequest, InstallmentListsRequest, InstallmentListsResponse } from '../pages/installment/models/_installment.model';
-import { ParamFeesAppList, ParamFeesAppResponse, ParamFeesRed, ParamFeesResponse, ParamFeesUpdateResponse, ParamFeesx } from '../pages/param-student-fees/models/_paramfees';
+import { ParamFeesAppResponse, ParamFeesRed, ParamFeesResponse, ParamFeesUpdateResponse, ParamFeesx } from '../pages/param-student-fees/models/_paramfees';
 import { StudentDetailResponseData } from '../pages/student-info/models/_studentdetail.model';
 import { GeneralInformationResponseData } from '../pages/student-info/models/_generalinformation.model';
 import { IdInformationResponseData } from '../pages/student-info/models/_idinformation.model';
@@ -27,11 +26,11 @@ import { ContactInformationResponseData } from '../pages/student-info/models/_co
 import { StudentTranskript } from '../pages/transkript/models/_studenttranskript.model';
 import { CollectionsResponse, PaymentsResponse, StudentCollectionUpdateRequest, StudentFeesUpdateRequest, StudentFeesUpdateResponse } from '../pages/student-payments/models/_payments.model';
 import { HistoryResponse, ScholarshipHistoryResponse } from '../pages/student-history/models/_history.model';
-import { ResponseData, StudentModel } from '../modules/auth';
+import { ResponseData } from '../modules/auth';
 import { RelationMaliDetailResponse } from '../pages/relation-mali/models/_relationmali.model';
 import { CariNameListResponse } from '../pages/cari-name-list/models/_carinamelistx.model';
 import { KomisyonluResponse } from '../pages/yaz-okulu-komisyonlu-odeyen-list/models/_yaz-okulu-komisyonlu.model';
-import { ParamFeesYlAppResponse, ParamFeesYlOnayRed, ParamFeesYlResponse, ParamFeesYlUpdateResponse, ParamFeesYlx } from '../pages/param-fees-yl/models/_paramfees';
+import { ParamFeesYlResponse, ParamFeesYlUpdateResponse, ParamFeesYlx } from '../pages/param-fees-yl/models/_paramfees';
 import { ParamFeesDolarResponse, ParamFeesDolarUpdateResponse, ParamFeesDolarx } from '../pages/param-fees-dolar/models/_paramfees';
 import { ParamFeesSummerResponse, ParamFeesSummerUpdateResponse, ParamFeesSummerx } from '../pages/param-fees-summer/models/_paramfees';
 const API_URL = process.env.REACT_APP_API_URL
@@ -433,22 +432,22 @@ const scholarshipStatus=async ()=>{
     return res.data.data;
   }
 
-  const createdebtCu=async (formData:any)=>{
-    const url=API_URL+'/maliisler/param-fees-dolar-cu';
-    const res= await axios.post<ParamFeesDolarUpdateResponse>(url,formData);
-    return res.data;
-  }
+  // const createdebtCu=async (formData:any)=>{
+  //   const url=API_URL+'/maliisler/param-fees-dolar-cu';
+  //   const res= await axios.post<ParamFeesDolarUpdateResponse>(url,formData);
+  //   return res.data;
+  // }
 
-  const  createdebtadd =async (formdata:ParamFeesDolarx)=>{
-    const url=API_URL+'/maliisler/param-fees-dolar-create-update';
-    const res= await axios.post<ResponseData>(url,formdata);
-    return res.data;
-  }
-  const  createdebtdelete =async (formdata:ParamFeesDolarx)=>{
-    const url=API_URL+'/maliisler/param-fees-dolar-delete';
-    const res= await axios.post<ResponseData>(url,formdata);
-    return res.data;
-  }
+  // const  createdebtadd =async (formdata:ParamFeesDolarx)=>{
+  //   const url=API_URL+'/maliisler/param-fees-dolar-create-update';
+  //   const res= await axios.post<ResponseData>(url,formdata);
+  //   return res.data;
+  // }
+  // const  createdebtdelete =async (formdata:ParamFeesDolarx)=>{
+  //   const url=API_URL+'/maliisler/param-fees-dolar-delete';
+  //   const res= await axios.post<ResponseData>(url,formdata);
+  //   return res.data;
+  // }
 
 export default {faculty,department,option,stuStatus,registerType,scholarshipStatus,year,banks,feeTypes,bankCards,creditCard,paymetFormat,historyScholarshipStatus,
   fallSpringPaymentRaports,totalScholarshipList,debtVsPaid,definitiveRecords,studentList,studentScholarshipNumbers,summerSchoolFeeRefundRequests,allPaymentsList,allPaymentsList2

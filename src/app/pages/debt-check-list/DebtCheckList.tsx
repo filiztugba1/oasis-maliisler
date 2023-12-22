@@ -1,21 +1,17 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { DebtCheckLists,DebtCheckListsRequest,DebtCheckListsResponse } from './models/_debtchecklist.model'
+import React, { useEffect, useState } from 'react'
+import { DebtCheckLists,DebtCheckListsRequest } from './models/_debtchecklist.model'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider,  useSnackbar } from 'notistack';
 import Loading from '../Loading';
 const DebtCheckListSnack: React.FC = () => {
  
-  const [isApi, setIsApi] = useState(true);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const [feetypeList, setFeetypeList] = useState<Array<FacultyList>>([]);
   const [listLoad, setlistLoad] = useState(false);
@@ -24,12 +20,10 @@ const DebtCheckListSnack: React.FC = () => {
   useEffect(() => {
       api.year().then((x)=>{
         setYear(x);
-        setIsApi(false);
       }).catch(err => catchFunc(err))
 
       api.feeTypes().then((x)=>{
         setFeetypeList(x);
-        setIsApi(false);
       }).catch(err => catchFunc(err))
     },[]
   );
@@ -50,9 +44,9 @@ const DebtCheckListSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        keep_feeid: key=='keep_feeid'?value:formData.keep_feeid,
-        semester: key=='semester'?value:formData.semester,
-        year: key=='year'?value:formData.year,
+        keep_feeid: key==='keep_feeid'?value:formData.keep_feeid,
+        semester: key==='semester'?value:formData.semester,
+        year: key==='year'?value:formData.year,
       }
     );
   };
@@ -143,7 +137,6 @@ const DebtCheckListSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
   }
   return (
     <>

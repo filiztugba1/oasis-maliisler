@@ -1,16 +1,13 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { AllPayablesListRequest,AllPayablesListResponse,AllPayablesLists } from './models/_allpayableslist.model'
+import React, { useEffect, useState } from 'react'
+import { AllPayablesListRequest,AllPayablesLists } from './models/_allpayableslist.model'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
@@ -20,8 +17,8 @@ const AllPayablesListSnack: React.FC = () => {
   const [fList, setFList] = useState<Array<FacultyList>>([]);
   const [dList, setDList] = useState<Array<FacultyList>>([]);
   const [oList, setOList] = useState<Array<FacultyList>>([]);
-  const [ssList, setSsList] = useState<Array<FacultyList>>([]);
-  const [rtList, setRtList] = useState<Array<FacultyList>>([]);
+  // const [ssList, setSsList] = useState<Array<FacultyList>>([]);
+  // const [rtList, setRtList] = useState<Array<FacultyList>>([]);
   const [sssList, setSssList] = useState<Array<FacultyList>>([]);
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const [feetypeList, setFeetypeList] = useState<Array<FacultyList>>([]);
@@ -37,10 +34,10 @@ const AllPayablesListSnack: React.FC = () => {
       }).catch(err => catchFunc(err))
 
 
-      api.registerType().then((x)=>{
-        setRtList(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+      // api.registerType().then((x)=>{
+      //   setRtList(x);
+      //   setIsApi(false);
+      // }).catch(err => catchFunc(err))
 
       api.scholarshipStatus().then((x)=>{
         setSssList(x);
@@ -64,7 +61,7 @@ const AllPayablesListSnack: React.FC = () => {
     setSelectedFaculty(selected);
     formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    const datam = api.department({f:JSON.stringify(selected)}).then((x)=>{
+    api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     }).catch(err => catchFunc(err))
   };
@@ -106,20 +103,20 @@ const AllPayablesListSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        f: key=='f'?value:formData.f,
-        d: key=='d'?value:formData.d,
-        o: key=='o'?value:formData.o,
-        year: key=='year'?value:formData.year,
-        semester: key=='semester'?value:formData.semester,
-        class: key=='class'?value:formData.class,
-        status: key=='status'?value:formData.status,
-        fee_status: key=='fee_status'?value:formData.fee_status,
-        fee_id: key=='fee_id'?value:formData.fee_id,
-        list_type: key=='list_type'?value:formData.list_type,
-        register_year: key=='register_year'?value:formData.register_year,
-        interest: key=='interest'?value:formData.interest,
-        payables_date_start: key=='payables_date_start'?value:formData.payables_date_start,
-        payables_date_finish: key=='payables_date_finish'?value:formData.payables_date_finish,
+        f: key==='f'?value:formData.f,
+        d: key==='d'?value:formData.d,
+        o: key==='o'?value:formData.o,
+        year: key==='year'?value:formData.year,
+        semester: key==='semester'?value:formData.semester,
+        class: key==='class'?value:formData.class,
+        status: key==='status'?value:formData.status,
+        fee_status: key==='fee_status'?value:formData.fee_status,
+        fee_id: key==='fee_id'?value:formData.fee_id,
+        list_type: key==='list_type'?value:formData.list_type,
+        register_year: key==='register_year'?value:formData.register_year,
+        interest: key==='interest'?value:formData.interest,
+        payables_date_start: key==='payables_date_start'?value:formData.payables_date_start,
+        payables_date_finish: key==='payables_date_finish'?value:formData.payables_date_finish,
       }
     );
   };
@@ -132,7 +129,7 @@ const AllPayablesListSnack: React.FC = () => {
     { name: 'Fakülte', selector: (row) => row.fakulte_name, sortable: true },
     { name: 'Bölüm', selector: (row) => row.name_tr, sortable: true },
     { name: 'Yılı', selector: (row) => row.year, sortable: true },
-    { name: 'Dönemi', selector: (row) => +row.semester==1?'Güz':(+row.semester==2?'Bahar':'Yaz'), sortable: true },
+    { name: 'Dönemi', selector: (row) => +row.semester===1?'Güz':(+row.semester===2?'Bahar':'Yaz'), sortable: true },
     { name: 'Borç Tarihi', selector: (row) => row.create_date, sortable: true },
     { name: 'Borç Miktarı (TL)', selector: (row) =>  api.paymetFormat(row.p1), sortable: true },
     { name: 'Ödeme Miktarı TL', selector: (row) => api.paymetFormat(row.p3), sortable: true },
@@ -140,7 +137,7 @@ const AllPayablesListSnack: React.FC = () => {
     { name: 'Borç Miktarı (USD)', selector: (row) => api.paymetFormat(row.p2), sortable: true },
     { name: 'Ödeme Miktarı USD.', selector: (row) => api.paymetFormat(row.p4), sortable: true },
     { name: 'Türü', selector: (row) => row.harc_tipi, sortable: true },
-    { name: 'Burs', selector: (row) => (row.burstip!==null?row.burstip:'')+' '+(+row.fee_status==4?'Kesildi!':''), sortable: true },
+    { name: 'Burs', selector: (row) => (row.burstip!==null?row.burstip:'')+' '+(+row.fee_status===4?'Kesildi!':''), sortable: true },
     { name: 'Son Tarihçe', selector: (row) => row.tarihce, sortable: true },
     { name: 'Tarihçe Tarihi', selector: (row) => row.tarihce_date, sortable: true },
     { name: 'Kayıt Tipi', selector: (row) => row.register_type, sortable: true },
@@ -186,7 +183,7 @@ const AllPayablesListSnack: React.FC = () => {
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
   const handleSearch = (e:any) => {
-    const searchTerm = e.target.value;
+    // const searchTerm = e.target.value;
     const filteredItems = definitiverecordlist
     // .filter((item) =>
     //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -223,7 +220,7 @@ const AllPayablesListSnack: React.FC = () => {
       'Ödeme Miktarı USD.': api.paymetFormat(item.p4),
       
       'Türü': item.harc_tipi,
-      'Burs': item.burstip+' '+(+item.fee_status==4?'Kesildi!':''),
+      'Burs': item.burstip+' '+(+item.fee_status===4?'Kesildi!':''),
       'Son Tarihçe': item.tarihce,
       'Tarihçe Tarihi': item.tarihce_date,
       'Kayıt Tipi': item.register_type,

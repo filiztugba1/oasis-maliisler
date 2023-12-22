@@ -1,25 +1,20 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
+import React, {useEffect, useState } from 'react'
 import {ParamFeesSummerx, ParamFeesSummerAppList, ParamFeesSummerOnayRed} from './models/_paramfees'
 import './payments.css';
-import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
 import * as XLSX from 'xlsx';
-import { Button, Modal } from 'react-bootstrap';
+import {Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
-import { right } from '@popperjs/core';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
 const ParamFeesSummerSnack: React.FC = () => {
  
-  const [isApi, setIsApi] = useState(true);
-  const [yearList, setYear] = useState<Array<FacultyList>>([]);
+  // const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const { enqueueSnackbar } = useSnackbar();
   const handlePaymentClose = () => setShowPayment(false);
   const handlePaymentShow = () => setShowPayment(true);
@@ -47,13 +42,11 @@ const ParamFeesSummerSnack: React.FC = () => {
           paramList();
           paramAppList();
 
-     api.year(1).then((x) => {
-            setYear(x);
-            setIsApi(false);
-          }).catch(err => catchFunc(err))
+    //  api.year(1).then((x) => {
+    //         setYear(x);
+    //       }).catch(err => catchFunc(err))
           api.faculty().then((x)=>{
             setFList(x);
-            setIsApi(false);
           }).catch(err => catchFunc(err))
     },[]);
 
@@ -124,7 +117,7 @@ const ParamFeesSummerSnack: React.FC = () => {
     { name: 'Onaylayan / Reddeden Kullanıcı', selector: (row) => row.appUser, sortable: true },
     {
       name: 'Onay / Red Durumu', selector: (row) => '', cell: (row) =>    <div style={{ textAlign: 'center' }}>
-        {row.approval_rejection==null?
+        {row.approval_rejection===null?
            <>
            <button 
            className="btn btn-success btn-sm"
@@ -145,10 +138,10 @@ const ParamFeesSummerSnack: React.FC = () => {
         
         :<span style={{ display: 'inline-block', textAlign: 'center' }}>
         <button 
-          className={`btn btn-${row.approval_rejection==1?'success':'danger'} btn-sm`}
+          className={`btn btn-${row.approval_rejection===1?'success':'danger'} btn-sm`}
           style={{ padding: "3px 9px", margin: "0px 1px", display: 'inline-block' }}
         >
-          {row.approval_rejection==1?'Onaylandı':'Red Edildi'}
+          {row.approval_rejection===1?'Onaylandı':'Red Edildi'}
         </button>
       </span>}
       
@@ -341,7 +334,6 @@ const ParamFeesSummerSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
   }
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
@@ -387,13 +379,13 @@ const ParamFeesSummerSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        id: key=='id'?value:formData.id,
-        year: key=='year'?value:formData.year,
-        fee: key=='fee'?value:formData.fee,
-        f: key=='f'?value:formData.f,
-        prep_status:key=='prep_status'?value:formData.prep_status,
-        f_text:key=='f_text'?value:formData.f_text,
-        prep_status_text: key=='prep_status_text'?value:formData.prep_status_text,
+        id: key==='id'?value:formData.id,
+        year: key==='year'?value:formData.year,
+        fee: key==='fee'?value:formData.fee,
+        f: key==='f'?value:formData.f,
+        prep_status:key==='prep_status'?value:formData.prep_status,
+        f_text:key==='f_text'?value:formData.f_text,
+        prep_status_text: key==='prep_status_text'?value:formData.prep_status_text,
 
       }
     );

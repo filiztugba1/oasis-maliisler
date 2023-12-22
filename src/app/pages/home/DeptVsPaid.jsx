@@ -1,9 +1,9 @@
 /* App.js */
-import React, { Component } from 'react';
+import { Component } from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
 //var CanvasJSReact = require('@canvasjs/react-charts');
 import api from '../../services/services';
-var CanvasJS = CanvasJSReact.CanvasJS;
+// var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 class DeptVsPaint extends Component {
 	render() {

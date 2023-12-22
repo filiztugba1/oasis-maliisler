@@ -1,22 +1,19 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
+import React, {useEffect, useState } from 'react'
 import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { StudentInfoHeader } from '../student-info/StudentInfoHeader'
-import axios from "axios";
-import { StudentDetailModel, StudentDetailResponseData } from '../student-info/models/_studentdetail.model'
-import { CollectionList, CollectionsResponse, PaymentList, PaymentsResponse, StudentCollectionUpdateRequest, StudentFeesUpdateRequest, StudentFeesUpdateResponse } from './models/_payments.model'
-import { Payments } from './components/Payments'
+import { StudentDetailModel } from '../student-info/models/_studentdetail.model'
+import { CollectionList, PaymentList, StudentCollectionUpdateRequest, StudentFeesUpdateRequest } from './models/_payments.model'
 import '../style.css';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
-import { Button, Modal } from 'react-bootstrap';
+import {  Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
 import Select from 'react-select';
 import { Switch } from '@mui/material';
-import { Snackbar } from '@mui/material';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 
 
@@ -66,10 +63,6 @@ const StudentPaymentsSnack: React.FC = () => {
       page: "",
       listLoad: false
     }
-  );
-
-  const [payments, setPayments] = useState<Array<CollectionList>>(
-    []
   );
 
 
@@ -140,7 +133,7 @@ const StudentPaymentsSnack: React.FC = () => {
   }
   const columns: TableColumn<typeof paymentList[0]>[] = [
     { name: 'Yıl', selector: (row) => row.year, sortable: true },
-    { name: 'Dönem', selector: (row) => +row.semester == 1 ? 'Güz' : (+row.semester == 2 ? 'Bahar' : 'Yaz'), sortable: true },
+    { name: 'Dönem', selector: (row) => +row.semester === 1 ? 'Güz' : (+row.semester === 2 ? 'Bahar' : 'Yaz'), sortable: true },
     { name: 'Harç Tipi', selector: (row) => row.name, sortable: true },
     { name: 'Ödenen (USD)', selector: (row) => api.paymetFormat(row.Payment_Dolar || '') || '', sortable: true },
     { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.Payments) || '', sortable: true },
@@ -178,7 +171,7 @@ const StudentPaymentsSnack: React.FC = () => {
 
     const formattedData = filteredData.map((item) => ({
       'Yıl': item.year,
-      'Dönem': +item.semester == 1 ? 'Güz' : (+item.semester == 2 ? 'Bahar' : 'Yaz'),
+      'Dönem': +item.semester === 1 ? 'Güz' : (+item.semester === 2 ? 'Bahar' : 'Yaz'),
       'Harç Tipi': item.name,
       'Ödenen (USD)': api.paymetFormat(item.Payment_Dolar || ''),
       'Ödenen (TL)': api.paymetFormat(item.Payments),
@@ -204,7 +197,7 @@ const StudentPaymentsSnack: React.FC = () => {
 
   const columnsOdemeBilgileri: TableColumn<typeof paymentListOdemeBilgileri[0]>[] = [
     { name: 'Yıl', selector: (row) => row.year, sortable: true },
-    { name: 'Dönem', selector: (row) => +row.semester == 1 ? 'Güz' : (+row.semester == 2 ? 'Bahar' : 'Yaz'), sortable: true },
+    { name: 'Dönem', selector: (row) => +row.semester === 1 ? 'Güz' : (+row.semester === 2 ? 'Bahar' : 'Yaz'), sortable: true },
     { name: 'Ödeme Türü', selector: (row) => row.name_tr, sortable: true },
     { name: 'Borç Miktarı (USD)', selector: (row) => api.paymetFormat(row.Amount_Dolar) || '', sortable: true },
     { name: 'Ödenen (USD)', selector: (row) => api.paymetFormat(row.dolar_payment) || '', sortable: true },
@@ -393,7 +386,7 @@ const StudentPaymentsSnack: React.FC = () => {
 
     const formattedData = filteredDataOdemeBilgileri.map((item) => ({
       'Yıl': item.year,
-      'Dönem': +item.semester == 1 ? 'Güz' : (+item.semester == 2 ? 'Bahar' : 'Yaz'),
+      'Dönem': +item.semester === 1 ? 'Güz' : (+item.semester === 2 ? 'Bahar' : 'Yaz'),
       'Ödeme Türü': item.name_tr,
       'Borç Miktarı (USD)': api.paymetFormat(item.Amount_Dolar),
       'Ödenen (USD)': api.paymetFormat(item.dolar_payment),
@@ -504,30 +497,30 @@ const StudentPaymentsSnack: React.FC = () => {
   const formDoldur = (key: any, value: any) => {
     setFormData(
       {
-        stu_id: key == 'stu_id' ? value : formData.stu_id,
-        year: key == 'year' ? value : formData.year,
-        semester: key == 'semester' ? value : formData.semester,
-        fee_type_id: key == 'fee_type_id' ? value : formData.fee_type_id,
-        tek_ders: key == 'tek_ders' ? (+formData.tek_ders === 1 ? 0 : 1) + '' : formData.tek_ders,
-        sadece_staj: key == 'sadece_staj' ? (+formData.sadece_staj === 1 ? 0 : 1) + '' : formData.sadece_staj,
-        sadece_proje: key == 'sadece_proje' ? (+formData.sadece_proje === 1 ? 0 : 1) + '' : formData.sadece_proje,
-        f: key == 'f' ? value : formData.f,
-        d: key == 'd' ? value : formData.d,
-        scholarship_amount: key == 'scholarship_amount' ? value : formData.scholarship_amount,
-        scholarship_code: key == 'scholarship_code' ? value : formData.scholarship_code,
-        debt_amount_dolar: key == 'debt_amount_dolar' ? value : formData.debt_amount_dolar,
-        debt_amount: key == 'debt_amount' ? value : formData.debt_amount,
-        payments: key == 'payments' ? value : formData.payments,
-        return_date: key == 'return_date' ? value : formData.return_date,
-        create_date: key == 'create_date' ? value : formData.create_date,
-        dept_amount_day_date: key == 'dept_amount_day_date' ? value : formData.dept_amount_day_date,
-        comment: key == 'comment' ? value : formData.comment,
-        old_dept_amount: key == 'old_dept_amount' ? value : formData.old_dept_amount,
-        money: key == 'money' ? value : formData.money,
-        move: key == 'move' ? value : formData.move,
-        partial: key == 'partial' ? value : formData.partial,
-        last_pay_date: key == 'last_pay_date' ? value : formData.last_pay_date,
-        return1: key == 'last_pay_date' ? value : formData.return1,
+        stu_id: key === 'stu_id' ? value : formData.stu_id,
+        year: key === 'year' ? value : formData.year,
+        semester: key=== 'semester' ? value : formData.semester,
+        fee_type_id: key === 'fee_type_id' ? value : formData.fee_type_id,
+        tek_ders: key === 'tek_ders' ? (+formData.tek_ders === 1 ? 0 : 1) + '' : formData.tek_ders,
+        sadece_staj: key === 'sadece_staj' ? (+formData.sadece_staj === 1 ? 0 : 1) + '' : formData.sadece_staj,
+        sadece_proje: key=== 'sadece_proje' ? (+formData.sadece_proje === 1 ? 0 : 1) + '' : formData.sadece_proje,
+        f: key === 'f' ? value : formData.f,
+        d: key === 'd' ? value : formData.d,
+        scholarship_amount: key === 'scholarship_amount' ? value : formData.scholarship_amount,
+        scholarship_code: key === 'scholarship_code' ? value : formData.scholarship_code,
+        debt_amount_dolar: key === 'debt_amount_dolar' ? value : formData.debt_amount_dolar,
+        debt_amount: key === 'debt_amount' ? value : formData.debt_amount,
+        payments: key=== 'payments' ? value : formData.payments,
+        return_date: key === 'return_date' ? value : formData.return_date,
+        create_date: key === 'create_date' ? value : formData.create_date,
+        dept_amount_day_date: key === 'dept_amount_day_date' ? value : formData.dept_amount_day_date,
+        comment: key === 'comment' ? value : formData.comment,
+        old_dept_amount: key === 'old_dept_amount' ? value : formData.old_dept_amount,
+        money: key === 'money' ? value : formData.money,
+        move: key === 'move' ? value : formData.move,
+        partial: key === 'partial' ? value : formData.partial,
+        last_pay_date: key === 'last_pay_date' ? value : formData.last_pay_date,
+        return1: key === 'last_pay_date' ? value : formData.return1,
       }
     );
   };
@@ -536,21 +529,21 @@ const StudentPaymentsSnack: React.FC = () => {
   const formDoldurPayment = (key: any, value: any) => {
     setFormDataPayment(
       {
-        stu_id: key == 'stu_id' ? value : formDataPayment.stu_id,
-        year: key == 'year' ? value : formDataPayment.year,
-        semester: key == 'semester' ? value : formDataPayment.semester,
-        fee_type_id: key == 'fee_type_id' ? value : formDataPayment.fee_type_id,
-        dekont_no: key == 'dekont_no' ? value : formDataPayment.dekont_no,
-        process_type: key == 'process_type' ? value : formDataPayment.process_type,
-        payment_date: key == 'payment_date' ? value : formDataPayment.payment_date,
-        payment: key == 'payment' ? value : formDataPayment.payment,
-        payment_dolar: key == 'payment_dolar' ? value : formDataPayment.payment_dolar,
-        bank_code: key == 'bank_code' ? value : formDataPayment.bank_code,
-        create_date: key == 'create_date' ? value : formDataPayment.create_date,
-        explanation: key == 'explanation' ? value : formDataPayment.explanation,
-        rate: key == 'rate' ? value : formDataPayment.rate,
-        money: key == 'money' ? value : formDataPayment.money,
-        actionType: key == 'actionType' ? value : formDataPayment.actionType,
+        stu_id: key === 'stu_id' ? value : formDataPayment.stu_id,
+        year: key === 'year' ? value : formDataPayment.year,
+        semester: key === 'semester' ? value : formDataPayment.semester,
+        fee_type_id: key === 'fee_type_id' ? value : formDataPayment.fee_type_id,
+        dekont_no: key === 'dekont_no' ? value : formDataPayment.dekont_no,
+        process_type: key === 'process_type' ? value : formDataPayment.process_type,
+        payment_date: key === 'payment_date' ? value : formDataPayment.payment_date,
+        payment: key === 'payment' ? value : formDataPayment.payment,
+        payment_dolar: key === 'payment_dolar' ? value : formDataPayment.payment_dolar,
+        bank_code: key === 'bank_code' ? value : formDataPayment.bank_code,
+        create_date: key === 'create_date' ? value : formDataPayment.create_date,
+        explanation: key === 'explanation' ? value : formDataPayment.explanation,
+        rate: key === 'rate' ? value : formDataPayment.rate,
+        money: key === 'money' ? value : formDataPayment.money,
+        actionType: key === 'actionType' ? value : formDataPayment.actionType,
       }
     );
   };

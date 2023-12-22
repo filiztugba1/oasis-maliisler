@@ -1,13 +1,11 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
+import React, {  useEffect, useState } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { StudentInfoHeader } from '../student-info/StudentInfoHeader'
-import axios from "axios";
-import { StudentDetailModel, StudentDetailResponseData } from '../student-info/models/_studentdetail.model'
-import { RelationMaliDetailRequest, RelationMaliDetailResponse, RelationMaliDetail, } from './models/_relationmali.model'
+import { StudentDetailModel } from '../student-info/models/_studentdetail.model'
+import { RelationMaliDetailRequest, RelationMaliDetail, } from './models/_relationmali.model'
 import { Switch } from '@mui/material';
 import '../style.css';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import api from '../../services/services';
 import Loading from '../Loading';
 const accountBreadCrumbs: Array<PageLink> = [
@@ -81,7 +79,6 @@ const RelationMaliSnack: React.FC = () => {
   const [relationMaliDetail, setRelationMaliDetail] = useState<RelationMaliDetail>();
 
 
-  const [isApi, setIsApi] = useState(true);
   useEffect(() => {
 
       let formdata = {
@@ -114,10 +111,10 @@ const RelationMaliSnack: React.FC = () => {
     setFormData(
       {
         mali_aciklama: formData.mali_aciklama,
-        mali_borc: key=='mali_borc'?(formData.mali_borc?0:1):formData.mali_borc,
-        mali_diploma: key=='mali_diploma'?(formData.mali_diploma?0:1):formData.mali_diploma,
-        mali_diploma_cap: key=='mali_diploma_cap'?(formData.mali_diploma_cap?0:1):formData.mali_diploma_cap,
-        mali_kimlik: key=='mali_kimlik'?(formData.mali_kimlik?0:1):formData.mali_kimlik,
+        mali_borc: key==='mali_borc'?(formData.mali_borc?0:1):formData.mali_borc,
+        mali_diploma: key==='mali_diploma'?(formData.mali_diploma?0:1):formData.mali_diploma,
+        mali_diploma_cap: key==='mali_diploma_cap'?(formData.mali_diploma_cap?0:1):formData.mali_diploma_cap,
+        mali_kimlik: key==='mali_kimlik'?(formData.mali_kimlik?0:1):formData.mali_kimlik,
         stu_id: formData.stu_id,
       }
     );
@@ -267,8 +264,8 @@ const RelationMaliSnack: React.FC = () => {
                 <select
                   className='form-select'
                   onChange={handleChange}
-                  value={relationMaliDetail?.mali_diploma=="0" && relationMaliDetail?.mali_diploma_cap=="0"
-                    && relationMaliDetail?.mali_kimlik=="0" && relationMaliDetail?.mali_borc=="0"?'':'1'
+                  value={relationMaliDetail?.mali_diploma==="0" && relationMaliDetail?.mali_diploma_cap==="0"
+                    && relationMaliDetail?.mali_kimlik==="0" && relationMaliDetail?.mali_borc==="0"?'':'1'
                     }
                 >
                   <option value=''>Yok</option>

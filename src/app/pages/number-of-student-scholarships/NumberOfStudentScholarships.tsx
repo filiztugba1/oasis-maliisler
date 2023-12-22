@@ -1,16 +1,13 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { StudentScholarshipNumbers,StudentScholarshipNumbersRequest,StudentScholarshipNumbersResponse } from './models/_studentscholarships'
+import React, {  useEffect, useState } from 'react'
+import { StudentScholarshipNumbers,StudentScholarshipNumbersRequest } from './models/_studentscholarships'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider,useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
@@ -33,7 +30,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
     setSelectedFaculty(selected);
     formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    const datam = api.department({f:JSON.stringify(selected)}).then((x)=>{
+     api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     }).catch(err => catchFunc(err))
   };
@@ -42,7 +39,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
   const handleDepartmentChange = (selected: any) => {
     setSelectedDepartment(selected);
     formDoldur("d",JSON.stringify(selected));
-    const datam = api.option({d:JSON.stringify(selected)}).then((x)=>{
+    api.option({d:JSON.stringify(selected)}).then((x)=>{
       setOList(x);
     }).catch(err => catchFunc(err))
   };
@@ -76,17 +73,17 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        f: key=='f'?value:formData.f,
-        d: key=='d'?value:formData.d,
-        o: key=='o'?value:formData.o,
-        class: key=='class'?value:formData.class,
-        class_type: key=='class_type'?value:formData.class_type,
-        register_year: key=='register_year'?value:formData.register_year,
-        register_type: key=='register_type'?value:formData.register_type,
-        status: key=='status'?value:formData.status,
-        fee_status: key=='fee_status'?value:formData.fee_status,
-        credit: key=='credit'?value:formData.credit,
-        scholarshipType: key=='scholarshipType'?value:formData.scholarshipType
+        f: key==='f'?value:formData.f,
+        d: key==='d'?value:formData.d,
+        o: key==='o'?value:formData.o,
+        class: key==='class'?value:formData.class,
+        class_type: key==='class_type'?value:formData.class_type,
+        register_year: key==='register_year'?value:formData.register_year,
+        register_type: key==='register_type'?value:formData.register_type,
+        status: key==='status'?value:formData.status,
+        fee_status: key==='fee_status'?value:formData.fee_status,
+        credit: key==='credit'?value:formData.credit,
+        scholarshipType: key==='scholarshipType'?value:formData.scholarshipType
       }
     );
   };
@@ -143,7 +140,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
 
   const [filteredData, setFilteredData] = useState(numberofstudentscholarshiplist);
   const handleSearch = (e:any) => {
-    const searchTerm = e.target.value;
+    // const searchTerm = e.target.value;
     const filteredItems = numberofstudentscholarshiplist
     // .filter((item) =>
     //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||

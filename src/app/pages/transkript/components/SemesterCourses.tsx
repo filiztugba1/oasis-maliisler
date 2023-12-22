@@ -1,17 +1,10 @@
-
-
-
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, KeyboardEvent, useEffect, useRef, useState} from 'react'
-import {Link} from 'react-router-dom'
-import {useLocation} from 'react-router'
-import axios from "axios";
+import React from 'react'
 import { Donem } from '../models/_studenttranskript.model';
 import '../transkript.css';
 
 
 const SemesterCourses: React.FC<Donem> = (x) => {
-  const location = useLocation()
 
   return (
     <>

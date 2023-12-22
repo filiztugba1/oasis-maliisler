@@ -1,21 +1,16 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { InstallmentCURequest, InstallmentLists, InstallmentListsRequest, InstallmentListsResponse } from './models/_installment.model'
+import React, { useEffect,useState} from 'react'
+import { InstallmentCURequest, InstallmentLists, InstallmentListsRequest } from './models/_installment.model'
 import '../style.css';
 import Select from 'react-select';
-import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX,utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 const InstallmentSnack: React.FC = () => {
 
-  const [isApi, setIsApi] = useState(true);
   const [bankCardList, setbankCardList] = useState<Array<FacultyList>>([]);
   const [creditCardList, setcreditCardList] = useState<Array<FacultyList>>([]);
   const [listLoad, setlistLoad] = useState(false);
@@ -25,7 +20,6 @@ const InstallmentSnack: React.FC = () => {
   useEffect(() => {
     api.bankCards().then((x) => {
       setbankCardList(x);
-      setIsApi(false);
     }).catch(err => catchFunc(err))
   }, []);
 
@@ -52,8 +46,8 @@ const InstallmentSnack: React.FC = () => {
   const formDoldur = (key: any, value: any) => {
     setFormData(
       {
-        bank: key == 'bank' ? value : formData.bank,
-        credit_card: key == 'credit_card' ? value : formData.credit_card,
+        bank: key === 'bank' ? value : formData.bank,
+        credit_card: key === 'credit_card' ? value : formData.credit_card,
       }
     );
   };
@@ -191,7 +185,7 @@ const InstallmentSnack: React.FC = () => {
     const fileName = 'data_table_export';
 
     const formattedData = filteredData.map((item) => ({
-      'Taksit #': +item.taksit_no == 0 ? 'Tek Çekim' : item.taksit_no + ' Taksit',
+      'Taksit #': +item.taksit_no === 0 ? 'Tek Çekim' : item.taksit_no + ' Taksit',
       'Faiz Oranı %': api.paymetFormat(item.faiz),
       'Taban Fiyat': api.paymetFormat(item.min_payment),
       'Taksit Sayısı': item.taksit_sayisi,
@@ -212,7 +206,6 @@ const InstallmentSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
   }
   return (
     <>

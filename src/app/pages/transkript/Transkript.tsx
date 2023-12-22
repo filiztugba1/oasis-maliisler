@@ -1,11 +1,10 @@
-import React, {FC, KeyboardEvent, useEffect, useRef, useState,Component} from 'react'
+import React, {useEffect, useState} from 'react'
 import { StudentInfoHeader } from '../student-info/StudentInfoHeader';
-import { StudentDetailModel, StudentDetailResponseData } from '../student-info/models/_studentdetail.model';
-import axios from "axios";
-import { StudentTranskript, StudentTranskriptData, year } from './models/_studenttranskript.model';
+import { StudentDetailModel } from '../student-info/models/_studentdetail.model';
+import {StudentTranskriptData, year } from './models/_studenttranskript.model';
 import './transkript.css';
 import { SemesterHeader } from './components/SemesterHeader';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 import api from '../../services/services';
     const TranskriptSnack: React.FC = () => {
@@ -40,8 +39,6 @@ import api from '../../services/services';
           );
 
           const [studentTranskriptt, setStudentTranskriptt] = useState<StudentTranskriptData>();
-
-          const [isApi, setIsApi] = useState(true);
           useEffect(() => {
             let formdata = {
                 stu_id: localStorage.getItem('search-student-id')
@@ -80,7 +77,7 @@ import api from '../../services/services';
         //     console.log(x)
         // ))
         const map = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler;
-        const result:Array<year> = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler!=undefined?Object.values(map):[];
+        const result:Array<year> = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler!==undefined?Object.values(map):[];
 
         const catchFunc = (err: any) => {
             if (err.response && err.response.data && err.response.data.message) {
@@ -91,7 +88,6 @@ import api from '../../services/services';
                 // navigate('/auth');
               }
             }
-            setIsApi(false);
           }
         return (
            <>

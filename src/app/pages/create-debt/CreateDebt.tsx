@@ -1,25 +1,21 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
+import React, { useEffect,  useState } from 'react'
 import {CreateDebtx, CreateDebtAppList, CreateDebtOnayRed} from './models/_createdebt'
 import './payments.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
 import * as XLSX from 'xlsx';
-import { Button, Modal } from 'react-bootstrap';
+import {  Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
-import { right } from '@popperjs/core';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
 const CreateDebtSnack: React.FC = () => {
  
-  const [isApi, setIsApi] = useState(true);
-  const [yearList, setYear] = useState<Array<FacultyList>>([]);
+  // const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const { enqueueSnackbar } = useSnackbar();
   const handlePaymentClose = () => setShowPayment(false);
   const handlePaymentShow = () => setShowPayment(true);
@@ -47,13 +43,11 @@ const CreateDebtSnack: React.FC = () => {
           paramList();
           paramAppList();
 
-     api.year(1).then((x) => {
-            setYear(x);
-            setIsApi(false);
-          }).catch(err => catchFunc(err))
+    //  api.year(1).then((x) => {
+    //         setYear(x);
+    //       }).catch(err => catchFunc(err))
           api.faculty().then((x)=>{
             setFList(x);
-            setIsApi(false);
           }).catch(err => catchFunc(err))
     },[]);
 
@@ -362,7 +356,6 @@ const CreateDebtSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
   }
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {

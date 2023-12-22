@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import '../style.css';
-import axios from 'axios';
-import { DeptVsPaidList, DeptVsPaidResponse, Report, ReportResponse, TotalScholarshipGrafic, TotalScholarshipList, TotalScholarshipListResponse } from './models/home.model';
-import { MixedWidget11 } from '../../../_metronic/partials/widgets';
+import { Report, TotalScholarshipGrafic} from './models/home.model';
 import ScolarshipTotalList from './ScolarshipTotalList';
 import DeptVsPaint from './DeptVsPaid';
 import api from '../../services/services';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
 
@@ -39,7 +36,7 @@ const HomePageSnack: React.FC = () => {
   );
   const [totalscholarshipgrafic, setTotalscholarshipgrafic] = useState<Array<TotalScholarshipGrafic>>([]);
   const [deptVsPaid, setDeptVsPaid] = useState<Array<TotalScholarshipGrafic>>([]);
-  const [isApi, setIsApi] = useState(true);
+  // const [isApi, setIsApi] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -71,7 +68,7 @@ const HomePageSnack: React.FC = () => {
       });
       setbursLoad(false);
       setTotalscholarshipgrafic(categories);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
 
     setalinacakLoad(true);
@@ -99,7 +96,7 @@ const HomePageSnack: React.FC = () => {
       console.log(categories);
       setalinacakLoad(false);
       setDeptVsPaid(categories);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
   }, []);
 
@@ -112,7 +109,7 @@ const HomePageSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
+    // setIsApi(false);
   }
   return (
     

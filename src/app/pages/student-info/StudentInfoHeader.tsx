@@ -2,11 +2,10 @@
 
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, KeyboardEvent, useEffect, useRef, useState} from 'react'
+import React from 'react'
 import {KTSVG, toAbsoluteUrl} from '../../../_metronic/helpers'
 import {Link} from 'react-router-dom'
 import {useLocation} from 'react-router'
-import axios from "axios";
 import { StudentDetailModel } from './models/_studentdetail.model';
 import Loading from '../Loading'
 
@@ -96,7 +95,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
 
                     <div className='fw-bold fs-6 text-gray-400'>{studentDetail.anadal_bolum}</div>
                   </div>
-                  {studentDetail.anadal_opsiyon!=null && studentDetail.anadal_opsiyon!=undefined?
+                  {studentDetail.anadal_opsiyon!==null && studentDetail.anadal_opsiyon!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -107,7 +106,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
                   </div>:''
                   }
 
-                  {studentDetail.cap_fakulte!=null && studentDetail.cap_fakulte!=undefined?
+                  {studentDetail.cap_fakulte!==null && studentDetail.cap_fakulte!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -118,7 +117,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
                   </div>:''
                   }
 
-                  {studentDetail.cap_bolum!=null && studentDetail.cap_bolum!=undefined?
+                  {studentDetail.cap_bolum!==null && studentDetail.cap_bolum!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -128,7 +127,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
                     <div className='fw-bold fs-6 text-gray-400'>{studentDetail.cap_bolum}</div>
                   </div>:''
                   }
-                  {studentDetail.cap_opsiyon!=null && studentDetail.cap_opsiyon!=undefined?
+                  {studentDetail.cap_opsiyon!==null && studentDetail.cap_opsiyon!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -140,7 +139,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
                   }
 
 
-                  {studentDetail.yandal_fakulte!=null && studentDetail.yandal_fakulte!=undefined?
+                  {studentDetail.yandal_fakulte!==null && studentDetail.yandal_fakulte!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -151,7 +150,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
                   </div>:''
                   }
 
-                  {studentDetail.yandal_bolum!=null && studentDetail.yandal_bolum!=undefined?
+                  {studentDetail.yandal_bolum!==null && studentDetail.yandal_bolum!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -161,7 +160,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
                     <div className='fw-bold fs-6 text-gray-400'>{studentDetail.yandal_bolum}</div>
                   </div>:''
                   }
-                  {studentDetail.yandal_opsiyon!=null && studentDetail.yandal_opsiyon!=undefined?
+                  {studentDetail.yandal_opsiyon!==null && studentDetail.yandal_opsiyon!==undefined?
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-2 mb-3'>
                     <div className='d-flex align-items-center'>
                     
@@ -282,7 +281,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
           </div>
         </div>
 
-        {studentDetail.page=='student-detail'?
+        {studentDetail.page==='student-detail'?
         <div className='d-flex overflow-auto h-55px'>
           <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>
             <li className='nav-item'>
@@ -325,7 +324,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
           </ul>
         </div>:''
         }
-        {studentDetail.page=='student-payments'?
+        {studentDetail.page==='student-payments'?
         <>
          <div className='d-flex overflow-auto h-55px'>
           <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>
@@ -356,7 +355,7 @@ const StudentInfoHeader: React.FC<StudentDetailModel> = (studentDetail) => {
         </>
         :''}
 
-        {studentDetail.page=='student-history'?
+        {studentDetail.page==='student-history'?
                <>
                <div className='d-flex overflow-auto h-55px'>
                 <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>

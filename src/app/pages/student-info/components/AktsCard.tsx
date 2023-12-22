@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {FC, useEffect, useRef} from 'react'
-import {KTSVG} from '../../../../_metronic/helpers'
 import {getCSSVariableValue} from '../../../../_metronic/assets/ts/_utils'
 import {useThemeMode} from '../../../../_metronic/partials/layout/theme-mode/ThemeModeProvider'
 

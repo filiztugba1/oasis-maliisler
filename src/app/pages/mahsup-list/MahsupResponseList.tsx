@@ -1,22 +1,18 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import {MahsupListesi,MahsupResponse} from './models/_mahsup.model'
+import React, {  useEffect, useState } from 'react'
+import {MahsupListesi} from './models/_mahsup.model'
 import './payments.css';
-import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
 const MahsupListSnack: React.FC = () => {
   const userItem = localStorage.getItem('user');
   const user = userItem ? JSON.parse(userItem) : null;
-  const [isApi, setIsApi] = useState(true);
+  // const [isApi, setIsApi] = useState(true);
   const [listLoad, setlistLoad] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -101,7 +97,7 @@ const MahsupListSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
+    // setIsApi(false);
   }
   return (
     <>

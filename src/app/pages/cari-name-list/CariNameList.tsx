@@ -1,21 +1,14 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
+import React, { useEffect, useState } from 'react'
 import { CariNameList } from './models/_carinamelistx.model'; 
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
-import { DepartmentList } from '../../services/models/_department';
-import { FacultyList } from '../../services/models/_faculty';
-import { StuStatusList } from '../../services/models/_stuStatus';
 import { RegisterTypeList } from '../../services/models/_registerType';
 // import 'react-data-table-component/dist/data-table.css';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 
 
@@ -25,7 +18,6 @@ const CariNameListSnack: React.FC = () => {
   const user = userItem ? JSON.parse(userItem) : null;
   const [rtList, setRtList] = useState<Array<RegisterTypeList>>([]);
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
   const [listLoad, setlistLoad] = useState(false);
   const [tableisActive, settableisActive] = useState(false);
 

@@ -1,45 +1,39 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { DefinitiveRecordRequest, DefinitiveRecordList, DefinitiveRecordResponse } from './models/_definitiverecords.model'
-import { DefinitiveRecordlistColumn } from './components/DefinitiveRecordlistColumn'
+import React, { useEffect, useState } from 'react'
+import { DefinitiveRecordRequest, DefinitiveRecordList } from './models/_definitiverecords.model'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
 import { DepartmentList } from '../../services/models/_department';
 import { FacultyList } from '../../services/models/_faculty';
 import { StuStatusList } from '../../services/models/_stuStatus';
 import { RegisterTypeList } from '../../services/models/_registerType';
-import { ScholarshipHistoryList } from '../student-history/models/_history.model';
-import { YearList } from '../../services/models/_year';
 // import 'react-data-table-component/dist/data-table.css';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
-const accountBreadCrumbs: Array<PageLink> = [
-  {
-    title: 'Student Info',
-    path: '/student-info',
-    isSeparator: false,
-    isActive: false,
-  },
-  {
-    title: '',
-    path: '',
-    isSeparator: true,
-    isActive: false,
-  },
-]
+// const accountBreadCrumbs: Array<PageLink> = [
+//   {
+//     title: 'Student Info',
+//     path: '/student-info',
+//     isSeparator: false,
+//     isActive: false,
+//   },
+//   {
+//     title: '',
+//     path: '',
+//     isSeparator: true,
+//     isActive: false,
+//   },
+// ]
 
 
 const DefinitiveRecordsSnack: React.FC = () => {
   const userItem = localStorage.getItem('user');
 		const user = userItem ? JSON.parse(userItem) : null;
-  const [isApi, setIsApi] = useState(true);
+  // const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
   const [dList, setDList] = useState<Array<DepartmentList>>([]);
   const [ssList, setSsList] = useState<Array<StuStatusList>>([]);
@@ -145,7 +139,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
       setlistLoad(false);
         setDefinitiverecordlist(x);
         setFilteredData(x);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
   };
 
@@ -158,14 +152,14 @@ const DefinitiveRecordsSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
+    // setIsApi(false);
   }
   const handleSearch = (e: any) => {
     const searchTerm = e.target.value;
     const filteredItems = definitiverecordlist.filter((item) =>
       (item.name + ' ' + item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.ogrno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      +item.id_no == +searchTerm ||
+      +item.id_no === +searchTerm ||
       item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.faculty.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.scholarship.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -203,17 +197,17 @@ const DefinitiveRecordsSnack: React.FC = () => {
   useEffect(() => {
     api.faculty().then((x) => {
       setFList(x);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
 
     api.stuStatus().then((x) => {
       setSsList(x);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
 
     api.registerType().then((x) => {
       setRtList(x);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
   },[]);
   

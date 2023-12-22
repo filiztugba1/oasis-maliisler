@@ -1,16 +1,13 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { FeePaymentList,FeePaymentListRequest,FeePaymentListResponse } from './models/_feepaymentslist.model'
+import React, { useEffect,useState} from 'react'
+import { FeePaymentList,FeePaymentListRequest } from './models/_feepaymentslist.model'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
@@ -100,15 +97,15 @@ const FeePaymentsListSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        f: key=='f'?value:formData.f,
-        d: key=='d'?value:formData.d,
-        o: key=='o'?value:formData.o,
-        year: key=='year'?value:formData.year,
-        semester: key=='semester'?value:formData.semester,
-        banka: key=='banka'?value:formData.banka,
-        fee_type: key=='fee_type'?value:formData.fee_type,
-        payment_date_start: key=='payment_date_start'?value:formData.payment_date_start,
-        payment_date_finish: key=='payment_date_finish'?value:formData.payment_date_finish,
+        f: key==='f'?value:formData.f,
+        d: key==='d'?value:formData.d,
+        o: key==='o'?value:formData.o,
+        year: key==='year'?value:formData.year,
+        semester: key==='semester'?value:formData.semester,
+        banka: key==='banka'?value:formData.banka,
+        fee_type: key==='fee_type'?value:formData.fee_type,
+        payment_date_start: key==='payment_date_start'?value:formData.payment_date_start,
+        payment_date_finish: key==='payment_date_finish'?value:formData.payment_date_finish,
       }
     );
   };

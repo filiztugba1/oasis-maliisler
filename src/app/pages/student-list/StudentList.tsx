@@ -1,17 +1,14 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import axios from "axios";
-import { StudentListRequest,StudentList,StudentListResponse } from './models/_studentlist.model'
+import React, { useEffect, useState } from 'react'
+import { StudentListRequest,StudentList } from './models/_studentlist.model'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
+import { writeXLSX, utils } from 'xlsx';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 const StudentListtSnack: React.FC = () => {
  
@@ -31,7 +28,7 @@ const StudentListtSnack: React.FC = () => {
     setSelectedFaculty(selected);
     formDoldur("f",JSON.stringify(selected));
     /// burası seçildiğinde bölüm bilgisi doldurulacak
-    const datam = api.department({f:JSON.stringify(selected)}).then((x)=>{
+    api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
     }).catch(err => catchFunc(err))
   };
@@ -51,8 +48,6 @@ const StudentListtSnack: React.FC = () => {
   const [selectedRegisterType, setSelectedRegisterType] = React.useState(null);
   const handleRegisterTypeChange = (selected: any) => {
     setSelectedRegisterType(selected);
-
-    let secim=[];
     formDoldur("register_type",JSON.stringify(selected));
 
   };
@@ -73,23 +68,23 @@ const StudentListtSnack: React.FC = () => {
   const formDoldur = (key: any,value:any) => {
     setFormData(
       {
-        f: key=='f'?value:formData.f,
-        d: key=='d'?value:formData.d,
-        status_date_start: key=='status_date_start'?value:formData.status_date_start,
-        status_date_finish: key=='status_date_finish'?value:formData.status_date_finish,
-        stu_status: key=='stu_status'?value:formData.stu_status,
-        register_type: key=='register_type'?value:formData.register_type,
-        regulation: key=='regulation'?value:formData.regulation,
-        sex: key=='sex'?value:formData.sex,
-        credit: key=='credit'?value:formData.credit,
-        fee_status: key=='fee_status'?value:formData.fee_status,
-        citizen: key=='citizen'?value:formData.citizen,
-        status: key=='status'?value:formData.status,
-        class: key=='class'?value:formData.class,
-        register_year: key=='register_year'?value:formData.register_year,
-        class_type: key=='class_type'?value:formData.class_type,
-        khk: key=='khk'?value:formData.khk,
-        ozet: key=='ozet'?value:formData.ozet
+        f: key==='f'?value:formData.f,
+        d: key==='d'?value:formData.d,
+        status_date_start: key==='status_date_start'?value:formData.status_date_start,
+        status_date_finish: key==='status_date_finish'?value:formData.status_date_finish,
+        stu_status: key==='stu_status'?value:formData.stu_status,
+        register_type: key==='register_type'?value:formData.register_type,
+        regulation: key==='regulation'?value:formData.regulation,
+        sex: key==='sex'?value:formData.sex,
+        credit: key==='credit'?value:formData.credit,
+        fee_status: key==='fee_status'?value:formData.fee_status,
+        citizen: key==='citizen'?value:formData.citizen,
+        status: key==='status'?value:formData.status,
+        class: key==='class'?value:formData.class,
+        register_year: key==='register_year'?value:formData.register_year,
+        class_type: key==='class_type'?value:formData.class_type,
+        khk: key==='khk'?value:formData.khk,
+        ozet: key==='ozet'?value:formData.ozet
       }
     );
   };
@@ -187,7 +182,7 @@ const StudentListtSnack: React.FC = () => {
     .filter((item) =>
       (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      +item.tckimlik== +searchTerm ||
+      +item.tckimlik=== +searchTerm ||
       item.fadi.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.badi.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.opt.toLowerCase().includes(searchTerm.toLowerCase()) ||

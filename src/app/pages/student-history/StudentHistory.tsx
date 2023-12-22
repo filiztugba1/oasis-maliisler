@@ -1,21 +1,16 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { StudentInfoHeader } from '../student-info/StudentInfoHeader'
-import axios from "axios";
-import { StudentDetailModel, StudentDetailResponseData } from '../student-info/models/_studentdetail.model'
-import { HistoryResponse, HistoryList, ScholarshipHistoryList, ScholarshipHistoryResponse, ScholarshipHistoryRequest, ScholarshipHistoryCrudResponse } from './models/_history.model'
-import { History } from './components/History'
-import { ScholarshipHistory } from './components/ScholarshipHistory'
+import { StudentDetailModel } from '../student-info/models/_studentdetail.model'
+import {  HistoryList, ScholarshipHistoryList, ScholarshipHistoryRequest } from './models/_history.model'
 import '../style.css';
 import Select from 'react-select';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
-import { writeXLSX, readFile, utils } from 'xlsx';
-import { Switch } from '@mui/material';
-import { Snackbar } from '@mui/material';
-import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
-import { Button, Modal } from 'react-bootstrap';
+import { writeXLSX, utils } from 'xlsx';
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import { Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 import Loading from '../Loading';
@@ -65,7 +60,7 @@ const StudentHistorySnack: React.FC = () => {
   );
 
 
-  const [isApi, setIsApi] = useState(true);
+  // const [isApi, setIsApi] = useState(true);
   const [listLoad, setlistLoad] = useState(false);
   const [listPyLoad, setlistPyLoad] = useState(false);
   const [listModalLoad, setlistModalLoad] = useState(false);
@@ -95,12 +90,12 @@ const StudentHistorySnack: React.FC = () => {
 
     api.historyScholarshipStatus().then((x) => {
       setSssList(x);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
 
     api.year().then((x) => {
       setYear(x);
-      setIsApi(false);
+      // setIsApi(false);
     }).catch(err => catchFunc(err))
 
   }, []
@@ -109,7 +104,7 @@ const StudentHistorySnack: React.FC = () => {
 
   const columnsHistory: TableColumn<typeof Histlistx[0]>[] = [
     { name: 'Yıl', selector: (row) => row.year, sortable: true, cell: row => <div className="cell" style={{}}>{row.year}</div> },
-    { name: 'Dönem', selector: (row) => row.semester, sortable: true, cell: row => <div className="cell">{+row.semester == 1 ? 'Güz' : (+row.semester == 2 ? 'Bahar' : 'Yaz')}</div> },
+    { name: 'Dönem', selector: (row) => row.semester, sortable: true, cell: row => <div className="cell">{+row.semester === 1 ? 'Güz' : (+row.semester === 2 ? 'Bahar' : 'Yaz')}</div> },
     { name: 'Sınıfı', selector: (row) => row.class, sortable: true, cell: row => <div className="cell">{row.class}</div> },
     { name: 'Tarihçe Durumu', selector: (row) => row.status_name, sortable: true, cell: row => <div className="cell">{row.status_name}</div> },
     { name: 'Tarihçe Durum Tarihi', selector: (row) => row.status_date, sortable: true, cell: row => <div className="cell">{row.status_date}</div> },
@@ -130,7 +125,7 @@ const StudentHistorySnack: React.FC = () => {
 
     const formattedData = filteredDataHist.map((item) => ({
       'Yıl': item.year,
-      'Dönem': +item.semester == 1 ? 'Güz' : (+item.semester == 2 ? 'Bahar' : 'Yaz'),
+      'Dönem': +item.semester === 1 ? 'Güz' : (+item.semester === 2 ? 'Bahar' : 'Yaz'),
       'Sınıfı': item.class,
       'Tarihçe Durumu': item.status_name,
       'Tarihçe Durum Tarihi': item.status_date,
@@ -169,13 +164,13 @@ const StudentHistorySnack: React.FC = () => {
 
   const columnsHistoryScolaar: TableColumn<typeof HistlistScolaar[0]>[] = [
     { name: 'Yıl', selector: (row) => row.Year, sortable: true, cell: row => <div className="cell" style={{}}>{row.Year}</div> },
-    { name: 'Dönem', selector: (row) => row.Semester, sortable: true, cell: row => <div className="cell">{+row.Semester == 1 ? 'Güz' : (+row.Semester == 2 ? 'Bahar' : 'Yaz')}</div> },
+    { name: 'Dönem', selector: (row) => row.Semester, sortable: true, cell: row => <div className="cell">{+row.Semester === 1 ? 'Güz' : (+row.Semester === 2 ? 'Bahar' : 'Yaz')}</div> },
     { name: 'Bölüm', selector: (row) => row.badi, sortable: true, cell: row => <div className="cell">{row.badi}</div> },
     { name: 'Tarihçe Durumu', selector: (row) => row.stat, sortable: true, cell: row => <div className="cell">{row.stat}</div> },
     { name: 'Tarihçe Durum Tarihi', selector: (row) => row.stat_date, sortable: true, cell: row => <div className="cell">{row.stat_date}</div> },
     { name: 'Kullanıcı', selector: (row) => row.adi + ' ' + row.soyadi, sortable: true, cell: row => <div className="cell">{row.adi + ' ' + row.soyadi}</div> },
     {
-      name: 'İşlem', selector: (row) => '', cell: (row) => +row.sid == 119 || +row.sid == 99 ? <div>
+      name: 'İşlem', selector: (row) => '', cell: (row) => +row.sid === 119 || +row.sid === 99 ? <div>
         <span><button className='btn  btn-warning btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => updateShow(row)}><i className='fa fa-pen'></i></button></span>
         <span><button className='btn  btn-danger btn-sm' style={{ padding: "3px 9px", margin: "0px 1px" }} onClick={() => deleteShow(row)}><i className='fa fa-trash'></i></button></span>
       </div> : '',
@@ -243,7 +238,7 @@ const StudentHistorySnack: React.FC = () => {
 
     const formattedData = filteredDataScolaarHist.map((item) => ({
       'Yıl': item.Year,
-      'Dönem': +item.Semester == 1 ? 'Güz' : (+item.Semester == 2 ? 'Bahar' : 'Yaz'),
+      'Dönem': +item.Semester === 1 ? 'Güz' : (+item.Semester === 2 ? 'Bahar' : 'Yaz'),
       'Bölüm': item.badi,
       'Tarihçe Durumu': item.stat,
       'Tarihçe Durum Tarihi': item.stat_date,
@@ -344,14 +339,14 @@ const StudentHistorySnack: React.FC = () => {
   const formDoldurPayment = (key: any, value: any) => {
     setFormDataScolar(
       {
-        year: key == 'year' ? value : formDataScolar.year,
-        semester: key == 'semester' ? value : formDataScolar.semester,
-        scholarship_type: key == 'scholarship_type' ? value : formDataScolar.scholarship_type,
-        scholarship_status: key == 'scholarship_status' ? value : formDataScolar.scholarship_status,
-        explanation: key == 'explanation' ? value : formDataScolar.explanation,
-        std_state_date: key == 'std_state_date' ? value : formDataScolar.std_state_date,
-        update_date: key == 'update_date' ? value : formDataScolar.update_date,
-        actionType: key == 'actionType' ? value : formDataScolar.actionType,
+        year: key === 'year' ? value : formDataScolar.year,
+        semester: key === 'semester' ? value : formDataScolar.semester,
+        scholarship_type: key === 'scholarship_type' ? value : formDataScolar.scholarship_type,
+        scholarship_status: key === 'scholarship_status' ? value : formDataScolar.scholarship_status,
+        explanation: key === 'explanation' ? value : formDataScolar.explanation,
+        std_state_date: key === 'std_state_date' ? value : formDataScolar.std_state_date,
+        update_date: key === 'update_date' ? value : formDataScolar.update_date,
+        actionType: key === 'actionType' ? value : formDataScolar.actionType,
 
       }
     );
@@ -379,7 +374,7 @@ const StudentHistorySnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
+    // setIsApi(false);
   }
 
   return (

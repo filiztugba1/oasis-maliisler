@@ -1,5 +1,5 @@
-import React, { FC, KeyboardEvent, useEffect, useRef, useState, Component } from 'react'
-import {KomisyonluListesi,KomisyonluResponse} from './models/_yaz-okulu-komisyonlu.model'
+import React, {useEffect, useState } from 'react'
+import {KomisyonluListesi} from './models/_yaz-okulu-komisyonlu.model'
 import './payments.css';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
@@ -12,7 +12,6 @@ import Loading from '../Loading';
 const KomisyonluListSnack: React.FC = () => {
   const userItem = localStorage.getItem('user');
   const user = userItem ? JSON.parse(userItem) : null;
-  const [isApi, setIsApi] = useState(true);
   const [listLoad, setlistLoad] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -110,7 +109,6 @@ const KomisyonluListSnack: React.FC = () => {
         // navigate('/auth');
       }
     }
-    setIsApi(false);
   }
   return (
     <>

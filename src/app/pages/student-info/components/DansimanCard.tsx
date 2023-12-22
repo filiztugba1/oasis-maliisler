@@ -1,10 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC, useEffect, useRef} from 'react'
-import {KTSVG,toAbsoluteUrl} from '../../../../_metronic/helpers'
-import {getCSSVariableValue} from '../../../../_metronic/assets/ts/_utils'
-import {useThemeMode} from '../../../../_metronic/partials/layout/theme-mode/ThemeModeProvider'
+import {FC} from 'react'
+import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import { Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 type Props = {
   className: string
   chartSize?: number

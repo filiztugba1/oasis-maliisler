@@ -2,17 +2,13 @@
 
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, KeyboardEvent, useEffect, useRef, useState} from 'react'
-import {Link} from 'react-router-dom'
-import {useLocation} from 'react-router'
-import axios from "axios";
+import React from 'react'
 import { Donem } from '../models/_studenttranskript.model';
 import {SemesterCourses} from './SemesterCourses';
 
 
 import '../transkript.css';
 const SemesterHeader: React.FC<Donem> = (x) => {
-  const location = useLocation()
 
   return (
     <table className="table table-bordered table-condensed  table-sm table-hover " style={{border: "1px solid #f1f1f1 !important"}}>

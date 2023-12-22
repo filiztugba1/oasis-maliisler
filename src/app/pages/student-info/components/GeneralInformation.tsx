@@ -64,7 +64,7 @@ import Loading from '../../Loading'
                     />
                 </div>
 
-                {information.lisansUstuSinif!=null && information.lisansUstuSinif!=''?
+                {information.lisansUstuSinif!==null && information.lisansUstuSinif!==''?
                    <div className='col-md-4'>
                    <label className='col-form-label fw-bold fs-6'>
                        <span>Lisansüstü Sınıf Bilgisi</span>
