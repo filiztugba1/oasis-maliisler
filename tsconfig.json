@@ -16,6 +16,6 @@
     "noEmit": false,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx","typings/**/*.d.ts", "src/app/pages/home/ScolarshipTotalList.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx","typings/**/*.d.ts", "src/app/pages/home/ScolarshipTotalList.jsx"],
   "exclude": ["node_modules"]
 }
