@@ -10,6 +10,18 @@ import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
+
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
+
 const StudentListtSnack: React.FC = () => {
  
   const [isApi, setIsApi] = useState(true);
@@ -30,7 +42,7 @@ const StudentListtSnack: React.FC = () => {
     /// burası seçildiğinde bölüm bilgisi doldurulacak
     api.department({f:JSON.stringify(selected)}).then((x)=>{
       setDList(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
@@ -172,7 +184,7 @@ const StudentListtSnack: React.FC = () => {
       setlistLoad(false);
       setDefinitiverecordlist(x);
       setFilteredData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
@@ -245,23 +257,13 @@ const StudentListtSnack: React.FC = () => {
       'Anne Meslek': item.momthersJob,
       'Baba Meslek': item.fathersJob
     }));
-    const ws = utils .json_to_sheet(formattedData);
+    const ws = utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-    setIsApi(false);
-  }
+
 
  
   useEffect(() => {
@@ -270,26 +272,26 @@ const StudentListtSnack: React.FC = () => {
       api.faculty().then((x)=>{
         setFList(x);
         setIsApi(false);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.stuStatus().then((x)=>{
         setSsList(x);
         setIsApi(false);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.registerType().then((x)=>{
         setRtList(x);
         setIsApi(false);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.scholarshipStatus().then((x)=>{
         setSssList(x);
         setIsApi(false);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
       api.year().then((x)=>{
         setYear(x);
         setIsApi(false);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
     }
   },[]
   );

@@ -12,7 +12,7 @@ import { StuStatusList } from '../../services/models/_stuStatus';
 import { RegisterTypeList } from '../../services/models/_registerType';
 // import 'react-data-table-component/dist/data-table.css';
 import { SnackbarProvider, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
 // const accountBreadCrumbs: Array<PageLink> = [
 //   {
@@ -30,6 +30,17 @@ import Loading from '../Loading';
 // ]
 
 
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+  // setIsApi(false);
+}
 const DefinitiveRecordsSnack: React.FC = () => {
   const userItem = localStorage.getItem('user');
 		const user = userItem ? JSON.parse(userItem) : null;
@@ -40,7 +51,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
   const [rtList, setRtList] = useState<Array<RegisterTypeList>>([]);
   const [bDisabled, setBDisabled] = useState<boolean>(true);
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [listLoad, setlistLoad] = useState(false);
   const [tableisActive, settableisActive] = useState(false);
 
@@ -60,7 +71,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
     api.department({ f: JSON.stringify(selected) }).then((x) => {
       setDList(x);
       setBDisabled(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const [selectedDepartment, setSelectedDepartment] = React.useState(null);
@@ -140,20 +151,9 @@ const DefinitiveRecordsSnack: React.FC = () => {
         setDefinitiverecordlist(x);
         setFilteredData(x);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-    // setIsApi(false);
-  }
   const handleSearch = (e: any) => {
     const searchTerm = e.target.value;
     const filteredItems = definitiverecordlist.filter((item) =>
@@ -198,18 +198,18 @@ const DefinitiveRecordsSnack: React.FC = () => {
     api.faculty().then((x) => {
       setFList(x);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     api.stuStatus().then((x) => {
       setSsList(x);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     api.registerType().then((x) => {
       setRtList(x);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
-  },[]);
+    }).catch(err => catchFunc(err,enqueueSnackbar))
+  },[enqueueSnackbar]);
   
   return (
     <>

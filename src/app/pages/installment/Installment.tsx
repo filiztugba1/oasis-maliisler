@@ -9,6 +9,17 @@ import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
+
 const InstallmentSnack: React.FC = () => {
 
   const [bankCardList, setbankCardList] = useState<Array<FacultyList>>([]);
@@ -20,8 +31,8 @@ const InstallmentSnack: React.FC = () => {
   useEffect(() => {
     api.bankCards().then((x) => {
       setbankCardList(x);
-    }).catch(err => catchFunc(err))
-  }, []);
+    }).catch(err => catchFunc(err,enqueueSnackbar))
+  }, [enqueueSnackbar]);
 
 
   const [selectedbankCardList, setselectedbankCardList] = React.useState({ value: '', label: '' });
@@ -33,7 +44,7 @@ const InstallmentSnack: React.FC = () => {
       setcardDisabled(false)
       setselectedcreditCardList({ value: '', label: '' })
       settableisActive(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const [selectedcreditCardList, setselectedcreditCardList] = React.useState({ value: '', label: '' });
@@ -148,7 +159,7 @@ const InstallmentSnack: React.FC = () => {
       
       setFormDataCU(updatedDataCU);
       console.log(updatedDataCU);
-    }).catch(err => catchFunc(err));
+    }).catch(err => catchFunc(err,enqueueSnackbar));
   };
 
 
@@ -158,26 +169,26 @@ const InstallmentSnack: React.FC = () => {
     api.installmentUpdate(formDataCU).then((x) => {
       setlistLoad(false);
       setFilteredData(x);
-    }).catch(err => catchFunc(err));
+    }).catch(err => catchFunc(err,enqueueSnackbar));
   }
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
-  const handleSearch = (e: any) => {
-    const searchTerm = e.target.value;
-    const filteredItems = definitiverecordlist
-    // .filter((item) =>
-    //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.ogrno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   +item.id_no== +searchTerm ||
-    //   item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.faculty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.scholarship.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.status_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.regtype.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //   item.sexx.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
-    setFilteredData(filteredItems);
-  };
+  // const handleSearch = (e: any) => {
+  //   const searchTerm = e.target.value;
+  //   const filteredItems = definitiverecordlist
+  //   // .filter((item) =>
+  //   //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   item.ogrno.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   +item.id_no== +searchTerm ||
+  //   //   item.name_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   item.faculty.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   item.scholarship.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   item.status_tr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   item.regtype.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   //   item.sexx.toLowerCase().includes(searchTerm.toLowerCase())
+  //   // );
+  //   setFilteredData(filteredItems);
+  // };
 
   const exportToExcel = () => {
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -197,16 +208,7 @@ const InstallmentSnack: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
+
   return (
     <>
 

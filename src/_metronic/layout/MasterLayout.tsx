@@ -15,7 +15,6 @@ import {
 } from '../partials'
 import {PageDataProvider} from './core'
 import {reInitMenu} from '../helpers'
-import {ToolbarWrapper} from './components/toolbar'
 
 const MasterLayout = () => {
   const location = useLocation()

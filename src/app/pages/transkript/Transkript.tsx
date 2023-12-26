@@ -7,6 +7,17 @@ import { SemesterHeader } from './components/SemesterHeader';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 import api from '../../services/services';
+
+const catchFunc = (err: any, enqueueSnackbar: any) => {
+    if (err.response && err.response.data && err.response.data.message) {
+      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      if (err.response.data.message === 'Expired token') {
+        localStorage.clear();
+        window.location.href = '/auth';
+        // navigate('/auth');
+      }
+    }
+  }
     const TranskriptSnack: React.FC = () => {
         const [listLoad, setlistLoad] = useState(false);
         const { enqueueSnackbar } = useSnackbar();
@@ -47,16 +58,15 @@ import api from '../../services/services';
             api.activeStudentDetail(formdata).then((x) => {
                 setlistLoad(false);
                 setStudentInfo(x);
-              }).catch(err => catchFunc(err))
+              }).catch(err => catchFunc(err,enqueueSnackbar))
             
               api.transkript(formdata).then((x) => {
                 setlistLoad(false);
                 setStudentTranskriptt(x);
-              }).catch(err => catchFunc(err))
+              }).catch(err => catchFunc(err,enqueueSnackbar))
           
-        },[]
-        );
-
+        },[enqueueSnackbar]);
+/* eslint-disable react-hooks/exhaustive-deps */
          const colonHesap=(datam:year) => {
             const azami_bahar_basi:boolean=datam.azami_bahar_basi.data!==undefined;
             const azami_bahar_sonu:boolean=datam.azami_bahar_sonu.data!==undefined;
@@ -79,16 +89,7 @@ import api from '../../services/services';
         const map = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler;
         const result:Array<year> = studentTranskriptt?.transcriptCourses.dersler.alinan_dersler!==undefined?Object.values(map):[];
 
-        const catchFunc = (err: any) => {
-            if (err.response && err.response.data && err.response.data.message) {
-              enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-              if (err.response.data.message === 'Expired token') {
-                localStorage.clear();
-                window.location.href = '/auth';
-                // navigate('/auth');
-              }
-            }
-          }
+   
         return (
            <>
             <div className="card mb-5 mb-xl-10">

@@ -8,6 +8,18 @@ import '../style.css';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import api from '../../services/services';
 import Loading from '../Loading';
+
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
+
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Student Info',
@@ -88,7 +100,7 @@ const RelationMaliSnack: React.FC = () => {
     api.activeStudentDetail(formdata).then((x) => {
       setlistLoad(false);
       setStudentInfo(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     setlistPyLoad(true);
     api.financialAffairsAssociatedInformation(formdata).then((x) => {
@@ -104,8 +116,8 @@ const RelationMaliSnack: React.FC = () => {
           stu_id: datam.id,
         }
       );
-    }).catch(err => catchFunc(err))
-    },[]
+    }).catch(err => catchFunc(err,enqueueSnackbar))
+    },[enqueueSnackbar]
   );
   const toggle = (key:any) => {
     setFormData(
@@ -134,20 +146,11 @@ const RelationMaliSnack: React.FC = () => {
       {
         enqueueSnackbar('Kaydetme işlemi sırasında hata oluştu', { variant:'error',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
 
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
+
   return (
     <>
       <StudentInfoHeader

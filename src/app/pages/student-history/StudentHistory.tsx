@@ -29,6 +29,17 @@ const accountBreadCrumbs: Array<PageLink> = [
   },
 ]
 
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+  // setIsApi(false);
+}
 
 const StudentHistorySnack: React.FC = () => {
   const [studentInfo, setStudentInfo] = useState<StudentDetailModel>(
@@ -64,6 +75,7 @@ const StudentHistorySnack: React.FC = () => {
   const [listLoad, setlistLoad] = useState(false);
   const [listPyLoad, setlistPyLoad] = useState(false);
   const [listModalLoad, setlistModalLoad] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
 
     let formdata = {
@@ -73,32 +85,32 @@ const StudentHistorySnack: React.FC = () => {
     api.activeStudentDetail(formdata).then((x) => {
       setlistLoad(false);
       setStudentInfo(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     setlistPyLoad(true);
     api.studentHistoryList(formdata).then((x) => {
       setlistPyLoad(false);
       setHistlistx(x);
       setFilteredDataHist(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     api.scholarshipHistoryLList(formdata).then((x) => {
       setlistPyLoad(false);
       setHistlistScolaar(x);
       setFilteredDataScolaarHist(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     api.historyScholarshipStatus().then((x) => {
       setSssList(x);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     api.year().then((x) => {
       setYear(x);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
-  }, []
+  }, [enqueueSnackbar]
   );
 
 
@@ -143,7 +155,7 @@ const StudentHistorySnack: React.FC = () => {
 
   const [filteredDataHist, setFilteredDataHist] = useState(Histlistx);
   const handleSearch = (e: any) => {
-    const searchTerm = e.target.value;
+    // const searchTerm = e.target.value;
     const filteredItems = Histlistx
     // .filter((item) =>
     //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -255,7 +267,7 @@ const StudentHistorySnack: React.FC = () => {
 
   const [filteredDataScolaarHist, setFilteredDataScolaarHist] = useState(HistlistScolaar);
   const handleSearchScolaar = (e: any) => {
-    const searchTerm = e.target.value;
+    // const searchTerm = e.target.value;
     const filteredItems = Histlistx
     // .filter((item) =>
     //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -293,7 +305,7 @@ const StudentHistorySnack: React.FC = () => {
 
     }
   );
-  const { enqueueSnackbar } = useSnackbar();
+
   const handleScolarSubmit = (e: any) => {
     e.preventDefault();
     let cu = 'Güncelleme';
@@ -310,7 +322,7 @@ const StudentHistorySnack: React.FC = () => {
       else {
         enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   
   };
 
@@ -327,7 +339,7 @@ const StudentHistorySnack: React.FC = () => {
       else {
         enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
 
@@ -365,17 +377,7 @@ const StudentHistorySnack: React.FC = () => {
     formDoldurPayment("year", selected.value);
   };
 
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-    // setIsApi(false);
-  }
+
 
   return (
 
@@ -499,7 +501,7 @@ const StudentHistorySnack: React.FC = () => {
       <Modal show={showPayment} onHide={handlePaymentClose} size='xl'>
       {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1  || formDataScolar.semester==''? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedScholarship !== null ? selectedScholarship.label : '') + '" Tahsilat Bilgilerini ' + (formDataScolar.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1  || formDataScolar.semester===''? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedScholarship !== null ? selectedScholarship.label : '') + '" Tahsilat Bilgilerini ' + (formDataScolar.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
         </Modal.Header>
 
         <form onSubmit={handleScolarSubmit}>

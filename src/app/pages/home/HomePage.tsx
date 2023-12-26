@@ -5,8 +5,19 @@ import ScolarshipTotalList from './ScolarshipTotalList';
 import DeptVsPaint from './DeptVsPaid';
 import api from '../../services/services';
 import { SnackbarProvider, useSnackbar } from 'notistack';
-import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
+
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+  // setIsApi(false);
+}
 
 const HomePageSnack: React.FC = () => {
   const [rapor, setRapor] = useState<Report>(
@@ -38,7 +49,7 @@ const HomePageSnack: React.FC = () => {
   const [deptVsPaid, setDeptVsPaid] = useState<Array<TotalScholarshipGrafic>>([]);
   // const [isApi, setIsApi] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [guzGLoad, setguzGLoad] = useState(false);
   const [baharGLoad, setbaharGLoad] = useState(false);
@@ -55,7 +66,7 @@ const HomePageSnack: React.FC = () => {
       setguzGLoad(false);
       setbaharGLoad(false);
       setguzbaharGLoad(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     setbursLoad(true);
     api.totalScholarshipList().then((x) => {
@@ -69,7 +80,7 @@ const HomePageSnack: React.FC = () => {
       setbursLoad(false);
       setTotalscholarshipgrafic(categories);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
     setalinacakLoad(true);
     api.debtVsPaid().then((x: any) => {
@@ -97,20 +108,10 @@ const HomePageSnack: React.FC = () => {
       setalinacakLoad(false);
       setDeptVsPaid(categories);
       // setIsApi(false);
-    }).catch(err => catchFunc(err))
-  }, []);
+    }).catch(err => catchFunc(err,enqueueSnackbar))
+  }, [enqueueSnackbar]);
 
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-    // setIsApi(false);
-  }
+
   return (
     
     <>

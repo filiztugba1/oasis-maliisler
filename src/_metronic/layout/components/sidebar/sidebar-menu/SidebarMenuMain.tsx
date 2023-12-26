@@ -1,12 +1,10 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React from 'react'
 import {useIntl} from 'react-intl'
-import {KTSVG} from '../../../../helpers'
 import {SidebarMenuItemWithSub} from './SidebarMenuItemWithSub'
 import {SidebarMenuItem} from './SidebarMenuItem'
 
 const SidebarMenuMain = () => {
-  const intl = useIntl()
+  // const intl = useIntl()
 
   return (
     <>
@@ -74,7 +72,7 @@ const SidebarMenuMain = () => {
 
 
       {
-        localStorage.getItem('search-student-id')!=undefined && localStorage.getItem('search-student-id')!=''?
+        localStorage.getItem('search-student-id')!==undefined && localStorage.getItem('search-student-id')!==''?
         <>
           <div className='menu-item'>
           <div className='menu-content pt-8 pb-2'>

@@ -27,7 +27,16 @@ const accountBreadCrumbs: Array<PageLink> = [
   },
 ]
 
-
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 const StudentDetailPageSnack: React.FC = () => {
   const [listLoad, setlistLoad] = useState(false);
 const { enqueueSnackbar } = useSnackbar();
@@ -199,34 +208,25 @@ const { enqueueSnackbar } = useSnackbar();
       api.activeStudentDetail(formdata).then((x) => {
         setlistLoad(false);
         setStudentInfo(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.generalInformation(formdata).then((x) => {
         setlistLoad(false);
         setGeneralInformation(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.idInformation(formdata).then((x) => {
         setlistLoad(false);
         setIdInformationn(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.contactInformation(formdata).then((x) => {
         setlistLoad(false);
         setContactInformationn(x);
-      }).catch(err => catchFunc(err))
-    },[]
+      }).catch(err => catchFunc(err,enqueueSnackbar))
+    },[enqueueSnackbar]
   );
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
+
   return (
     <Routes>
       <Route

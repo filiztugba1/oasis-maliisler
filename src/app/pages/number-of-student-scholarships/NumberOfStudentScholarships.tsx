@@ -182,7 +182,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
       })
     }
     );
-    const ws = utils .json_to_sheet(formattedData);
+    const ws = utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: fileType });
@@ -200,28 +200,22 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
     setIsApi(false);
   }
   useEffect(() => {
-    if(isApi)
-    {
       api.faculty().then((x)=>{
         setFList(x);
-        setIsApi(false);
       })
 
       api.registerType().then((x)=>{
         setRtList(x);
-        setIsApi(false);
       })
 
       api.scholarshipStatus().then((x)=>{
         setSssList(x);
-        setIsApi(false);
       })
       api.year().then((x)=>{
         setYear(x);
-        setIsApi(false);
       })
     }
-  },[]
+  ,[]
   );
   return (
     <>

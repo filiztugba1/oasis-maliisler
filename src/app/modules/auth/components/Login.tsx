@@ -2,7 +2,6 @@
 import {useState} from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import {getUserByToken, login} from '../core/_requests'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
@@ -49,7 +48,7 @@ export function Login() {
         setCurrentUser(user)
         localStorage.setItem('user',JSON.stringify({
           cell_nr: user.data.cell_nr,email: user.data.email,name:user.data.name,sub_type: user.data.sub_type,surname: user.data.surname,tckimlik: user.data.tckimlik,title: user.data.title,type: user.data.type
-          ,username: user.data.username,academicYear:user.data.academicYear,academicSemester:user.data.academicSemester,academicSemesterText:(user.data.academicSemester==1?'Güz':(user.data.academicSemester==2?'Bahar':'Yaz'))}))
+          ,username: user.data.username,academicYear:user.data.academicYear,academicSemester:user.data.academicSemester,academicSemesterText:(user.data.academicSemester===1?'Güz':(user.data.academicSemester===2?'Bahar':'Yaz'))}))
 
       } catch (error) {
         console.error(error)

@@ -11,7 +11,16 @@ import { FacultyList } from '../../services/models/_faculty';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
-
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 const ParamFeesSummerSnack: React.FC = () => {
  
   // const [yearList, setYear] = useState<Array<FacultyList>>([]);
@@ -23,7 +32,7 @@ const ParamFeesSummerSnack: React.FC = () => {
   const handleAddPaymentShow = () => setShowAddPayment(true);
   const [showAddPayment, setShowAddPayment] = useState(false);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
-  const [dList, setDList] = useState<Array<FacultyList>>([]);
+  // const [dList, setDList] = useState<Array<FacultyList>>([]);
   
   const [listLoad, setlistLoad] = useState(false);
   const [listUpdateLoad, setlistUpdateLoad] = useState(false);
@@ -47,20 +56,20 @@ const ParamFeesSummerSnack: React.FC = () => {
     //       }).catch(err => catchFunc(err))
           api.faculty().then((x)=>{
             setFList(x);
-          }).catch(err => catchFunc(err))
-    },[]);
+          }).catch(err => catchFunc(err,enqueueSnackbar))
+    },[enqueueSnackbar]);
 
   const [selectedYear, setSelectedYear] = React.useState<null | FacultyList>(null);
-  const handleRegisterYear = (selected: any) => {
-    setSelectedYear(selected);
-  };
+  // const handleRegisterYear = (selected: any) => {
+  //   setSelectedYear(selected);
+  // };
 
   const paramList = () => {
     api.paramFeesSummer().then((x) => {
       setlistLoad(false);
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   }
 
   const paramAppList = () => {
@@ -68,7 +77,7 @@ const ParamFeesSummerSnack: React.FC = () => {
       setlistLoad(false);
       setSummerFeeAppRefundRequests(x);
       setFilteredAppData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   }
 
   const columns: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
@@ -155,17 +164,17 @@ const ParamFeesSummerSnack: React.FC = () => {
   const [filteredAppData, setFilteredAppData] = useState(summerFeeReAppfundRequests);
 
 
-  const columnsAppJsonList: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
-    { name: 'Fakülte', selector: (row) => row.f_text, sortable: true },
-    { name: 'Hazırlık Durumu', selector: (row) => row.prep_status_text, sortable: true },
-    { name: 'Ücret', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
-   ];
+  // const columnsAppJsonList: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
+  //   { name: 'Fakülte', selector: (row) => row.f_text, sortable: true },
+  //   { name: 'Hazırlık Durumu', selector: (row) => row.prep_status_text, sortable: true },
+  //   { name: 'Ücret', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
+  //  ];
 
 
-  const [showFees, setShowFees] = useState(false);
+  // const [showFees, setShowFees] = useState(false);
 
-  const handleFeesClose = () => setShowFees(false);
-  const handleFeesShow = () => setShowFees(true);
+  // const handleFeesClose = () => setShowFees(false);
+  // const handleFeesShow = () => setShowFees(true);
 
 
   const [deleteshowFees, setDeleteShowFees] = useState(false);
@@ -184,7 +193,7 @@ const ParamFeesSummerSnack: React.FC = () => {
 
   const updateShow = (row: ParamFeesSummerx) => {
     let selectFac:any=fList.find((x) => +x.value === +row.f);
-    setSelectedFaculty(selectFac);
+    // setSelectedFaculty(selectFac);
     const newFormData: ParamFeesSummerx = {
       f: JSON.stringify(selectFac),
       id: row.id,
@@ -206,9 +215,9 @@ const ParamFeesSummerSnack: React.FC = () => {
     setModalFormTitle('Parametre Ekleme');
     setModalFormButton('Ekleme');
     setFormData(formNull);
-    setSelectedFaculty(null);
-    setSelectedDepartment(null);
-    setDList([]);
+    // setSelectedFaculty(null);
+    // setSelectedDepartment(null);
+    // setDList([]);
     handleAddPaymentShow();
   }
   const deleteShow = (row: ParamFeesSummerx) => {
@@ -233,7 +242,7 @@ const ParamFeesSummerSnack: React.FC = () => {
 
   const [filteredData, setFilteredData] = useState(summerFeeRefundRequests);
   const handleSearch = (e:any) => {
-    const searchTerm = e.target.value;
+    // const searchTerm = e.target.value;
     const filteredItems = summerFeeRefundRequests
     // .filter((item) =>
     //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -268,7 +277,7 @@ const ParamFeesSummerSnack: React.FC = () => {
     );
 
 
-    const ws = utils .json_to_sheet(formattedData);
+    const ws = utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: fileType });
@@ -320,37 +329,28 @@ const ParamFeesSummerSnack: React.FC = () => {
       }
       enqueueSnackbar(x.message, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       setShowPayment(false);
-    }).catch(err => catchFunc(err)) 
+    }).catch(err => catchFunc(err,enqueueSnackbar)) 
   }
 
   
  
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
-  const [selectedFaculty, setSelectedFaculty] = React.useState(null);
-  const handleFacultyChange = (selected: any) => {
-    setSelectedFaculty(selected);
-    formDoldur("f",JSON.stringify(selected));
-    setSelectedDepartment(null);
-    /// burası seçildiğinde bölüm bilgisi doldurulacak
-    api.department({f:JSON.stringify([selected])}).then((x)=>{
-      setDList(x);
-    })
-  };
 
-  const [selectedDepartment, setSelectedDepartment] = React.useState(null);
-  const handleDepartmentChange = (selected: any) => {
-    setSelectedDepartment(selected);
-    formDoldur("d",JSON.stringify(selected));
-  };
+  // const [selectedFaculty, setSelectedFaculty] = React.useState(null);
+  // const handleFacultyChange = (selected: any) => {
+  //   setSelectedFaculty(selected);
+  //   formDoldur("f",JSON.stringify(selected));
+  //   setSelectedDepartment(null);
+  //   /// burası seçildiğinde bölüm bilgisi doldurulacak
+  //   api.department({f:JSON.stringify([selected])}).then((x)=>{
+  //     setDList(x);
+  //   })
+  // };
+
+  // const [selectedDepartment, setSelectedDepartment] = React.useState(null);
+  // const handleDepartmentChange = (selected: any) => {
+  //   setSelectedDepartment(selected);
+  //   formDoldur("d",JSON.stringify(selected));
+  // };
   const formNull={
     id: "",
     year: "",
@@ -432,7 +432,7 @@ const ParamFeesSummerSnack: React.FC = () => {
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
       handleAddPaymentClose()
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const handleSubmitParametreRed = (e:any) => {
@@ -451,7 +451,7 @@ const ParamFeesSummerSnack: React.FC = () => {
       }
       paramAppList();
      
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
     
   };
   
@@ -473,7 +473,7 @@ const ParamFeesSummerSnack: React.FC = () => {
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
      
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
     
   };
 
@@ -499,7 +499,7 @@ const ParamFeesSummerSnack: React.FC = () => {
 
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
     
   };
 

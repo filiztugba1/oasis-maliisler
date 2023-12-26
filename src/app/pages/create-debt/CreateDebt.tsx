@@ -6,13 +6,22 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import { saveAs } from 'file-saver';
 import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
-import * as XLSX from 'xlsx';
 import {  Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
 
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 const CreateDebtSnack: React.FC = () => {
  
   // const [yearList, setYear] = useState<Array<FacultyList>>([]);
@@ -48,8 +57,8 @@ const CreateDebtSnack: React.FC = () => {
     //       }).catch(err => catchFunc(err))
           api.faculty().then((x)=>{
             setFList(x);
-          }).catch(err => catchFunc(err))
-    },[]);
+          }).catch(err => catchFunc(err,enqueueSnackbar))
+    },[enqueueSnackbar]);
 
   const [selectedStuType, setSelectedStuType] = React.useState<any>(null);
   const handleStuType = (selected: any) => {
@@ -61,7 +70,7 @@ const CreateDebtSnack: React.FC = () => {
       setlistLoad(false);
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   }
 
   const paramAppList = () => {
@@ -69,7 +78,7 @@ const CreateDebtSnack: React.FC = () => {
       setlistLoad(false);
       setSummerFeeAppRefundRequests(x);
       setFilteredAppData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   }
 
   const columns: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
@@ -144,7 +153,7 @@ const CreateDebtSnack: React.FC = () => {
         
         :<span style={{ display: 'inline-block', textAlign: 'center' }}>
         <button 
-          className={`btn btn-${row.approval_rejection==1?'success':'danger'} btn-sm`}
+          className={`btn btn-${row.approval_rejection===1?'success':'danger'} btn-sm`}
           style={{ padding: "3px 9px", margin: "0px 1px", display: 'inline-block' }}
         >
           {row.approval_rejection===1?'Onaylandı':'Red Edildi'}
@@ -161,21 +170,21 @@ const CreateDebtSnack: React.FC = () => {
   const [filteredAppData, setFilteredAppData] = useState(summerFeeReAppfundRequests);
 
 
-  const columnsAppJsonList: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
-    { name: 'Fakülte', selector: (row) => row.fak_name, sortable: true },
-    { name: 'Bölüm', selector: (row) => row.dep_name, sortable: true },
-    { name: 'f', selector: (row) => row.f, sortable: true },
-    { name: 'd', selector: (row) => row.d, sortable: true },
-    { name: 'fdo', selector: (row) => row.fdo, sortable: true },
-    { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
-    { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(row.fee_prep) || '', sortable: true },
-  ];
+  // const columnsAppJsonList: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
+  //   { name: 'Fakülte', selector: (row) => row.fak_name, sortable: true },
+  //   { name: 'Bölüm', selector: (row) => row.dep_name, sortable: true },
+  //   { name: 'f', selector: (row) => row.f, sortable: true },
+  //   { name: 'd', selector: (row) => row.d, sortable: true },
+  //   { name: 'fdo', selector: (row) => row.fdo, sortable: true },
+  //   { name: 'Yüksek Lisans', selector: (row) => api.paymetFormat(row.fee) || '', sortable: true },
+  //   { name: 'Yüksek Lisans Hazırlık', selector: (row) => api.paymetFormat(row.fee_prep) || '', sortable: true },
+  // ];
 
 
-  const [showFees, setShowFees] = useState(false);
+  // const [showFees, setShowFees] = useState(false);
 
-  const handleFeesClose = () => setShowFees(false);
-  const handleFeesShow = () => setShowFees(true);
+  // const handleFeesClose = () => setShowFees(false);
+  // const handleFeesShow = () => setShowFees(true);
 
 
   const [deleteshowFees, setDeleteShowFees] = useState(false);
@@ -254,7 +263,7 @@ const CreateDebtSnack: React.FC = () => {
 
   const [filteredData, setFilteredData] = useState(summerFeeRefundRequests);
   const handleSearch = (e:any) => {
-    const searchTerm = e.target.value;
+    // const searchTerm = e.target.value;
     const filteredItems = summerFeeRefundRequests
     // .filter((item) =>
     //   (item.name+' '+item.surname).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -274,10 +283,8 @@ const CreateDebtSnack: React.FC = () => {
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
     const fileName = 'data_table_export';
-    let x=0;
     const formattedData = filteredData.map((item) =>
     {
-      x++;
       return (
         {
         'Fakülte': item.fak_name,
@@ -291,7 +298,7 @@ const CreateDebtSnack: React.FC = () => {
       })
     }
     );
-    const ws = utils .json_to_sheet(formattedData);
+    const ws = utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: fileType });
@@ -300,22 +307,22 @@ const CreateDebtSnack: React.FC = () => {
 
   const [jsonData, setJsonData] = useState<any[]>([]);
   const [jsonDataApp, setJsonDataApp] = useState<any[]>([]);
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files && e.target.files[0];
-      console.log(file);
-      if (!file) return;
+  // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const file = e.target.files && e.target.files[0];
+  //     console.log(file);
+  //     if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-          const workbook = XLSX.read(event.target.result, { type: 'binary' });
-          const worksheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[worksheetName];
-          const data = XLSX.utils.sheet_to_json(worksheet);
+  //     const reader = new FileReader();
+  //     reader.onload = (event: any) => {
+  //         const workbook = XLSX.read(event.target.result, { type: 'binary' });
+  //         const worksheetName = workbook.SheetNames[0];
+  //         const worksheet = workbook.Sheets[worksheetName];
+  //         const data = XLSX.utils.sheet_to_json(worksheet);
           
-          setJsonData(data);
-      };
-      reader.readAsBinaryString(file);
-  };
+  //         setJsonData(data);
+  //     };
+  //     reader.readAsBinaryString(file);
+  // };
 
   const handleYukleModal=()=>{
     
@@ -342,21 +349,12 @@ const CreateDebtSnack: React.FC = () => {
       }
       enqueueSnackbar(x.message, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       setShowPayment(false);
-    }).catch(err => catchFunc(err)) 
+    }).catch(err => catchFunc(err,enqueueSnackbar)) 
   }
 
   
  
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
+
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
   const handleFacultyChange = (selected: any) => {
     setSelectedFaculty(selected);
@@ -455,7 +453,7 @@ const CreateDebtSnack: React.FC = () => {
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
       handleAddPaymentClose()
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const handleSubmitParametreRed = (e:any) => {
@@ -474,7 +472,7 @@ const CreateDebtSnack: React.FC = () => {
       }
       paramAppList();
      
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
     
   };
   
@@ -496,7 +494,7 @@ const CreateDebtSnack: React.FC = () => {
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
      
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
     
   };
 
@@ -522,7 +520,7 @@ const CreateDebtSnack: React.FC = () => {
 
         enqueueSnackbar(x.data, { variant:'success',anchorOrigin:{ vertical: 'top',horizontal: 'right',} });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
     
   };
 

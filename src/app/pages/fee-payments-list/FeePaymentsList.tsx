@@ -10,10 +10,19 @@ import api from '../../services/services';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 // import 'react-data-table-component/dist/data-table.css';
-
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 const FeePaymentsListSnack: React.FC = () => {
  
-  const [isApi, setIsApi] = useState(true);
+  // const [isApi, setIsApi] = useState(true);
   const [fList, setFList] = useState<Array<FacultyList>>([]);
   const [dList, setDList] = useState<Array<FacultyList>>([]);
   const [oList, setOList] = useState<Array<FacultyList>>([]);
@@ -24,28 +33,26 @@ const FeePaymentsListSnack: React.FC = () => {
   const [tableisActive, settableisActive] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    if(isApi)
-    {
       api.faculty().then((x)=>{
         setFList(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.banks().then((x)=>{
         setBanks(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.feeTypes().then((x)=>{
         setFeetypes(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
       api.year().then((x)=>{
         setYear(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
-    }
-  },[]
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
+    
+  },[enqueueSnackbar]
   );
 
   const [selectedFaculty, setSelectedFaculty] = React.useState(null);
@@ -158,7 +165,7 @@ const FeePaymentsListSnack: React.FC = () => {
       setlistLoad(false);
       setNumberofstudentscholarshiplist(x);
       setFilteredData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const [filteredData, setFilteredData] = useState(numberofstudentscholarshiplist);
@@ -202,23 +209,13 @@ const FeePaymentsListSnack: React.FC = () => {
       })
     }
     );
-    const ws = utils .json_to_sheet(formattedData);
+    const ws = utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-    setIsApi(false);
-  }
+
   return (
     <>
 

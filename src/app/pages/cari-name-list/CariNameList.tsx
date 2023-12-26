@@ -53,10 +53,10 @@ const CariNameListSnack: React.FC = () => {
     { name: 'İlçe', selector: (row) => row.ilce || '', sortable: true, cell: row => <div className="cell">{row.ilce}</div> },
     { name: 'Adres', selector: (row) => row.address1 || '', sortable: true, cell: row => <div className="cell">{row.address1}</div> },
   ];
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // const handleChange = (e: any) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -84,7 +84,7 @@ const CariNameListSnack: React.FC = () => {
     const filteredItems = cariList.filter((item) =>
       (item.cari_isim).toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      +item.tckimlik == +searchTerm ||
+      +item.tckimlik === +searchTerm ||
       item.fadi.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.badi.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(searchTerm.toLowerCase())

@@ -15,7 +15,16 @@ import Select from 'react-select';
 import { Switch } from '@mui/material';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
-
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -70,9 +79,8 @@ const StudentPaymentsSnack: React.FC = () => {
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
   const [feetypes, setFeetypes] = useState<Array<FacultyList>>([]);
   const [banks, setBanks] = useState<Array<FacultyList>>([]);
-  const [isApi, setIsApi] = useState(true);
+  // const [isApi, setIsApi] = useState(true);
   useEffect(() => {
-    if (isApi) {
       let formdata = {
         stu_id: localStorage.getItem('search-student-id')
       };
@@ -80,57 +88,44 @@ const StudentPaymentsSnack: React.FC = () => {
       api.activeStudentDetail(formdata).then((x) => {
         setlistLoad(false);
         setStudentInfo(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
       setlistPyLoad(true);
       api.studentFees(formdata).then((x) => {
         setlistPyLoad(false);
         setPaymentListOdemeBilgileri(x);
         setfilteredDataOdemeBilgileri(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.studentPayments(formdata).then((x) => {
         setlistPyLoad(false);
         setPaymentList(x);
         setFilteredData(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.scholarshipStatus().then((x) => {
         setSssList(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.year().then((x) => {
         setYear(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
 
       api.feeTypes().then((x) => {
         setFeetypes(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.banks().then((x) => {
         setBanks(x);
-        setIsApi(false);
-      }).catch(err => catchFunc(err))
-
-
-    }
+        // setIsApi(false);
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
   },[]
   );
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-    setIsApi(false);
-  }
+
   const columns: TableColumn<typeof paymentList[0]>[] = [
     { name: 'Yıl', selector: (row) => row.year, sortable: true },
     { name: 'Dönem', selector: (row) => +row.semester === 1 ? 'Güz' : (+row.semester === 2 ? 'Bahar' : 'Yaz'), sortable: true },
@@ -586,7 +581,7 @@ const StudentPaymentsSnack: React.FC = () => {
       else {
         enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
 
@@ -607,7 +602,7 @@ const StudentPaymentsSnack: React.FC = () => {
       else {
         enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
 
   };
 
@@ -626,7 +621,7 @@ const StudentPaymentsSnack: React.FC = () => {
       else {
         enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const handleDeletePaymentSubmit = (e: any) => {
@@ -640,20 +635,20 @@ const StudentPaymentsSnack: React.FC = () => {
       else {
         enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
       }
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
-  const [open, setOpen] = React.useState(false);
-  const handleClick = () => {
-    setOpen(true);
-  };
+  // const [open, setOpen] = React.useState(false);
+  // const handleClick = () => {
+  //   setOpen(true);
+  // };
 
-  const handleSnackClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
+  // const handleSnackClose = (event?: React.SyntheticEvent, reason?: string) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
+  //   setOpen(false);
+  // };
 
   return (
     <>

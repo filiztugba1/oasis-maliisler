@@ -7,7 +7,16 @@ import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
-
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
 const SummerFeeRefundRequestListSnack: React.FC = () => {
   const userItem = localStorage.getItem('user');
   const user = userItem ? JSON.parse(userItem) : null;
@@ -19,8 +28,8 @@ const SummerFeeRefundRequestListSnack: React.FC = () => {
       setlistLoad(false);
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
-    }).catch(err => catchFunc(err))
-  },[]
+    }).catch(err => catchFunc(err,enqueueSnackbar))
+  },[listLoad,enqueueSnackbar]
   );
 
   const columns: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
@@ -94,16 +103,7 @@ const SummerFeeRefundRequestListSnack: React.FC = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
+
   return (
     <>
 

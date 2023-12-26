@@ -10,6 +10,18 @@ import api from '../../services/services';
 // import 'react-data-table-component/dist/data-table.css';
 import { SnackbarProvider,  useSnackbar } from 'notistack';
 import Loading from '../Loading';
+
+const catchFunc = (err: any,enqueueSnackbar:any) => {
+  if (err.response && err.response.data && err.response.data.message) {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token') {
+      localStorage.clear();
+      window.location.href = '/auth';
+      // navigate('/auth');
+    }
+  }
+}
+
 const DebtCheckListSnack: React.FC = () => {
  
   const [yearList, setYear] = useState<Array<FacultyList>>([]);
@@ -20,12 +32,12 @@ const DebtCheckListSnack: React.FC = () => {
   useEffect(() => {
       api.year().then((x)=>{
         setYear(x);
-      }).catch(err => catchFunc(err))
+      }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.feeTypes().then((x)=>{
         setFeetypeList(x);
-      }).catch(err => catchFunc(err))
-    },[]
+      }).catch(err => catchFunc(err,enqueueSnackbar))
+    },[enqueueSnackbar]
   );
 
  
@@ -89,7 +101,7 @@ const DebtCheckListSnack: React.FC = () => {
       setlistLoad(false);
       setDefinitiverecordlist(x);
       setFilteredData(x);
-    }).catch(err => catchFunc(err))
+    }).catch(err => catchFunc(err,enqueueSnackbar))
   };
 
   const [filteredData, setFilteredData] = useState(definitiverecordlist);
@@ -122,22 +134,13 @@ const DebtCheckListSnack: React.FC = () => {
       'Kalan Bakiye': '',
       'Cep Telefonu': item.cell_phone_s,
     }));
-    const ws = utils .json_to_sheet(formattedData);
+    const ws = utils.json_to_sheet(formattedData);
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
     const excelBuffer = writeXLSX(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: fileType });
     saveAs(data, fileName + fileExtension);
   };
-  const catchFunc = (err: any) => {
-    if (err.response && err.response.data && err.response.data.message) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-      if (err.response.data.message === 'Expired token') {
-        localStorage.clear();
-        window.location.href = '/auth';
-        // navigate('/auth');
-      }
-    }
-  }
+
   return (
     <>
 
