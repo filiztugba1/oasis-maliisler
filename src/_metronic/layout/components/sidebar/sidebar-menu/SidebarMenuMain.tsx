@@ -72,7 +72,7 @@ const SidebarMenuMain = () => {
 
 
       {
-        localStorage.getItem('search-student-id')!==undefined && localStorage.getItem('search-student-id')!==''?
+        localStorage.getItem('search-student-id')!==null && localStorage.getItem('search-student-id')!==undefined && localStorage.getItem('search-student-id')!==''?
         <>
           <div className='menu-item'>
           <div className='menu-content pt-8 pb-2'>
