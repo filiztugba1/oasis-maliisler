@@ -74,7 +74,7 @@ const DebtCheckListSnack: React.FC = () => {
     { name: 'Borç Miktarı (TL)', selector: (row) => api.paymetFormat(row.debt_tl) ||'', sortable: true },
     { name: 'Ödenen (TL)', selector: (row) => api.paymetFormat(row.payment)||'', sortable: true },
     { name: 'Ödenen (USD)', selector: (row) => api.paymetFormat(row.payment_dolar)||'', sortable: true },
-    { name: 'Kalan Bakiye', selector: (row) => '', sortable: true },
+    { name: 'Kalan Bakiye', selector: (row) => api.paymetFormat(row.balance) , sortable: true },
     { name: 'Cep Telefonu', selector: (row) => row.cell_phone_s, sortable: true },
   ];
   
@@ -131,7 +131,7 @@ const DebtCheckListSnack: React.FC = () => {
       'Borç Miktarı (USD)': api.paymetFormat(item.debt_dolar),
       'Borç Miktarı (TL)': api.paymetFormat(item.debt_tl),
       'Ödenen (TL)': api.paymetFormat(item.payment),
-      'Kalan Bakiye': '',
+      'Kalan Bakiye': api.paymetFormat(item.balance) ,
       'Cep Telefonu': item.cell_phone_s,
     }));
     const ws = utils.json_to_sheet(formattedData);

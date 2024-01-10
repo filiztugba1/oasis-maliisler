@@ -73,14 +73,14 @@ const { enqueueSnackbar } = useSnackbar();
       id: '',
       name: '',
       surname: '',
-      class: 0,
-      register_year: 0,
+      class: '',
+      register_year: '',
       register_date: '',
       lisansUstuSinif: '',
       uyruk: '',
       mezuniyet_ayrilma_tarihi: '',
       yatay_gecis_kayit_tarihi: '',
-      yatay_gecis_birim_id: 0,
+      yatay_gecis_birim_id: '',
       kayit_tipi: '',
       cap_durumu: '',
       yandal_durumu: '',
@@ -152,7 +152,7 @@ const { enqueueSnackbar } = useSnackbar();
       verildigi_nifus_dairesi: '',
       vergi_kimlik_no: '',
       vergi_dairesi: '',
-      sex: 0,
+      sex: '',
       listLoad:false
     }
   );
@@ -213,6 +213,7 @@ const { enqueueSnackbar } = useSnackbar();
       api.generalInformation(formdata).then((x) => {
         setlistLoad(false);
         setGeneralInformation(x);
+        console.log(x)
       }).catch(err => catchFunc(err,enqueueSnackbar))
 
       api.idInformation(formdata).then((x) => {
@@ -269,14 +270,14 @@ const { enqueueSnackbar } = useSnackbar();
               <GeneralInformation id={generalInformation.id}
                 name={generalInformation.name}
                 surname={generalInformation.surname}
-                class={+generalInformation.class}
-                register_year={+generalInformation.register_year}
+                class={generalInformation.class}
+                register_year={generalInformation.register_year}
                 register_date={generalInformation.register_date}
                 lisansUstuSinif={generalInformation.lisansUstuSinif}
                 uyruk={generalInformation.uyruk}
                 mezuniyet_ayrilma_tarihi={generalInformation.mezuniyet_ayrilma_tarihi}
                 yatay_gecis_kayit_tarihi={generalInformation.yatay_gecis_kayit_tarihi}
-                yatay_gecis_birim_id={+generalInformation.yatay_gecis_birim_id}
+                yatay_gecis_birim_id={generalInformation.yatay_gecis_birim_id}
                 kayit_tipi={generalInformation.kayit_tipi}
                 cap_durumu={generalInformation.cap_durumu}
                 yandal_durumu={generalInformation.yandal_durumu}

@@ -35,6 +35,6 @@ export interface IdInformationModel
     verildigi_nifus_dairesi?: string,
     vergi_kimlik_no?: string,
     vergi_dairesi?: string,
-    sex:number,
+    sex:string,
     listLoad:boolean
 }

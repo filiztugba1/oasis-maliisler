@@ -710,7 +710,7 @@ const ParamFeesDolarSnack: React.FC = () => {
 
             <div className='col-md-6'>
               <label className='col-form-label fw-bold fs-6'>
-                <span>Yüksek Lisans</span>
+                <span>Lisans - Önlisans - Yüksek Lisans</span>
               </label>
               <input
                 type='text'
@@ -726,7 +726,7 @@ const ParamFeesDolarSnack: React.FC = () => {
 
             <div className='col-md-6'>
               <label className='col-form-label fw-bold fs-6'>
-                <span>Yüksek Lisans Hazırlık</span>
+                <span>Lisans Hazırlık - Önlisans Hazırlık - Yüksek Lisans Hazırlık</span>
               </label>
               <input
                 type='text'
