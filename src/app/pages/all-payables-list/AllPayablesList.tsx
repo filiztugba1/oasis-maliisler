@@ -429,8 +429,8 @@ const AllPayablesListSnack: React.FC = () => {
                 <select
                   className='form-select'
                   onChange={handleChange}
-                  name="status"
-                  value={formData.status}
+                  name="interest"
+                  value={formData.interest}
                 >
                   <option value=''>Tümü</option>
                   <option value='1'>Faiz Kayıtları Hariç</option>

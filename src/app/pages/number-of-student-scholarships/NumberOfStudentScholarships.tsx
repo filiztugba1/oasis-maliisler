@@ -368,7 +368,7 @@ const NumberOfStudentScholarshipsSnack: React.FC = () => {
                 <select
                   className='form-select'
                   onChange={handleChange}
-                  name="regulation"
+                  name="scholarshipType"
                   value={formData.scholarshipType}
                 >
                   <option value='0'>Tümü</option>

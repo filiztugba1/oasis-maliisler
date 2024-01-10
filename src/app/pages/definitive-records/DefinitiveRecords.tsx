@@ -126,7 +126,7 @@ const DefinitiveRecordsSnack: React.FC = () => {
     }
   );
   const columns: TableColumn<typeof definitiverecordlist[0]>[] = [
-    { name: 'TC Kimlik No', selector: (row) => row.id_no, sortable: true, cell: row => <div className="cell">{row.id_no}</div> },
+    { name: 'TC Kimlik No', selector: (row) => row.id_no, sortable: true, cell: row => <div className="cell" style={{minWidth:'100px'}}>{row.id_no}</div> },
     { name: 'Öğrenci No', selector: (row) => row.ogrno, sortable: true, cell: row => <div className="cell">{row.ogrno}</div> },
     { name: 'Öğrenci Adı-Soyadı', selector: (row) => row.name + ' ' + row.surname, sortable: true, cell: row => <div className="cell">{row.name + ' ' + row.surname}</div> },
     { name: 'Fakülte', selector: (row) => row.faculty, sortable: true, cell: row => <div className="cell">{row.faculty}</div> },

@@ -29,7 +29,7 @@ const SummerFeeRefundRequestListSnack: React.FC = () => {
       setSummerFeeRefundRequests(x);
       setFilteredData(x);
     }).catch(err => catchFunc(err,enqueueSnackbar))
-  },[listLoad,enqueueSnackbar]
+  },[]
   );
 
   const columns: TableColumn<typeof summerFeeRefundRequests[0]>[] = [
