@@ -93,8 +93,8 @@ const SearchSnack: FC = () => {
 }
 const catchFunc = (err: any) => {
   if (err.response && err.response.data && err.response.data.message) {
-    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-    if (err.response.data.message === 'Expired token') {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token'  || err.response.data.message === 'Undefined index: password') {
       localStorage.clear();
       window.location.href = '/auth';
       // navigate('/auth');

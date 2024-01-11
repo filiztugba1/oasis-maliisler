@@ -11,8 +11,8 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 const catchFunc = (err: any,enqueueSnackbar:any) => {
   if (err.response && err.response.data && err.response.data.message) {
-    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-    if (err.response.data.message === 'Expired token') {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token' || err.response.data.message === 'Undefined index: password') {
       localStorage.clear();
       window.location.href = '/auth';
       // navigate('/auth');
@@ -138,7 +138,7 @@ const InstallmentSnack: React.FC = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (formData.bank === '' || selectedcreditCardList.value === '') {
-      enqueueSnackbar("Banka ve Kred kartı alanları zorunlu alanlardır.Lütfen buraları seçiniz", { variant: 'warning', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+      enqueueSnackbar("Banka ve Kred kartı alanları zorunlu alanlardır.Lütfen buraları seçiniz", { variant: 'warning', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       return false;
     }
     settableisActive(true);

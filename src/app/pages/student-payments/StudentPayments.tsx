@@ -17,8 +17,8 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 import Loading from '../Loading';
 const catchFunc = (err: any,enqueueSnackbar:any) => {
   if (err.response && err.response.data && err.response.data.message) {
-    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-    if (err.response.data.message === 'Expired token') {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token' || err.response.data.message === 'Undefined index: password') {
       localStorage.clear();
       window.location.href = '/auth';
       // navigate('/auth');
@@ -575,11 +575,11 @@ const StudentPaymentsSnack: React.FC = () => {
     api.studentFeeUpdate(formData).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
-        enqueueSnackbar('Güncelleme işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar('Güncelleme işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handleClose();
       }
       else {
-        enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       }
     }).catch(err => catchFunc(err,enqueueSnackbar))
   };
@@ -596,11 +596,11 @@ const StudentPaymentsSnack: React.FC = () => {
     api.studentPaymentUpdate(formDataPayment).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
-        enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handlePaymentClose();
       }
       else {
-        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       }
     }).catch(err => catchFunc(err,enqueueSnackbar))
 
@@ -615,11 +615,11 @@ const StudentPaymentsSnack: React.FC = () => {
     api.studentFeeDelete(formData).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
-        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handlePaymentClose();
       }
       else {
-        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       }
     }).catch(err => catchFunc(err,enqueueSnackbar))
   };
@@ -629,11 +629,11 @@ const StudentPaymentsSnack: React.FC = () => {
     api.studentPaymentDelete(formDataPayment).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
-        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handlePaymentClose();
       }
       else {
-        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       }
     }).catch(err => catchFunc(err,enqueueSnackbar))
   };

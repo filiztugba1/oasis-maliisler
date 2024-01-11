@@ -31,8 +31,8 @@ const accountBreadCrumbs: Array<PageLink> = [
 
 const catchFunc = (err: any,enqueueSnackbar:any) => {
   if (err.response && err.response.data && err.response.data.message) {
-    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
-    if (err.response.data.message === 'Expired token') {
+    enqueueSnackbar(err.response.data.message, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+    if (err.response.data.message === 'Expired token' || err.response.data.message === 'Undefined index: password') {
       localStorage.clear();
       window.location.href = '/auth';
       // navigate('/auth');
@@ -316,11 +316,11 @@ const StudentHistorySnack: React.FC = () => {
     api.scholarshipHistoryUpdate(formDataScolar).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
-        enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handlePaymentClose();
       }
       else {
-        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(cu + ' işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       }
     }).catch(err => catchFunc(err,enqueueSnackbar))
   
@@ -333,11 +333,11 @@ const StudentHistorySnack: React.FC = () => {
     api.scholarshipHistoryDelete(formDataScolar).then((x) => {
       setlistModalLoad(false);
       if (+x.status === 200) {
-        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handlePaymentClose();
       }
       else {
-        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'top', horizontal: 'right', } });
+        enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
       }
     }).catch(err => catchFunc(err,enqueueSnackbar))
   };

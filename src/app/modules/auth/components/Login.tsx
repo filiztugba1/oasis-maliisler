@@ -6,17 +6,17 @@ import {useFormik} from 'formik'
 import {getUserByToken, login} from '../core/_requests'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
-
+import { SnackbarProvider, useSnackbar } from 'notistack';
 const loginSchema = Yup.object().shape({
   email: Yup.string()
     // .email('Wrong email format')
     // .min(3, 'Minimum 3 symbols')
     // .max(50, 'Maximum 50 symbols')
-    .required('username is required'),
+    .required('Kullanıcı adı zorunlu'),
   password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Password is required'),
+    .min(3, 'Minimum 3 karakter')
+    .max(50, 'Maksimum 50 karakter')
+    .required('Şifre zorunlu'),
 })
 
 const initialValues = {
@@ -32,10 +32,12 @@ const initialValues = {
   https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
 */
 
-export function Login() {
+
+const LoginSnack: React.FC = () => {
+  
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
-
+  const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
@@ -44,14 +46,21 @@ export function Login() {
       try {
         const {data: auth} = await login(values.email, values.password)
         saveAuth(auth)
-        console.log(auth.api_token);
-        const {data: user} = await getUserByToken(auth.api_token)
-       
-        setCurrentUser(user)
-        localStorage.setItem('user',JSON.stringify({
-          cell_nr: user.data.cell_nr,email: user.data.email,name:user.data.name,sub_type: user.data.sub_type,surname: user.data.surname,tckimlik: user.data.tckimlik,title: user.data.title,type: user.data.type
-          ,username: user.data.username,academicYear:user.data.academicYear,academicSemester:user.data.academicSemester,academicSemesterText:(user.data.academicSemester===1?'Güz':(user.data.academicSemester===2?'Bahar':'Yaz'))}))
-
+        setLoading(false)
+        if(auth.status===500)
+        {
+          enqueueSnackbar(auth.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+        }
+        else
+        {
+          const {data: user} = await getUserByToken(auth.api_token)
+          setCurrentUser(user)
+          localStorage.setItem('user',JSON.stringify({
+            cell_nr: user.data.cell_nr,email: user.data.email,name:user.data.name,sub_type: user.data.sub_type,surname: user.data.surname,tckimlik: user.data.tckimlik,title: user.data.title,type: user.data.type
+            ,username: user.data.username,academicYear:user.data.academicYear,academicSemester:user.data.academicSemester,academicSemesterText:(user.data.academicSemester===1?'Güz':(user.data.academicSemester===2?'Bahar':'Yaz'))}))
+  
+        }
+      
       } catch (error) {
         console.error(error)
         saveAuth(undefined)
@@ -104,6 +113,7 @@ export function Login() {
         <label className='form-label fw-bolder text-dark fs-6 mb-0'>Şifre</label>
         <input
           type='password'
+          placeholder='.........'
           autoComplete='off'
           {...formik.getFieldProps('password')}
           className={clsx(
@@ -134,7 +144,7 @@ export function Login() {
           className='btn btn-primary'
           disabled={formik.isSubmitting || !formik.isValid}
         >
-          {!loading && <span className='indicator-label'>Continue</span>}
+          {!loading && <span className='indicator-label'>Giriş</span>}
           {loading && (
             <span className='indicator-progress' style={{display: 'block'}}>
               Please wait...
@@ -147,3 +157,12 @@ export function Login() {
     </form>
   )
 }
+
+function Login() {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <LoginSnack />
+    </SnackbarProvider>
+  );
+}
+export default Login
