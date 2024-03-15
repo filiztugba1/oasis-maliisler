@@ -11,6 +11,10 @@ import { writeXLSX, utils } from 'xlsx';
 import api from '../../services/services';
 import {  Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
+import {UserModel} from '../../modules/auth/core/_models'
+
+
+
 import Select from 'react-select';
 import { Switch } from '@mui/material';
 import { SnackbarProvider, useSnackbar } from 'notistack';
@@ -86,12 +90,11 @@ const StudentPaymentsSnack: React.FC = () => {
       };
       setlistLoad(true);
       api.activeStudentDetail(formdata).then((x) => {
-        setlistLoad(false);
         setStudentInfo(x);
       }).catch(err => catchFunc(err,enqueueSnackbar))
       setlistPyLoad(true);
       api.studentFees(formdata).then((x) => {
-        setlistPyLoad(false);
+        setlistLoad(false);
         setPaymentListOdemeBilgileri(x);
         setfilteredDataOdemeBilgileri(x);
       }).catch(err => catchFunc(err,enqueueSnackbar))
@@ -280,26 +283,47 @@ const StudentPaymentsSnack: React.FC = () => {
   }
 
   const createPaymentShow = () => {
-    setSelectedYear(null);
+
+    var stuid = localStorage.getItem('search-student-id');
+    var academic = localStorage.getItem('user');
+    
     setSelectedFeeTypes(null);
     setSelectedBanks(null);
-    setFormDataPayment({
-      stu_id: '',
-      year: '',
-      semester: '',
-      fee_type_id: '',
-      dekont_no: '',
-      process_type: '',
-      payment_date: '',
-      payment: '',
-      payment_dolar: '',
-      bank_code: '',
-      create_date: '',
-      explanation: '',
-      rate: '',
-      money: '',
-      actionType: 'insert'
-    });
+    var newstuid:string='';
+    if (stuid && typeof stuid === 'string') {
+      newstuid = JSON.parse(stuid);
+    }
+    
+    if (academic && typeof academic === 'string') {
+      let newacademic:UserModel=JSON.parse(academic);
+        if (newacademic !== null) {
+             formDoldurPayment('year', newacademic.academicYear);
+             formDoldurPayment('semester', ''+newacademic.academicSemester);
+             setSelectedYear(yearList.find((x) => +x.value === newacademic.academicYear) ?? null);
+
+             setFormDataPayment({
+              stu_id:''+ newstuid,
+              year: ''+newacademic.academicYear,
+              semester: ''+newacademic.academicSemester,
+              fee_type_id: '',
+              dekont_no: '',
+              process_type: '',
+              payment_date: '',
+              payment: '',
+              payment_dolar: '',
+              bank_code: '',
+              create_date: '',
+              explanation: '',
+              rate: '',
+              money: '',
+              actionType: 'insert'
+            });
+        }
+    }
+   
+    
+
+   
     handlePaymentShow();
   }
 
@@ -308,6 +332,7 @@ const StudentPaymentsSnack: React.FC = () => {
     setSelectedYear(yearList.find((x) => +x.value === +row.year) ?? null);
     setSelectedFeeTypes(feetypes.find((x) => +x.value === +row.fee_type) ?? null);
     setSelectedBanks(banks.find((x) => +x.value === +row.bank_code) ?? null);
+    console.log('burada',row);
     setFormDataPayment({
       stu_id: row.stu_id,
       year: row.year,
@@ -548,6 +573,7 @@ const StudentPaymentsSnack: React.FC = () => {
   const handleFeeTypesChange = (selected: any) => {
     setSelectedFeeTypes(selected);
     formDoldur("fee_type_id", selected.value);
+    formDoldurPayment("fee_type_id", selected.value)
   };
 
   const handleChange = (e: any) => {
@@ -577,6 +603,15 @@ const StudentPaymentsSnack: React.FC = () => {
       if (+x.status === 200) {
         enqueueSnackbar('Güncelleme işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
         handleClose();
+        let formdata = {
+          stu_id: localStorage.getItem('search-student-id')
+        };
+        setlistLoad(true);
+        api.studentFees(formdata).then((x) => {
+          setlistLoad(false);
+          setPaymentListOdemeBilgileri(x);
+          setfilteredDataOdemeBilgileri(x);
+        }).catch(err => catchFunc(err,enqueueSnackbar))
       }
       else {
         enqueueSnackbar('Güncelleme işlemi sırasında hata oluştu.Oluşan Hata:' + x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
@@ -597,6 +632,15 @@ const StudentPaymentsSnack: React.FC = () => {
       setlistModalLoad(false);
       if (+x.status === 200) {
         enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+        let formdata = {
+          stu_id: localStorage.getItem('search-student-id')
+        };
+        setlistPyLoad(true);
+        api.studentPayments(formdata).then((x) => {
+          setlistPyLoad(false);
+          setPaymentList(x);
+          setFilteredData(x);
+        }).catch(err => catchFunc(err,enqueueSnackbar))
         handlePaymentClose();
       }
       else {
@@ -616,7 +660,16 @@ const StudentPaymentsSnack: React.FC = () => {
       setlistModalLoad(false);
       if (+x.status === 200) {
         enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
-        handlePaymentClose();
+        let formdata = {
+          stu_id: localStorage.getItem('search-student-id')
+        };
+        setlistLoad(true);
+        api.studentFees(formdata).then((x) => {
+          setlistLoad(false);
+          setPaymentListOdemeBilgileri(x);
+          setfilteredDataOdemeBilgileri(x);
+        }).catch(err => catchFunc(err,enqueueSnackbar))
+        handleDeleteClose();
       }
       else {
         enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
@@ -630,7 +683,16 @@ const StudentPaymentsSnack: React.FC = () => {
       setlistModalLoad(false);
       if (+x.status === 200) {
         enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
-        handlePaymentClose();
+        let formdata = {
+          stu_id: localStorage.getItem('search-student-id')
+        };
+        setlistPyLoad(true);
+        api.studentPayments(formdata).then((x) => {
+          setlistPyLoad(false);
+          setPaymentList(x);
+          setFilteredData(x);
+        }).catch(err => catchFunc(err,enqueueSnackbar))
+        handleDeletePaymentClose();
       }
       else {
         enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
@@ -1191,7 +1253,7 @@ const StudentPaymentsSnack: React.FC = () => {
       <Modal show={showPayment} onHide={handlePaymentClose} size='xl'>
       {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataPayment.semester === 1 ? ' Güz' : (+formDataPayment.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedFeeTypes !== null ? selectedFeeTypes.label : '') + '" Bilgilerini ' + (formDataPayment.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataPayment.semester === 1 ? ' Güz' : (+formDataPayment.semester === 2 ? ' Bahar' : ' Yaz')) + ' Dönemi Tahsilat Bilgilerini ' + (formDataPayment.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
         </Modal.Header>
 
         <form onSubmit={handlePaymentSubmit}>

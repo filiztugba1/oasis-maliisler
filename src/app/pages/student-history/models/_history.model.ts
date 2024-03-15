@@ -29,6 +29,7 @@ export interface HistoryList {
     std_state_date: string;
     update_date: string;
     actionType:string;
+    id:string;
     }
   
     export interface ScholarshipHistoryCrudResponse {

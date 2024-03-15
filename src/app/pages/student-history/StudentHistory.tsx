@@ -14,6 +14,7 @@ import { Modal } from 'react-bootstrap';
 import { FacultyList } from '../../services/models/_faculty';
 import api from '../../services/services';
 import Loading from '../Loading';
+import {UserModel} from '../../modules/auth/core/_models'
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Student Info',
@@ -203,7 +204,8 @@ const StudentHistorySnack: React.FC = () => {
       explanation: row.Explanation,
       std_state_date: row.stat_date_,
       update_date: row.update_date_,
-      actionType: 'update'
+      actionType: 'update',
+      id:''+localStorage.getItem('search-student-id')
     });
     handlePaymentShow();
   }
@@ -219,24 +221,41 @@ const StudentHistorySnack: React.FC = () => {
       explanation: row.Explanation,
       std_state_date: row.stat_date_,
       update_date: row.update_date_,
-      actionType: 'delete'
+      actionType: 'delete',
+      id:''+localStorage.getItem('search-student-id')
     });
     handleDeleteScolarShow();
   }
 
   const createPaymentShow = () => {
-    setSelectedYear(null);
+    var stuid = localStorage.getItem('search-student-id');
+    var academic = localStorage.getItem('user');
     setSelectedScholarship(null);
-    setFormDataScolar({
-      year: "",
-      semester: "",
-      scholarship_type: "",
-      scholarship_status: "",
-      explanation: "",
-      std_state_date: "",
-      update_date: "",
-      actionType: 'insert'
-    });
+
+    var newstuid:string='';
+    if (stuid && typeof stuid === 'string') {
+      newstuid = JSON.parse(stuid);
+    }
+    
+    if (academic && typeof academic === 'string') {
+      let newacademic:UserModel=JSON.parse(academic);
+        if (newacademic !== null) {
+             setSelectedYear(yearList.find((x) => +x.value === newacademic.academicYear) ?? null);
+            setFormDataScolar({
+              year: ''+newacademic.academicYear,
+              semester: ''+newacademic.academicSemester,
+              scholarship_type: "",
+              scholarship_status: "",
+              explanation: "",
+              std_state_date: "",
+              update_date: "",
+              actionType: 'insert',
+              id:''+ newstuid
+            });
+        }
+    }
+
+ 
     handlePaymentShow();
   }
 
@@ -295,14 +314,14 @@ const StudentHistorySnack: React.FC = () => {
   const [formDataScolar, setFormDataScolar] = useState<ScholarshipHistoryRequest>(
     {
       year: "",
-      semester: "",
+      semester: "1",
       scholarship_type: "",
       scholarship_status: "",
       explanation: "",
       std_state_date: "",
       update_date: "",
-      actionType: 'insert'
-
+      actionType: 'insert',
+      id:''+localStorage.getItem('search-student-id')
     }
   );
 
@@ -317,6 +336,13 @@ const StudentHistorySnack: React.FC = () => {
       setlistModalLoad(false);
       if (+x.status === 200) {
         enqueueSnackbar(cu + ' işlemi başarılı bir şekilde gerçekleşmiştir', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
+        api.scholarshipHistoryLList({
+          stu_id: localStorage.getItem('search-student-id')
+        }).then((x) => {
+          setlistPyLoad(false);
+          setHistlistScolaar(x);
+          setFilteredDataScolaarHist(x);
+        }).catch(err => catchFunc(err,enqueueSnackbar))
         handlePaymentClose();
       }
       else {
@@ -334,7 +360,14 @@ const StudentHistorySnack: React.FC = () => {
       setlistModalLoad(false);
       if (+x.status === 200) {
         enqueueSnackbar(x.data, { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
-        handlePaymentClose();
+        api.scholarshipHistoryLList({
+          stu_id: localStorage.getItem('search-student-id')
+        }).then((x) => {
+          setlistPyLoad(false);
+          setHistlistScolaar(x);
+          setFilteredDataScolaarHist(x);
+        }).catch(err => catchFunc(err,enqueueSnackbar))
+        handleDeleteScolarClose();
       }
       else {
         enqueueSnackbar(x.data, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right', } });
@@ -359,7 +392,7 @@ const StudentHistorySnack: React.FC = () => {
         std_state_date: key === 'std_state_date' ? value : formDataScolar.std_state_date,
         update_date: key === 'update_date' ? value : formDataScolar.update_date,
         actionType: key === 'actionType' ? value : formDataScolar.actionType,
-
+        id:''+localStorage.getItem('search-student-id')
       }
     );
   };
@@ -374,7 +407,7 @@ const StudentHistorySnack: React.FC = () => {
   const [selectedScholarship, setSelectedScholarship] = React.useState<null | FacultyList>(null);
   const handleScholarshipChange = (selected: any) => {
     setSelectedScholarship(selected);
-    formDoldurPayment("year", selected.value);
+    formDoldurPayment("scholarship_type", selected.value);
   };
 
 
@@ -501,7 +534,7 @@ const StudentHistorySnack: React.FC = () => {
       <Modal show={showPayment} onHide={handlePaymentClose} size='xl'>
       {listModalLoad?<Loading/>:''}
         <Modal.Header closeButton>
-          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1  || formDataScolar.semester===''? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' dönemi "' + (selectedScholarship !== null ? selectedScholarship.label : '') + '" Tahsilat Bilgilerini ' + (formDataScolar.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
+          <Modal.Title>{(selectedYear !== null ? selectedYear.label : '') + (+formDataScolar.semester === 1  || formDataScolar.semester===''? ' Güz' : (+formDataScolar.semester === 2 ? ' Bahar' : ' Yaz')) + ' Dönemi Burs Tarihçesi ' + (formDataScolar.actionType === 'insert' ? 'Ekleme' : 'Güncelleme')}</Modal.Title>
         </Modal.Header>
 
         <form onSubmit={handleScolarSubmit}>

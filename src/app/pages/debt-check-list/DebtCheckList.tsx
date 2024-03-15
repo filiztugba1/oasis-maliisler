@@ -97,6 +97,10 @@ const DebtCheckListSnack: React.FC = () => {
     e.preventDefault();
     settableisActive(true);
     setlistLoad(true);
+    if(formData.semester==undefined || formData.semester=='' || formData.semester==null)
+    {
+      formData.semester='1';
+    }
     api.debtCheckList(formData).then((x) => {
       setlistLoad(false);
       setDefinitiverecordlist(x);

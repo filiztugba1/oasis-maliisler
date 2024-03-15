@@ -119,10 +119,16 @@ const scholarshipStatus=async ()=>{
     }
     if(number!==null && number!=='' && number!==undefined && +number!==0)
     {
-      const noktaDegis=number.replace('.','-');
+      let isNegatif='';
+      if(+number<0)
+      {
+        isNegatif='-';
+        number=number.replace('-','');
+      }
+      const noktaDegis=number.replace('.','_');
       const virgulDegis=noktaDegis.replace(',','.');
-      const sonDegis=virgulDegis.replace('-',',');
-      return sonDegis;
+      const sonDegis=virgulDegis.replace('_',',');
+      return isNegatif+sonDegis;
     }
     return number;
   }
@@ -292,13 +298,13 @@ const scholarshipStatus=async ()=>{
   const  scholarshipHistoryUpdate =async (formdata:any)=>{
     const url=API_URL+'/maliisler/scholarship-history-update';
     const res= await axios.post<ResponseData>(url,formdata);
-    return res.data.data;
+    return res.data;
   }
 
   const  scholarshipHistoryDelete =async (formdata:any)=>{
     const url=API_URL+'/maliisler/scholarship-history-delete';
     const res= await axios.post<ResponseData>(url,formdata);
-    return res.data.data;
+    return res.data;
   }
 
   
